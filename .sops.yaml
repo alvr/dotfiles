@@ -1,0 +1,7 @@
+keys:
+  - &apeiron age1gd8r4kczp6ywrhn8kj8qn6l9sc505k7autzg868f9tmcl2x92dqq8m6wm0
+creation_rules:
+  - path_regex: secrets[/\\][^/\\]+(\.(yaml|json|env|ini|conf))?$
+    key_groups:
+      - age:
+        - *apeiron
