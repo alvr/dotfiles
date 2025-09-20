@@ -9,6 +9,7 @@
     ./_persistence.nix
     ./_sops.nix
 
+    ../../services/cloudflare.nix
     ../../services/ssh.nix
     ../../services/tailscale.nix
 
