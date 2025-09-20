@@ -32,6 +32,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       disko,
       home-manager,
       impermanence,
@@ -47,6 +48,10 @@
 
       consts = import ./consts.nix;
 
+      overlays = [
+        (import ./overlays/unstable.nix { inherit nixpkgs-unstable; })
+      ];
+
       mkNixOSConfig =
         modulePaths:
         nixpkgs.lib.nixosSystem {
@@ -57,6 +62,13 @@
             home-manager.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             sops-nix.nixosModules.sops
+
+            (
+              { config, pkgs, ... }:
+              {
+                nixpkgs.overlays = overlays;
+              }
+            )
 
             ./modules/nixos
             ./modules/home-manager
