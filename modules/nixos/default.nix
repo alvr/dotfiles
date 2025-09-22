@@ -1,13 +1,13 @@
 { pkgs, ... }:
 {
   imports = [
-    ./_boot.nix
-    ./_i18n.nix
-    ./_networking.nix
-    ./_nix.nix
-    ./_packages.nix
-    ./_persistence.nix
-    ./_sops.nix
+    ./boot.nix
+    ./i18n.nix
+    ./networking.nix
+    ./nix.nix
+    ./packages.nix
+    ./persistence.nix
+    ./sops.nix
 
     ../../services/cloudflare.nix
     ../../services/ssh.nix
