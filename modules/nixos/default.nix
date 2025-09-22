@@ -9,11 +9,9 @@
     ./persistence.nix
     ./sops.nix
 
-    ../../services/cloudflare.nix
-    ../../services/ssh.nix
-    ../../services/tailscale.nix
 
     ../../users/alvr.nix
+    ../../services
   ];
 
   programs.fish.enable = true;

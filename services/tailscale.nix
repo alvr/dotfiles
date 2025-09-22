@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   sops.secrets.tailscale-authkey = {
     restartUnits = [ "tailscaled.service" ];
@@ -6,9 +6,10 @@
 
   services.tailscale = {
     enable = true;
+    authKeyFile = config.sops.secrets.tailscale-authkey.path;
     disableTaildrop = true;
     openFirewall = true;
-    authKeyFile = config.sops.secrets.tailscale-authkey.path;
+    package = pkgs.unstable.tailscale;
     useRoutingFeatures = "server";
 
     extraUpFlags = [

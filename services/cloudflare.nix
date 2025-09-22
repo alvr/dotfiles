@@ -3,17 +3,17 @@
   sops.secrets = {
     cloudflare-cert = {
       format = "binary";
-      sopsFile = ../secrets/cloudflare-cert;
+      sopsFile = ../secrets/cloudflare/cloudflare-cert;
     };
 
     cloudflare-tunnel = {
       format = "binary";
-      sopsFile = ../secrets/cloudflare-tunnel;
+      sopsFile = ../secrets/cloudflare/cloudflare-tunnel;
     };
 
     cloudflare-tunnel-internal = {
       format = "binary";
-      sopsFile = ../secrets/cloudflare-tunnel-internal;
+      sopsFile = ../secrets/cloudflare/cloudflare-tunnel-internal;
     };
   };
 
