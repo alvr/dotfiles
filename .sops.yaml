@@ -1,7 +1,12 @@
 keys:
-  - &apeiron age1gd8r4kczp6ywrhn8kj8qn6l9sc505k7autzg868f9tmcl2x92dqq8m6wm0
+  - &host-apeiron age1gd8r4kczp6ywrhn8kj8qn6l9sc505k7autzg868f9tmcl2x92dqq8m6wm0
+  - &user-alvr age1chal5wkp4jl4yn7gl6jus0gn4kk7nn2rmh9m04kg03eklergzcrshhn802
 creation_rules:
+  - path_regex: secrets[/\\]users[/\\]alvr[/\\][^/\\]+(\.(yaml|json|env|ini|conf))?$
+    key_groups:
+      - age:
+        - *user-alvr
   - path_regex: secrets[/\\](?:[^/\\]+[/\\])?[^/\\]+(\.(yaml|json|env|ini|conf))?$
     key_groups:
       - age:
-        - *apeiron
+        - *host-apeiron

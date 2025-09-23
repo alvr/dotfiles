@@ -22,6 +22,12 @@
   home-manager.users.alvr =
     { pkgs, ... }:
     {
+      imports = [
+        ../../modules/home-manager/sops.nix
+
+        ./modules
+      ];
+
       home = {
         username = "alvr";
         homeDirectory = "/home/alvr";

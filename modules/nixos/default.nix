@@ -9,9 +9,8 @@
     ./persistence.nix
     ./sops.nix
 
-
-    ../../users/alvr.nix
     ../../services
+    ../../users
   ];
 
   programs.fish.enable = true;
