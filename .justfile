@@ -14,13 +14,13 @@ lock:
     nix flake update
 
 up:
-    sudo nixos-rebuild --upgrade
+    sudo nix-channel --update && sudo nixos-rebuild switch --upgrade
 
 fmt:
     nix fmt .
 
 gc:
-    sudo nh clean all --ask
+    sudo nh clean all -av
 
 repair:
     sudo nix-store --verify --check-contents --repair
