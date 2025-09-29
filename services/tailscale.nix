@@ -1,38 +1,52 @@
-{ config, pkgs, ... }:
 {
-  sops.secrets.tailscale-authkey = {
-    restartUnits = [ "tailscaled.service" ];
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  cfg = config.dot.services.tailscale;
+in
+{
+  options.dot.services.tailscale = {
+    enable = lib.mkEnableOption "Enable Tailscale service" // {
+      default = true;
+    };
   };
 
-  services.tailscale = {
-    enable = true;
-    authKeyFile = config.sops.secrets.tailscale-authkey.path;
-    disableTaildrop = true;
-    openFirewall = true;
-    package = pkgs.unstable.tailscale;
-    useRoutingFeatures = "server";
+  config = lib.mkIf cfg.enable {
+    sops.secrets.tailscale-authkey = {
+      restartUnits = [ "tailscaled.service" ];
+    };
 
-    extraUpFlags = [
-      "--advertise-routes=100.93.93.0/24"
-    ];
-  };
+    services.tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets.tailscale-authkey.path;
+      disableTaildrop = true;
+      openFirewall = true;
+      package = pkgs.unstable.tailscale;
+      useRoutingFeatures = "server";
 
-  networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+      extraUpFlags = [
+        "--advertise-routes=100.93.93.0/24"
+      ];
+    };
 
-  environment.persistence."/nix/persist" = {
-    directories = [
+    networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+
+    dot.system.persistence.directories = [
       "/var/lib/tailscale"
     ];
-  };
 
-  systemd.services.tailscaled = {
-    after = [
-      "network-online.target"
-      "systemd-resolved.service"
-    ];
-    wants = [
-      "network-online.target"
-      "systemd-resolved.service"
-    ];
+    systemd.services.tailscaled = {
+      after = [
+        "network-online.target"
+        "systemd-resolved.service"
+      ];
+      wants = [
+        "network-online.target"
+        "systemd-resolved.service"
+      ];
+    };
   };
 }

@@ -5,7 +5,7 @@ deploy host='apeiron':
     sudo nixos-rebuild switch --flake ".#{{ host }}" --show-trace
 
 test-deploy host='apeiron':
-    sudo nixos-rebuild dry-run --flake ".#{{ host }}" --show-trace
+    sudo nixos-rebuild dry-run --flake ".#{{ host }}" --show-trace --verbose
 
 fetch:
     git fetch && git reset --hard origin/main
