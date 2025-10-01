@@ -6,5 +6,6 @@
     mergerfs
     neovim
     sops
+    statix
   ];
 }

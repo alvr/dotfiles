@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ../../modules/nixos/_i18n.nix
+    ../../modules/nixos/i18n.nix
   ];
 
   networking.hostName = "nixos-installer";
@@ -30,14 +30,15 @@
 
   system.activationScripts.createInstallerFile = {
     text = ''
-      echo "Creating installer file in /home/nixos..." >&2
-      cat > /home/nixos/installer.sh << 'EOF'
-
-      #!/usr/bin/env bash
-      curl --proto '=https' --tlsv1.2 -fsSL https://git.alvr.dev/alvr/dotfiles/raw/branch/main/installer.sh | sudo bash
-      EOF
-
-      chmod +x /home/nixos/installer.sh
+      
+            echo "Creating installer file in /home/nixos..." >&2
+            cat > /home/nixos/installer.sh << 'EOF'
+      
+            #!/usr/bin/env bash
+            curl --proto '=https' --tlsv1.2 -fsSL https://git.alvr.dev/alvr/dotfiles/raw/branch/main/installer.sh | sudo bash
+            EOF
+      
+            chmod +x /home/nixos/installer.sh
     '';
     deps = [ "users" ];
   };
@@ -47,13 +48,14 @@
     enable = true;
     networks = lib.mkForce { };
     extraConfig = ''
-      update_config=1
-      fast_reauth=1
-
-      network={
-        ssid=
-        psk=
-      }
+      
+            update_config=1
+            fast_reauth=1
+      
+            network={
+              ssid=
+              psk=
+            }
     '';
   };
 

@@ -26,6 +26,11 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -38,15 +43,17 @@
       impermanence,
       nixos-generators,
       sops-nix,
+      treefmt-nix,
       ...
     }@inputs:
     let
       inherit (self) outputs;
 
       systems = [ "x86_64-linux" ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
       consts = import ./consts.nix;
+      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
 
       overlays = [
         (import ./overlays/unstable.nix { inherit nixpkgs-unstable; })
@@ -77,7 +84,10 @@
         };
     in
     {
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
+      checks = eachSystem (pkgs: {
+        formatting = treefmtEval.${pkgs.system}.config.build.check self;
+      });
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
 
       nixosConfigurations = {
         apeiron = mkNixOSConfig [
@@ -85,7 +95,7 @@
         ];
       };
 
-      installer = nixos-generators.nixosGenerate {
+      packages.x86_64-linux.installer = nixos-generators.nixosGenerate {
         system = "x86_64-linux";
         specialArgs = { inherit consts; };
         modules = [

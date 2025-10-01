@@ -8,7 +8,7 @@
       "args": [
         "sync",
         "--exclude",
-        "/.git/**",
+        ".git/",
         "${workspaceFolder}",
         "apeiron:/nix/persist/dotfiles",
         "-v",

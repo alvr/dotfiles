@@ -7,6 +7,12 @@ deploy host='apeiron':
 test-deploy host='apeiron':
     sudo nixos-rebuild dry-run --flake ".#{{ host }}" --show-trace --verbose
 
+rollback-deploy:
+    sudo nixos-rebuild switch --rollback --show-trace --verbose
+
+installer:
+    nix build .#installer
+
 fetch:
     git fetch && git reset --hard origin/main
 
@@ -17,13 +23,20 @@ up:
     sudo nix-channel --update && sudo nixos-rebuild switch --upgrade
 
 fmt:
-    nix fmt .
+    nix fmt && nix flake check && statix check
 
 gc:
     sudo nh clean all -av
 
 repair:
     sudo nix-store --verify --check-contents --repair
+
+generations-list:
+    sudo nix-env -p /nix/var/nix/profiles/system --list-generations
+
+generations-switch version:
+    sudo nix-env -p /nix/var/nix/profiles/system --switch-generation {{ version }}
+    sudo /nix/var/nix/profiles/system/bin/switch-to-configuration boot
 
 sops-edit:
     sops secrets/secrets.yaml
