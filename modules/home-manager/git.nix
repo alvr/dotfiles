@@ -1,6 +1,10 @@
 { config, lib, ... }:
+let
+  cfg = config.dot.hm.programs.git;
+in
 {
-  options.home-modules.git = {
+  options.dot.hm.programs.git = {
+    enable = lib.mkEnableOption "Enable Git home-manager program";
     username = lib.mkOption {
       type = lib.types.str;
     };
@@ -9,11 +13,11 @@
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = config.home-modules.git.username;
-      userEmail = config.home-modules.git.email;
+      userName = cfg.username;
+      userEmail = cfg.email;
 
       extraConfig = {
         init.defaultBranch = "main";

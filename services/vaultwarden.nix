@@ -31,7 +31,7 @@ in
       webVaultPackage = pkgs.unstable.vaultwarden.webvault;
     };
 
-    environment.persistence."/nix/persist".directories = [
+    dot.system.persistence.directories = [
       {
         directory = "/var/lib/vaultwarden";
         user = "vaultwarden";

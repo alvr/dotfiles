@@ -1,10 +1,7 @@
-{ ... }:
+{ config, ... }:
 {
-  imports = [
-    ../../../modules/home-manager/git.nix
-  ];
-
-  home-modules.git = {
+  dot.hm.programs.git = {
+    enable = true;
     username = "Álvaro Salcedo García";
     email = "alvaro@alvr.dev";
   };

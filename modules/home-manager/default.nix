@@ -8,6 +8,10 @@
     sharedModules = [
       inputs.impermanence.homeManagerModules.impermanence
       inputs.sops-nix.homeManagerModules.sops
+
+      ./git.nix
+      ./persistence.nix
+      ./sops.nix
     ];
   };
 }

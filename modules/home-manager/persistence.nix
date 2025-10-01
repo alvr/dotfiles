@@ -1,29 +1,34 @@
 { config, lib, ... }:
+let
+  cfg = config.dot.hm.system.persistence;
+in
 {
-  options.home-modules.persistence = {
+  options.dot.hm.system.persistence = {
+    enable = lib.mkEnableOption "Enable persistence home-manager system";
     directories = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
+      type = lib.types.listOf (
+        lib.types.oneOf [
+          lib.types.str
+          (lib.types.attrsOf lib.types.anything)
+        ]
+      );
       default = [ ];
     };
     files = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
+      type = lib.types.listOf (
+        lib.types.oneOf [
+          lib.types.str
+          (lib.types.attrsOf lib.types.anything)
+        ]
+      );
       default = [ ];
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     home.persistence."/nix/persist/users/${config.home.username}" = {
       allowOther = false;
-
-      directories = [
-        ".ssh"
-      ]
-      ++ config.home-modules.persistence.directories;
-
-      files = [
-        ".age-keys.txt"
-      ]
-      ++ config.home-modules.persistence.files;
+      inherit (cfg) directories files;
     };
   };
 }

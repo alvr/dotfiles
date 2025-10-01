@@ -1,6 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
-  imports = [
-    ../../../modules/home-manager/persistence.nix
-  ];
+  dot.hm.system.persistence.enable = true;
 }

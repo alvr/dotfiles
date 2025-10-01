@@ -23,8 +23,6 @@
     { pkgs, ... }:
     {
       imports = [
-        ../../modules/home-manager/sops.nix
-
         ./modules
       ];
 
