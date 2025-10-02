@@ -15,10 +15,21 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.jellyfin = {
-      enable = true;
-      openFirewall = true;
-      package = pkgs.unstable.jellyfin;
+    services = {
+      jellyfin = {
+        enable = true;
+        openFirewall = true;
+        package = pkgs.unstable.jellyfin;
+      };
+
+      cloudflared.tunnels.apeiron-internal.ingress."watch.alvr.dev" = {
+        service = "http://localhost:8096";
+        originRequest = {
+          originServerName = "watch.alvr.dev";
+        };
+      };
+
+      xserver.videoDrivers = [ "amdgpu" ];
     };
 
     dot.system.persistence.directories = [
@@ -30,9 +41,17 @@ in
       }
     ];
 
+    hardware.graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        libva
+        libvdpau-va-gl
+        vaapiVdpau
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/jellyfin 0700 jellyfin jellyfin -"
-      "Z /var/lib/jellyfin - jellyfin jellyfin -"
       "d /data/media-center 2770 root media -"
       "d /data/media-center/Anime 2770 root media -"
       "d /data/media-center/Anime/TV 2770 root media -"

@@ -15,15 +15,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets.vaultwarden = {
-      format = "dotenv";
-      sopsFile = ../secrets/services/vaultwarden.env;
-      owner = "vaultwarden";
-      group = "vaultwarden";
-      mode = "0400";
-      restartUnits = [ "vaultwarden.service" ];
-    };
-
     services.vaultwarden = {
       enable = true;
       environmentFile = config.sops.secrets.vaultwarden.path;
@@ -47,9 +38,17 @@ in
       };
     };
 
+    sops.secrets.vaultwarden = {
+      format = "dotenv";
+      sopsFile = ../secrets/services/vaultwarden.env;
+      owner = "vaultwarden";
+      group = "vaultwarden";
+      mode = "0400";
+      restartUnits = [ "vaultwarden.service" ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/vaultwarden 0700 vaultwarden vaultwarden -"
-      "Z /var/lib/vaultwarden - vaultwarden vaultwarden -"
     ];
   };
 }
