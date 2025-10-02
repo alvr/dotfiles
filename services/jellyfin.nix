@@ -29,6 +29,23 @@ in
         };
       };
 
+      traefik.dynamicConfigOptions.http = {
+        services = {
+          jellyfin.loadBalancer.servers = [
+            {
+              url = "http://localhost:8096";
+            }
+          ];
+        };
+
+        routers.jellyfin = {
+          entryPoints = [ "websecure" ];
+          rule = "Host(`watch.alvr.dev`)";
+          service = "jellyfin";
+          tls.certResolver = "letsencrypt";
+        };
+      };
+
       xserver.videoDrivers = [ "amdgpu" ];
     };
 

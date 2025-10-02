@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.dot.services.vaultwarden;
+  vwCfg = config.services.vaultwarden.config;
 in
 {
   options.dot.services.vaultwarden = {
@@ -15,11 +16,37 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.vaultwarden = {
-      enable = true;
-      environmentFile = config.sops.secrets.vaultwarden.path;
-      package = pkgs.unstable.vaultwarden;
-      webVaultPackage = pkgs.unstable.vaultwarden.webvault;
+    services = {
+      vaultwarden = {
+        enable = true;
+        environmentFile = config.sops.secrets.vaultwarden.path;
+        package = pkgs.unstable.vaultwarden;
+        webVaultPackage = pkgs.unstable.vaultwarden.webvault;
+      };
+
+      cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
+        service = "http://localhost:${toString vwCfg.ROCKET_PORT}";
+        originRequest = {
+          originServerName = "vault.alvr.dev";
+        };
+      };
+
+      traefik.dynamicConfigOptions.http = {
+        services = {
+          vaultwarden.loadBalancer.servers = [
+            {
+              url = "http://localhost:${toString vwCfg.ROCKET_PORT}";
+            }
+          ];
+        };
+
+        routers.vaultwarden = {
+          entryPoints = [ "websecure" ];
+          rule = "Host(`vault.alvr.dev`)";
+          service = "vaultwarden";
+          tls.certResolver = "letsencrypt";
+        };
+      };
     };
 
     dot.system.persistence.directories = [
@@ -30,13 +57,6 @@ in
         mode = "u=rwx,g=,o=";
       }
     ];
-
-    services.cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
-      service = "http://localhost:${toString config.services.vaultwarden.config.ROCKET_PORT}";
-      originRequest = {
-        originServerName = "vault.alvr.dev";
-      };
-    };
 
     sops.secrets.vaultwarden = {
       format = "dotenv";

@@ -6,6 +6,7 @@
     ./jellyfin.nix
     ./openssh.nix
     ./tailscale.nix
+    ./traefik.nix
     ./vaultwarden.nix
   ];
 }
