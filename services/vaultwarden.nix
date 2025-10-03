@@ -6,13 +6,10 @@
 }:
 let
   cfg = config.dot.services.vaultwarden;
-  vwCfg = config.services.vaultwarden.config;
 in
 {
   options.dot.services.vaultwarden = {
-    enable = lib.mkEnableOption "Enable Vaultwarden service" // {
-      default = true;
-    };
+    enable = lib.mkEnableOption "Enable Vaultwarden service";
   };
 
   config = lib.mkIf cfg.enable {
@@ -25,7 +22,7 @@ in
       };
 
       cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
-        service = "http://localhost:${toString vwCfg.ROCKET_PORT}";
+        service = "http://localhost:8222";
         originRequest = {
           originServerName = "vault.alvr.dev";
         };
@@ -35,7 +32,7 @@ in
         services = {
           vaultwarden.loadBalancer.servers = [
             {
-              url = "http://localhost:${toString vwCfg.ROCKET_PORT}";
+              url = "http://localhost:8222";
             }
           ];
         };

@@ -9,9 +9,7 @@ let
 in
 {
   options.dot.services.traefik = {
-    enable = lib.mkEnableOption "Enable Traefik service" // {
-      default = true;
-    };
+    enable = lib.mkEnableOption "Enable Traefik service";
   };
 
   config = lib.mkIf cfg.enable {

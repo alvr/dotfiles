@@ -9,16 +9,10 @@ let
 in
 {
   options.dot.services.tailscale = {
-    enable = lib.mkEnableOption "Enable Tailscale service" // {
-      default = true;
-    };
+    enable = lib.mkEnableOption "Enable Tailscale service";
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets.tailscale-authkey = {
-      restartUnits = [ "tailscaled.service" ];
-    };
-
     services.tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale-authkey.path;
@@ -32,11 +26,16 @@ in
       ];
     };
 
-    networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
-
     dot.system.persistence.directories = [
       "/var/lib/tailscale"
     ];
+
+    networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+
+    sops.secrets.tailscale-authkey = {
+      mode = "0400";
+      restartUnits = [ "tailscaled.service" ];
+    };
 
     systemd.services.tailscaled = {
       after = [

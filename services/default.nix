@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./cloudflare.nix
+    ./cloudflared.nix
     ./duckdns.nix
     ./jellyfin.nix
     ./openssh.nix

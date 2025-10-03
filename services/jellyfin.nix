@@ -9,9 +9,7 @@ let
 in
 {
   options.dot.services.jellyfin = {
-    enable = lib.mkEnableOption "Enable Jellyfin service" // {
-      default = true;
-    };
+    enable = lib.mkEnableOption "Enable Jellyfin service";
   };
 
   config = lib.mkIf cfg.enable {

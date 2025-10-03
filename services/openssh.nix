@@ -4,9 +4,7 @@ let
 in
 {
   options.dot.services.openssh = {
-    enable = lib.mkEnableOption "Enable OpenSSH service" // {
-      default = true;
-    };
+    enable = lib.mkEnableOption "Enable OpenSSH service";
   };
 
   config = lib.mkIf cfg.enable {
@@ -19,8 +17,8 @@ in
       ports = [ 1311 ];
       openFirewall = true;
       extraConfig = ''
-        
-                MaxAuthTries 15
+
+        MaxAuthTries 15
       '';
     };
   };
