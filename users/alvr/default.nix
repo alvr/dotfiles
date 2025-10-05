@@ -15,6 +15,7 @@
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
     extraGroups = [
+      "media"
       "wheel"
     ];
   };

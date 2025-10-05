@@ -24,7 +24,8 @@ up:
 
 [group('deploy')]
 deploy host='apeiron':
-    sudo nixos-rebuild switch --flake ".#{{ host }}" --show-trace
+    just deploy-test {{ host }}
+    sudo nixos-rebuild switch --flake ".#{{ host }}" --show-trace --verbose
 
 [group('deploy')]
 deploy-rollback:

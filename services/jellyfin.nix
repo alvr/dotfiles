@@ -67,6 +67,7 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/jellyfin 0700 jellyfin jellyfin -"
+      "Z /data/media-center - root media -"
       "d /data/media-center 2770 root media -"
       "d /data/media-center/Anime 2770 root media -"
       "d /data/media-center/Anime/TV 2770 root media -"

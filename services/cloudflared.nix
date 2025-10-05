@@ -33,8 +33,6 @@ in
       cloudflare-cert = {
         format = "binary";
         sopsFile = ../secrets/cloudflare/cloudflare-cert;
-        owner = "cloudflared";
-        group = "cloudflared";
         mode = "0400";
         restartUnits = [ "cloudflared.service" ];
       };
@@ -42,8 +40,6 @@ in
       cloudflare-tunnel = {
         format = "binary";
         sopsFile = ../secrets/cloudflare/cloudflare-tunnel;
-        owner = "cloudflared";
-        group = "cloudflared";
         mode = "0400";
         restartUnits = [ "cloudflared.service" ];
       };
@@ -51,8 +47,6 @@ in
       cloudflare-tunnel-internal = {
         format = "binary";
         sopsFile = ../secrets/cloudflare/cloudflare-tunnel-internal;
-        owner = "cloudflared";
-        group = "cloudflared";
         mode = "0400";
         restartUnits = [ "cloudflared.service" ];
       };
