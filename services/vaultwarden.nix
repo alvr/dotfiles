@@ -21,19 +21,10 @@ in
         webVaultPackage = pkgs.unstable.vaultwarden.webvault;
       };
 
-      cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
-        service = "http://localhost:8222";
-        originRequest = {
-          originServerName = "vault.alvr.dev";
-        };
-      };
-
       traefik.dynamicConfigOptions.http = {
         services = {
           vaultwarden.loadBalancer.servers = [
-            {
-              url = "http://localhost:8222";
-            }
+            { url = "http://localhost:8222"; }
           ];
         };
 

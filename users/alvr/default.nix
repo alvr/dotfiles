@@ -14,26 +14,19 @@
     isNormalUser = true;
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
-    extraGroups = [
-      "media"
-      "wheel"
-    ];
+    extraGroups = [ "wheel" ];
   };
 
   home-manager.users.alvr =
     { pkgs, ... }:
     {
-      imports = [
-        ./modules
-      ];
+      imports = [ ./modules ];
 
       home = {
         username = "alvr";
         homeDirectory = "/home/alvr";
 
-        packages = with pkgs; [
-          btop
-        ];
+        packages = with pkgs; [ btop ];
 
         stateVersion = "25.05";
       };

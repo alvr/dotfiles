@@ -20,19 +20,10 @@ in
         package = pkgs.unstable.jellyfin;
       };
 
-      cloudflared.tunnels.apeiron-internal.ingress."watch.alvr.dev" = {
-        service = "http://localhost:8096";
-        originRequest = {
-          originServerName = "watch.alvr.dev";
-        };
-      };
-
       traefik.dynamicConfigOptions.http = {
         services = {
           jellyfin.loadBalancer.servers = [
-            {
-              url = "http://localhost:8096";
-            }
+            { url = "http://localhost:8096"; }
           ];
         };
 
@@ -67,13 +58,10 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/jellyfin 0700 jellyfin jellyfin -"
-      "Z /data/media-center - root media -"
-      "d /data/media-center 2770 root media -"
-      "d /data/media-center/Anime 2770 root media -"
-      "d /data/media-center/Anime/TV 2770 root media -"
-      "d /data/media-center/Anime/Movies 2770 root media -"
-      "d /data/media-center/Shows 2770 root media -"
-      "d /data/media-center/Movies 2770 root media -"
+
+      "d /data/media-center/library 2770 root media -"
+      "d /data/media-center/library/movies 2770 root media -"
+      "d /data/media-center/library/shows 2770 root media -"
     ];
 
     users.groups.media = { };

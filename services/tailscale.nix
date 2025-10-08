@@ -21,14 +21,10 @@ in
       package = pkgs.unstable.tailscale;
       useRoutingFeatures = "server";
 
-      extraUpFlags = [
-        "--advertise-routes=100.93.93.0/24"
-      ];
+      extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];
     };
 
-    dot.system.persistence.directories = [
-      "/var/lib/tailscale"
-    ];
+    dot.system.persistence.directories = [ "/var/lib/tailscale" ];
 
     networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
