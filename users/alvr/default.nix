@@ -14,7 +14,10 @@
     isNormalUser = true;
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
-    extraGroups = [ "wheel" ];
+    extraGroups = [
+      "media"
+      "wheel"
+    ];
   };
 
   home-manager.users.alvr =
@@ -26,7 +29,10 @@
         username = "alvr";
         homeDirectory = "/home/alvr";
 
-        packages = with pkgs; [ btop ];
+        packages = with pkgs; [
+          btop
+          yazi
+        ];
 
         stateVersion = "25.05";
       };
