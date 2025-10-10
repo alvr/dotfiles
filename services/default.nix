@@ -5,6 +5,7 @@
     ./duckdns.nix
     ./jellyfin.nix
     ./openssh.nix
+    ./qbittorrent.nix
     ./radarr.nix
     ./sonarr.nix
     ./tailscale.nix

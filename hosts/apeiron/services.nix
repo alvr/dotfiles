@@ -5,6 +5,7 @@
     duckdns.enable = true;
     jellyfin.enable = true;
     openssh.enable = true;
+    qbittorrent.enable = true;
     radarr.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;

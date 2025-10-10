@@ -60,8 +60,12 @@ in
       "d /var/lib/jellyfin 0700 jellyfin jellyfin -"
 
       "d /data/media-center/library 2770 root media -"
+
       "d /data/media-center/library/movies 2770 root media -"
+      "Z /data/media-center/library/movies 2770 root media -"
+
       "d /data/media-center/library/shows 2770 root media -"
+      "Z /data/media-center/library/shows 2770 root media -"
     ];
 
     users.groups.media = { };
