@@ -20,15 +20,22 @@ in
         package = pkgs.unstable.jellyfin;
       };
 
-      traefik.dynamicConfigOptions.http = {
-        services = {
-          jellyfin.loadBalancer.servers = [
-            { url = "http://localhost:8096"; }
-          ];
+      cloudflared.tunnels.apeiron.ingress."watch.alvr.dev" = {
+        service = "https://localhost:443";
+        originRequest = {
+          httpHostHeader = "watch.alvr.dev";
+          originServerName = "watch.alvr.dev";
         };
+      };
+
+      traefik.dynamicConfigOptions.http = {
+        services.jellyfin.loadBalancer.servers = [
+          { url = "http://localhost:8096"; }
+        ];
 
         routers.jellyfin = {
           entryPoints = [ "websecure" ];
+          middlewares = [ "secure-headers" ];
           rule = "Host(`watch.alvr.dev`)";
           service = "jellyfin";
           tls.certResolver = "letsencrypt";

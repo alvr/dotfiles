@@ -21,15 +21,22 @@ in
         webVaultPackage = pkgs.unstable.vaultwarden.webvault;
       };
 
-      traefik.dynamicConfigOptions.http = {
-        services = {
-          vaultwarden.loadBalancer.servers = [
-            { url = "http://localhost:8222"; }
-          ];
+      cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
+        service = "https://localhost:443";
+        originRequest = {
+          httpHostHeader = "vault.alvr.dev";
+          originServerName = "vault.alvr.dev";
         };
+      };
+
+      traefik.dynamicConfigOptions.http = {
+        services.vaultwarden.loadBalancer.servers = [
+          { url = "http://localhost:8222"; }
+        ];
 
         routers.vaultwarden = {
           entryPoints = [ "websecure" ];
+          middlewares = [ "secure-headers" ];
           rule = "Host(`vault.alvr.dev`)";
           service = "vaultwarden";
           tls.certResolver = "letsencrypt";
@@ -48,7 +55,7 @@ in
 
     sops.secrets.vaultwarden = {
       format = "dotenv";
-      sopsFile = ../secrets/services/vaultwarden.env;
+      sopsFile = ../../secrets/services/vaultwarden.env;
       owner = "vaultwarden";
       group = "vaultwarden";
       mode = "0400";

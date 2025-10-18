@@ -17,7 +17,6 @@ in
       enable = true;
       authKeyFile = config.sops.secrets.tailscale-authkey.path;
       disableTaildrop = true;
-      openFirewall = true;
       package = pkgs.unstable.tailscale;
       useRoutingFeatures = "server";
 
@@ -26,7 +25,11 @@ in
 
     dot.system.persistence.directories = [ "/var/lib/tailscale" ];
 
-    networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+    networking.firewall = {
+      allowedTCPPorts = [ config.services.tailscale.port ];
+      allowedUDPPorts = [ config.services.tailscale.port ];
+      trustedInterfaces = [ "tailscale0" ];
+    };
 
     sops.secrets.tailscale-authkey = {
       mode = "0400";

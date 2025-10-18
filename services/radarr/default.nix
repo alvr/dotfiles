@@ -18,24 +18,27 @@ in
         enable = true;
         dataDir = "/var/lib/radarr";
         package = pkgs.unstable.radarr;
-        settings.server.urlbase = "/radarr";
+      };
+
+      cloudflared.tunnels.apeiron.ingress."radarr.alvr.dev" = {
+        service = "https://localhost:443";
+        originRequest = {
+          httpHostHeader = "radarr.alvr.dev";
+          originServerName = "radarr.alvr.dev";
+        };
       };
 
       traefik.dynamicConfigOptions.http = {
-        services = {
-          radarr.loadBalancer.servers = [
-            { url = "http://localhost:7878"; }
-          ];
-        };
-
-        middlewares.strip-radarr-path.stripPrefix.prefixes = [ "/radarr" ];
+        services.radarr.loadBalancer.servers = [
+          { url = "http://localhost:7878"; }
+        ];
 
         routers.radarr = {
           entryPoints = [ "websecure" ];
-          rule = "Host(`arr.alvr.dev`) && PathPrefix(`/radarr`)";
+          middlewares = [ "secure-headers" ];
+          rule = "Host(`radarr.alvr.dev`)";
           service = "radarr";
           tls.certResolver = "letsencrypt";
-          middlewares = [ "strip-radarr-path" ];
         };
       };
     };

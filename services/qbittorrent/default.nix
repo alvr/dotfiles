@@ -56,12 +56,9 @@ in
             TempPathEnabled = true;
           };
           Preferences.WebUI = {
-            AuthSubnetWhitelist = "192.168.1.0/24, 100.93.93.0/24";
-            AuthSubnetWhitelistEnabled = true;
             CSRFProtection = false;
             ClickjackingProtection = false;
             HostHeaderValidation = false;
-            LocalHostAuth = false;
             Password_PBKDF2 = "@ByteArray(7dHRrfBf1tKMG17BiuTziw==:Wnu43L8yXNIMDs6xQue1JF84k/VbTiolKpMAwx3ELx9dYandNz7CPSLoiNTju4xjrTmXYxSE02z91H89IX2oTA==)";
             SecureCookie = false;
             Username = "alvr";
@@ -69,16 +66,23 @@ in
         };
       };
 
-      traefik.dynamicConfigOptions.http = {
-        services = {
-          qbittorrent.loadBalancer.servers = [
-            { url = "http://localhost:9098"; }
-          ];
+      cloudflared.tunnels.apeiron.ingress."qb.alvr.dev" = {
+        service = "https://localhost:443";
+        originRequest = {
+          httpHostHeader = "qb.alvr.dev";
+          originServerName = "qb.alvr.dev";
         };
+      };
+
+      traefik.dynamicConfigOptions.http = {
+        services.qbittorrent.loadBalancer.servers = [
+          { url = "http://localhost:9098"; }
+        ];
 
         routers.qbittorrent = {
           entryPoints = [ "websecure" ];
-          rule = "Host(`arr.alvr.dev`) && PathPrefix(`/qb`)";
+          middlewares = [ "secure-headers" ];
+          rule = "Host(`qb.alvr.dev`)";
           service = "qbittorrent";
           tls.certResolver = "letsencrypt";
         };
@@ -95,7 +99,7 @@ in
     ];
 
     systemd.tmpfiles.rules = [
-       "d /var/lib/qBittorrent 0700 qbittorrent qbittorrent -"
+      "d /var/lib/qBittorrent 0700 qbittorrent qbittorrent -"
 
       "d /data/media-center/downloads 2770 qbittorrent media -"
 

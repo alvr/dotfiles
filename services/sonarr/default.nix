@@ -18,24 +18,27 @@ in
         enable = true;
         dataDir = "/var/lib/sonarr";
         package = pkgs.unstable.sonarr;
-        settings.server.urlbase = "/sonarr";
+      };
+
+      cloudflared.tunnels.apeiron.ingress."sonarr.alvr.dev" = {
+        service = "https://localhost:443";
+        originRequest = {
+          httpHostHeader = "sonarr.alvr.dev";
+          originServerName = "sonarr.alvr.dev";
+        };
       };
 
       traefik.dynamicConfigOptions.http = {
-        services = {
-          sonarr.loadBalancer.servers = [
-            { url = "http://localhost:8989"; }
-          ];
-        };
-
-        middlewares.strip-sonarr-path.stripPrefix.prefixes = [ "/sonarr" ];
+        services.sonarr.loadBalancer.servers = [
+          { url = "http://localhost:8989"; }
+        ];
 
         routers.sonarr = {
           entryPoints = [ "websecure" ];
-          rule = "Host(`arr.alvr.dev`) && PathPrefix(`/sonarr`)";
+          middlewares = [ "secure-headers" ];
+          rule = "Host(`sonarr.alvr.dev`)";
           service = "sonarr";
           tls.certResolver = "letsencrypt";
-          middlewares = [ "strip-sonarr-path" ];
         };
       };
     };
