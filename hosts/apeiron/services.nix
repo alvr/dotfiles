@@ -4,6 +4,7 @@
     cloudflared.enable = true;
     duckdns.enable = true;
     jellyfin.enable = true;
+    jellyseerr.enable = true;
     openssh.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;

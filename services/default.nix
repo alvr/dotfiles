@@ -4,6 +4,7 @@
     ./cloudflared
     ./duckdns
     ./jellyfin
+    ./jellyseerr
     ./openssh
     ./qbittorrent
     ./radarr
