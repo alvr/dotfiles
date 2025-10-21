@@ -24,20 +24,22 @@ in
       };
     };
 
-    sops.secrets = {
-      cloudflare-cert = {
-        format = "binary";
-        sopsFile = ../../secrets/cloudflare/cloudflare-cert;
-        mode = "0400";
-        restartUnits = [ "cloudflared-tunnel-apeiron.service" ];
-      };
+    sops.secrets =
+      let
+        cloudflare-secret = {
+          format = "binary";
+          mode = "0400";
+          restartUnits = [ "cloudflared-tunnel-apeiron.service" ];
+        };
+      in
+      {
+        cloudflare-cert = cloudflare-secret // {
+          sopsFile = ../../secrets/cloudflare/cloudflare-cert;
+        };
 
-      cloudflare-tunnel = {
-        format = "binary";
-        sopsFile = ../../secrets/cloudflare/cloudflare-tunnel;
-        mode = "0400";
-        restartUnits = [ "cloudflared-tunnel-apeiron.service" ];
+        cloudflare-tunnel = cloudflare-secret // {
+          sopsFile = ../../secrets/cloudflare/cloudflare-tunnel;
+        };
       };
-    };
   };
 }

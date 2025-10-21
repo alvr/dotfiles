@@ -2,6 +2,7 @@
 {
   imports = [
     ./boot.nix
+    ./fail2ban.nix
     ./i18n.nix
     ./networking.nix
     ./nix.nix
