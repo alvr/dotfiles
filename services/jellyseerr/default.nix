@@ -20,25 +20,16 @@ in
         package = pkgs.unstable.jellyseerr;
       };
 
+      caddy.virtualHosts."seerr.alvr.dev".extraConfig = ''
+        import common
+        reverse_proxy localhost:5055
+      '';
+
       cloudflared.tunnels.apeiron.ingress."seerr.alvr.dev" = {
         service = "https://localhost:443";
         originRequest = {
           httpHostHeader = "seerr.alvr.dev";
           originServerName = "seerr.alvr.dev";
-        };
-      };
-
-      traefik.dynamicConfigOptions.http = {
-        services.jellyseerr.loadBalancer.servers = [
-          { url = "http://localhost:5055"; }
-        ];
-
-        routers.jellyseerr = {
-          entryPoints = [ "websecure" ];
-          middlewares = [ "secure-headers" ];
-          rule = "Host(`seerr.alvr.dev`)";
-          service = "jellyseerr";
-          tls.certResolver = "letsencrypt";
         };
       };
     };

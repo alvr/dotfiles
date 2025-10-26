@@ -20,25 +20,16 @@ in
         package = pkgs.unstable.sonarr;
       };
 
+      caddy.virtualHosts."sonarr.alvr.dev".extraConfig = ''
+        import common
+        reverse_proxy localhost:8989
+      '';
+
       cloudflared.tunnels.apeiron.ingress."sonarr.alvr.dev" = {
         service = "https://localhost:443";
         originRequest = {
           httpHostHeader = "sonarr.alvr.dev";
           originServerName = "sonarr.alvr.dev";
-        };
-      };
-
-      traefik.dynamicConfigOptions.http = {
-        services.sonarr.loadBalancer.servers = [
-          { url = "http://localhost:8989"; }
-        ];
-
-        routers.sonarr = {
-          entryPoints = [ "websecure" ];
-          middlewares = [ "secure-headers" ];
-          rule = "Host(`sonarr.alvr.dev`)";
-          service = "sonarr";
-          tls.certResolver = "letsencrypt";
         };
       };
     };

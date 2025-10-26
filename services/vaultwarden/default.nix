@@ -21,25 +21,16 @@ in
         webVaultPackage = pkgs.unstable.vaultwarden.webvault;
       };
 
+      caddy.virtualHosts."vault.alvr.dev".extraConfig = ''
+        import common
+        reverse_proxy localhost:8222
+      '';
+
       cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
         service = "https://localhost:443";
         originRequest = {
           httpHostHeader = "vault.alvr.dev";
           originServerName = "vault.alvr.dev";
-        };
-      };
-
-      traefik.dynamicConfigOptions.http = {
-        services.vaultwarden.loadBalancer.servers = [
-          { url = "http://localhost:8222"; }
-        ];
-
-        routers.vaultwarden = {
-          entryPoints = [ "websecure" ];
-          middlewares = [ "secure-headers" ];
-          rule = "Host(`vault.alvr.dev`)";
-          service = "vaultwarden";
-          tls.certResolver = "letsencrypt";
         };
       };
     };

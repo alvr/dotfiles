@@ -4,15 +4,15 @@ default:
 [group('deploy')]
 deploy host='apeiron':
     just deploy-test {{ host }}
-    sudo nixos-rebuild switch --flake ".#{{ host }}" --show-trace --verbose
+    nh os switch . --hostname {{ host }} --ask --verbose
 
 [group('deploy')]
 deploy-rollback:
-    sudo nixos-rebuild switch --rollback --show-trace --verbose
+    nh os rollback
 
 [group('deploy')]
 deploy-test host='apeiron':
-    sudo nixos-rebuild dry-run --flake ".#{{ host }}" --show-trace --verbose
+    nh os test . --hostname {{ host }} --dry --verbose
 
 [group('generations')]
 generations-list:
@@ -52,12 +52,11 @@ lock:
 [group('update')]
 up:
     sudo nix-channel --update
-    sudo nixos-rebuild switch --upgrade
 
 [group('utils')]
-fetch:
+fetch branch='main':
     git fetch
-    git reset --hard origin/main
+    git reset --hard origin/{{ branch }}
 
 [group('utils')]
 fmt:

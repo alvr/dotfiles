@@ -20,25 +20,16 @@ in
         package = pkgs.unstable.radarr;
       };
 
+      caddy.virtualHosts."radarr.alvr.dev".extraConfig = ''
+        import common
+        reverse_proxy localhost:7878
+      '';
+
       cloudflared.tunnels.apeiron.ingress."radarr.alvr.dev" = {
         service = "https://localhost:443";
         originRequest = {
           httpHostHeader = "radarr.alvr.dev";
           originServerName = "radarr.alvr.dev";
-        };
-      };
-
-      traefik.dynamicConfigOptions.http = {
-        services.radarr.loadBalancer.servers = [
-          { url = "http://localhost:7878"; }
-        ];
-
-        routers.radarr = {
-          entryPoints = [ "websecure" ];
-          middlewares = [ "secure-headers" ];
-          rule = "Host(`radarr.alvr.dev`)";
-          service = "radarr";
-          tls.certResolver = "letsencrypt";
         };
       };
     };

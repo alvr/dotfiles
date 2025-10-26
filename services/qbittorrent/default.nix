@@ -66,6 +66,11 @@ in
         };
       };
 
+      caddy.virtualHosts."qb.alvr.dev".extraConfig = ''
+        import common
+        reverse_proxy localhost:9098
+      '';
+
       cloudflared.tunnels.apeiron.ingress."qb.alvr.dev" = {
         service = "https://localhost:443";
         originRequest = {
@@ -74,19 +79,6 @@ in
         };
       };
 
-      traefik.dynamicConfigOptions.http = {
-        services.qbittorrent.loadBalancer.servers = [
-          { url = "http://localhost:9098"; }
-        ];
-
-        routers.qbittorrent = {
-          entryPoints = [ "websecure" ];
-          middlewares = [ "secure-headers" ];
-          rule = "Host(`qb.alvr.dev`)";
-          service = "qbittorrent";
-          tls.certResolver = "letsencrypt";
-        };
-      };
     };
 
     dot.system.persistence.directories = [

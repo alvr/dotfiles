@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./caddy
     ./cloudflared
     ./duckdns
     ./jellyfin
@@ -10,7 +11,6 @@
     ./radarr
     ./sonarr
     ./tailscale
-    ./traefik
     ./vaultwarden
   ];
 }
