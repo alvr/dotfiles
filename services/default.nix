@@ -9,6 +9,7 @@
     ./openssh
     ./qbittorrent
     ./radarr
+    ./restic
     ./sonarr
     ./tailscale
     ./vaultwarden

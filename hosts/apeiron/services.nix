@@ -9,6 +9,7 @@
     openssh.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;
+    restic.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;
     vaultwarden.enable = true;
