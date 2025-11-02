@@ -4,9 +4,11 @@
     caddy.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
+    flaresolverr.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = true;
     openssh.enable = true;
+    prowlarr.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;
     restic.enable = true;

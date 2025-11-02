@@ -4,9 +4,11 @@
     ./caddy
     ./cloudflared
     ./duckdns
+    ./flaresolverr
     ./jellyfin
     ./jellyseerr
     ./openssh
+    ./prowlarr
     ./qbittorrent
     ./radarr
     ./restic
