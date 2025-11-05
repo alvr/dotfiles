@@ -8,6 +8,7 @@
     jellyfin.enable = true;
     jellyseerr.enable = true;
     openssh.enable = true;
+    postgresql.enable = true;
     prowlarr.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;

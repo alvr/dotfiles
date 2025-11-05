@@ -8,6 +8,7 @@
     ./jellyfin
     ./jellyseerr
     ./openssh
+    ./postgresql
     ./prowlarr
     ./qbittorrent
     ./radarr

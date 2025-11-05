@@ -21,7 +21,10 @@ in
 
       checkOpts = [ "--read-data-subset=5%" ];
 
-      paths = [ "/nix/persist" ];
+      paths = [
+        "/data/backups"
+        "/nix/persist"
+      ];
 
       exclude = [
         "/nix/persist/dotfiles"
