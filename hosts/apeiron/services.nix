@@ -7,6 +7,7 @@
     flaresolverr.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = true;
+    miniflux.enable = true;
     openssh.enable = true;
     postgresql.enable = true;
     prowlarr.enable = true;

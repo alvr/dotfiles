@@ -7,6 +7,7 @@
     ./flaresolverr
     ./jellyfin
     ./jellyseerr
+    ./miniflux
     ./openssh
     ./postgresql
     ./prowlarr
