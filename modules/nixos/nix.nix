@@ -1,9 +1,16 @@
-{ ... }:
+{ inputs, pkgs, ... }:
 {
-  nixpkgs.config.allowUnfree = true;
-  nix.settings = {
-    experimental-features = "nix-command flakes";
-    auto-optimise-store = true;
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = import ../../overlays { inherit inputs; };
+  };
+
+  nix = {
+    package = pkgs.lixPackageSets.stable.lix;
+    settings = {
+      experimental-features = "nix-command flakes";
+      auto-optimise-store = true;
+    };
   };
 
   programs.nh = {

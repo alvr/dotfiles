@@ -1,6 +1,6 @@
-{ nixpkgs-unstable }:
+{ inputs, ... }:
 (final: prev: {
-  unstable = import nixpkgs-unstable {
+  unstable = import inputs.nixpkgs-unstable {
     inherit (final) system;
     config.allowUnfree = true;
   };
