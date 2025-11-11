@@ -15,7 +15,7 @@ in
   config = lib.mkIf cfg.enable {
     services.flaresolverr = {
       enable = true;
-      package = pkgs.unstable.flaresolverr;
+      package = pkgs.flaresolverr;
     };
   };
 }

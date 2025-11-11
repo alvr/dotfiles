@@ -17,7 +17,7 @@ in
       jellyfin = {
         enable = true;
         openFirewall = true;
-        package = pkgs.unstable.jellyfin;
+        package = pkgs.jellyfin;
       };
 
       caddy.virtualHosts."watch.alvr.dev".extraConfig = ''
@@ -50,7 +50,7 @@ in
       extraPackages = with pkgs; [
         libva
         libvdpau-va-gl
-        vaapiVdpau
+        libva-vdpau-driver
       ];
     };
 

@@ -32,6 +32,10 @@ gc:
 [group('nix')]
 repair:
     sudo nix-store --verify --check-contents --repair
+    
+[group('nix')]
+up:
+    nix flake update
 
 [group('sops')]
 sops-edit:
@@ -44,14 +48,6 @@ sops-rotate:
 [group('sops')]
 sops-update:
     find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops updatekeys -y "$file"; done
-
-[group('update')]
-lock:
-    nix flake update
-
-[group('update')]
-up:
-    sudo nix-channel --update
 
 [group('utils')]
 fetch branch='main':

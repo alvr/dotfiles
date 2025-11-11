@@ -17,7 +17,7 @@ in
       qbittorrent = {
         enable = true;
         openFirewall = true;
-        package = pkgs.unstable.qbittorrent-nox;
+        package = pkgs.qbittorrent-nox;
         webuiPort = 9098;
 
         serverConfig = {

@@ -16,7 +16,7 @@ in
     services.cloudflared = {
       enable = true;
       certificateFile = config.sops.secrets.cloudflare-cert.path;
-      package = pkgs.unstable.cloudflared;
+      package = pkgs.cloudflared;
 
       tunnels.apeiron = {
         credentialsFile = config.sops.secrets.cloudflare-tunnel.path;

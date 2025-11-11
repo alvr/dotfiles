@@ -5,10 +5,10 @@ in
 {
   options.dot.hm.programs.git = {
     enable = lib.mkEnableOption "Enable Git home-manager program";
-    username = lib.mkOption {
+    email = lib.mkOption {
       type = lib.types.str;
     };
-    email = lib.mkOption {
+    name = lib.mkOption {
       type = lib.types.str;
     };
   };
@@ -16,23 +16,25 @@ in
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = cfg.username;
-      userEmail = cfg.email;
 
-      extraConfig = {
-        init.defaultBranch = "main";
-        help.autocorrect = 1;
+      settings = {
         color.ui = "auto";
-        push.default = "simple";
         credential.helper = "store";
-      };
+        help.autocorrect = 1;
+        init.defaultBranch = "main";
+        push.default = "simple";
 
-      aliases = {
-        co = "checkout";
-        ci = "commit";
-        st = "status";
-        br = "branch";
-        lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        alias = {
+          co = "checkout";
+          ci = "commit";
+          st = "status";
+          br = "branch";
+          lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        };
+
+        user = {
+          inherit (cfg) email name;
+        };
       };
     };
   };

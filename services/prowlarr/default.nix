@@ -16,7 +16,7 @@ in
     services = {
       prowlarr = {
         enable = true;
-        package = pkgs.unstable.prowlarr;
+        package = pkgs.prowlarr;
       };
 
       caddy.virtualHosts."prowlarr.alvr.dev".extraConfig = ''

@@ -27,8 +27,7 @@ in
         enable = true;
         ensureDatabases = cfg.databases;
         initialScript = config.sops.templates."init.sql".path;
-        package = pkgs.unstable.postgresql_18;
-
+        package = pkgs.postgresql_18;
         authentication = pkgs.lib.mkOverride 10 ''
           # type    database    DBuser    origin-address    auth-method
             local   all         all                         trust
@@ -54,7 +53,7 @@ in
         initialEmail = "alvaro@alvr.dev";
         initialPasswordFile = config.sops.secrets."pgadmin/password".path;
         openFirewall = true;
-        package = pkgs.unstable.pgadmin4;
+        package = pkgs.pgadmin4;
         port = 5435;
       };
     };
@@ -106,5 +105,19 @@ in
       "d /var/lib/postgresql 0700 postgres postgres -"
       "d /data/backups/postgresql 0744 postgres postgres -"
     ];
+    
+    # Disable pgAdmin DynamicUser
+    systemd.services.pgadmin.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = lib.mkForce "pgadmin";
+      Group = lib.mkForce "pgadmin";
+    };
+
+    users.groups.pgadmin = { };
+    users.users.pgadmin = {
+      home = "/var/lib/pgadmin";
+      group = "pgadmin";
+      isSystemUser = true;
+    };
   };
 }

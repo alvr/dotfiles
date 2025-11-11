@@ -17,7 +17,7 @@ in
       sonarr = {
         enable = true;
         dataDir = "/var/lib/sonarr";
-        package = pkgs.unstable.sonarr;
+        package = pkgs.sonarr;
       };
 
       caddy.virtualHosts."sonarr.alvr.dev".extraConfig = ''

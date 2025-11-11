@@ -9,6 +9,8 @@
       inputs.impermanence.homeManagerModules.impermanence
       inputs.sops-nix.homeManagerModules.sops
 
+      { home.enableNixpkgsReleaseCheck = false; }
+
       ./git.nix
       ./persistence.nix
       ./sops.nix

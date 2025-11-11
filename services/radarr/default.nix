@@ -17,7 +17,7 @@ in
       radarr = {
         enable = true;
         dataDir = "/var/lib/radarr";
-        package = pkgs.unstable.radarr;
+        package = pkgs.radarr;
       };
 
       caddy.virtualHosts."radarr.alvr.dev".extraConfig = ''

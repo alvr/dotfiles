@@ -21,8 +21,8 @@ in
         environmentFile = config.sops.secrets.caddy.path;
         email = "alvaro@alvr.dev";
 
-        package = pkgs.unstable.caddy.withPlugins {
-          hash = "sha256-DQMdKd/mtvgTPlpzVztsMf3Lo0i2DnVqVPCfdwTcyik=";
+        package = pkgs.caddy.withPlugins {
+          hash = "sha256-Br95TMAkTydD+AbBplfa94pmYTksjgheSubOo6H/6TQ=";
           plugins = [
             "github.com/WeidiDeng/caddy-cloudflare-ip@v0.0.0-20231130002422-f53b62aa13cb"
             "github.com/caddy-dns/cloudflare@v0.2.2-0.20250724223520-f589a18c0f5d"
@@ -45,7 +45,7 @@ in
         extraConfig = ''
           (common) {
             encode zstd gzip
-            
+
             header {
               Referrer-Policy "strict-origin-when-cross-origin"
               Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
@@ -58,8 +58,8 @@ in
               -X-Powered-By
             }
 
-            tls { 
-              dns cloudflare {env.CF_API_TOKEN} 
+            tls {
+              dns cloudflare {env.CF_API_TOKEN}
             }
           }
         '';

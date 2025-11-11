@@ -17,7 +17,7 @@ in
       enable = true;
       authKeyFile = config.sops.secrets.tailscale-authkey.path;
       disableTaildrop = true;
-      package = pkgs.unstable.tailscale;
+      package = pkgs.tailscale;
       useRoutingFeatures = "server";
 
       extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];

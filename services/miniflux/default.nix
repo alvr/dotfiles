@@ -18,7 +18,7 @@ in
         enable = true;
         adminCredentialsFile = config.sops.secrets.miniflux.path;
         createDatabaseLocally = false;
-        package = pkgs.unstable.miniflux;
+        package = pkgs.miniflux;
 
         config = {
           BASE_URL = "https://rss.alvr.dev";

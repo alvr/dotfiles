@@ -17,7 +17,7 @@ in
       jellyseerr = {
         enable = true;
         configDir = "/var/lib/jellyseerr";
-        package = pkgs.unstable.jellyseerr;
+        package = pkgs.jellyseerr;
       };
 
       caddy.virtualHosts."seerr.alvr.dev".extraConfig = ''
