@@ -22,7 +22,7 @@ in
         email = "alvaro@alvr.dev";
 
         package = pkgs.unstable.caddy.withPlugins {
-          hash = "sha256-BgvbccQrLX1X5tB3Hkrah0o7N4GjgK9UuuuB/9FEOh8=";
+          hash = "sha256-DQMdKd/mtvgTPlpzVztsMf3Lo0i2DnVqVPCfdwTcyik=";
           plugins = [
             "github.com/WeidiDeng/caddy-cloudflare-ip@v0.0.0-20231130002422-f53b62aa13cb"
             "github.com/caddy-dns/cloudflare@v0.2.2-0.20250724223520-f589a18c0f5d"
