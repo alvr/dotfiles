@@ -16,6 +16,7 @@ in
     services = {
       vaultwarden = {
         enable = true;
+        dbBackend = "postgresql";
         environmentFile = config.sops.secrets.vaultwarden.path;
         package = pkgs.unstable.vaultwarden;
         webVaultPackage = pkgs.unstable.vaultwarden.webvault;
@@ -34,6 +35,8 @@ in
         };
       };
     };
+
+    dot.services.postgresql.databases = [ "vaultwarden" ];
 
     dot.system.persistence.directories = [
       {
