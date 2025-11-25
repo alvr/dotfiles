@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   dot.hm.programs.git = {
     enable = true;

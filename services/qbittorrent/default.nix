@@ -24,7 +24,7 @@ in
           LegalNotice.Accepted = true;
           Core.AutoDeleteAddedTorrentFile = "IfAdded";
           Network.PortForwardingEnabled = false;
-          BitTorrent.Session = rec {
+          BitTorrent.Session = {
             AddTorrentStopped = false;
             AlternativeGlobalDLSpeedLimit = 3072;
             AlternativeGlobalUPSpeedLimit = 1024;

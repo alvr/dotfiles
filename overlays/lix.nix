@@ -1,4 +1,4 @@
-{ inputs }:
+{ ... }:
 (final: prev: {
   inherit (prev.lixPackageSets.stable)
     nixpkgs-review

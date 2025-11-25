@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   dot.services = {
     caddy.enable = true;
