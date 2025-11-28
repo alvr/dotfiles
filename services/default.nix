@@ -5,6 +5,7 @@
     ./cloudflared
     ./duckdns
     ./flaresolverr
+    ./forgejo
     ./jellyfin
     ./jellyseerr
     ./miniflux

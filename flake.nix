@@ -1,5 +1,5 @@
 {
-  description = "alvrlab NixOS configuration";
+  description = "alvr's dotfiles NixOS configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

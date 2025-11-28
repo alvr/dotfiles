@@ -55,6 +55,12 @@ in
         openFirewall = true;
         package = pkgs.pgadmin4;
         port = 5435;
+
+        settings = {
+          FIXED_BINARY_PATHS = {
+            pg-18 = "${pkgs.postgresql_18}/bin";
+          };
+        };
       };
     };
 
@@ -105,7 +111,7 @@ in
       "d /var/lib/postgresql 0700 postgres postgres -"
       "d /data/backups/postgresql 0744 postgres postgres -"
     ];
-    
+
     # Disable pgAdmin DynamicUser
     systemd.services.pgadmin.serviceConfig = {
       DynamicUser = lib.mkForce false;

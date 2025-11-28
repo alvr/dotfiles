@@ -17,12 +17,10 @@ in
       miniflux = {
         enable = true;
         adminCredentialsFile = config.sops.secrets.miniflux.path;
-        createDatabaseLocally = false;
         package = pkgs.miniflux;
 
         config = {
           BASE_URL = "https://rss.alvr.dev";
-          DATABASE_URL = "dbname=miniflux user=miniflux host=/run/postgresql";
           LISTEN_ADDR = "localhost:9564";
         };
       };
