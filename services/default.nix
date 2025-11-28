@@ -8,6 +8,7 @@
     ./forgejo
     ./jellyfin
     ./jellyseerr
+    ./linkwarden
     ./miniflux
     ./openssh
     ./postgresql
