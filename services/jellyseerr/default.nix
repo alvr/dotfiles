@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.jellyseerr;
 in
@@ -17,7 +12,6 @@ in
       jellyseerr = {
         enable = true;
         configDir = "/var/lib/jellyseerr";
-        package = pkgs.jellyseerr;
       };
 
       caddy.virtualHosts."seerr.alvr.dev".extraConfig = ''

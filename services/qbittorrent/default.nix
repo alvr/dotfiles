@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.qbittorrent;
 in
@@ -17,7 +12,6 @@ in
       qbittorrent = {
         enable = true;
         openFirewall = true;
-        package = pkgs.qbittorrent-nox;
         webuiPort = 9098;
 
         serverConfig = {

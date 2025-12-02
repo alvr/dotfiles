@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.flaresolverr;
 in
@@ -13,9 +8,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.flaresolverr = {
-      enable = true;
-      package = pkgs.flaresolverr;
-    };
+    services.flaresolverr.enable = true;
   };
 }

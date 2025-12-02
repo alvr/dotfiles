@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.cloudflared;
 in
@@ -16,7 +11,6 @@ in
     services.cloudflared = {
       enable = true;
       certificateFile = config.sops.secrets.cloudflare-cert.path;
-      package = pkgs.cloudflared;
 
       tunnels.apeiron = {
         credentialsFile = config.sops.secrets.cloudflare-tunnel.path;

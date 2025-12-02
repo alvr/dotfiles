@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.tailscale;
 in
@@ -17,7 +12,6 @@ in
       enable = true;
       authKeyFile = config.sops.secrets.tailscale-authkey.path;
       disableTaildrop = true;
-      package = pkgs.tailscale;
       useRoutingFeatures = "server";
 
       extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];

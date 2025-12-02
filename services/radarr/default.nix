@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.radarr;
 in
@@ -17,7 +12,6 @@ in
       radarr = {
         enable = true;
         dataDir = "/var/lib/radarr";
-        package = pkgs.radarr;
       };
 
       caddy.virtualHosts."radarr.alvr.dev".extraConfig = ''

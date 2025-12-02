@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.linkwarden;
 in
@@ -17,7 +12,6 @@ in
       linkwarden = {
         enable = true;
         environmentFile = config.sops.secrets.linkwarden.path;
-        package = pkgs.linkwarden;
         port = 4103;
       };
 

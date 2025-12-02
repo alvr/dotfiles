@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.sonarr;
 in
@@ -17,7 +12,6 @@ in
       sonarr = {
         enable = true;
         dataDir = "/var/lib/sonarr";
-        package = pkgs.sonarr;
       };
 
       caddy.virtualHosts."sonarr.alvr.dev".extraConfig = ''

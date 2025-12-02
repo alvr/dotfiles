@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.miniflux;
 in
@@ -17,7 +12,6 @@ in
       miniflux = {
         enable = true;
         adminCredentialsFile = config.sops.secrets.miniflux.path;
-        package = pkgs.miniflux;
 
         config = {
           BASE_URL = "https://rss.alvr.dev";

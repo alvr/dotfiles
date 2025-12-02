@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.vaultwarden;
 in
@@ -18,8 +13,6 @@ in
         enable = true;
         dbBackend = "postgresql";
         environmentFile = config.sops.secrets.vaultwarden.path;
-        package = pkgs.vaultwarden;
-        webVaultPackage = pkgs.vaultwarden.webvault;
       };
 
       caddy.virtualHosts."vault.alvr.dev".extraConfig = ''

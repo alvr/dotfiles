@@ -17,7 +17,6 @@ in
       jellyfin = {
         enable = true;
         openFirewall = true;
-        package = pkgs.jellyfin;
       };
 
       caddy.virtualHosts."watch.alvr.dev".extraConfig = ''

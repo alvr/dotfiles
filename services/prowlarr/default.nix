@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.dot.services.prowlarr;
 in
@@ -14,10 +9,7 @@ in
 
   config = lib.mkIf cfg.enable {
     services = {
-      prowlarr = {
-        enable = true;
-        package = pkgs.prowlarr;
-      };
+      prowlarr.enable = true;
 
       caddy.virtualHosts."prowlarr.alvr.dev".extraConfig = ''
         import common

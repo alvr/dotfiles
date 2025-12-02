@@ -53,7 +53,6 @@ in
         initialEmail = "alvaro@alvr.dev";
         initialPasswordFile = config.sops.secrets."pgadmin/password".path;
         openFirewall = true;
-        package = pkgs.pgadmin4;
         port = 5435;
 
         settings = {
