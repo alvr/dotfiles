@@ -11,6 +11,7 @@
     linkwarden.enable = true;
     miniflux.enable = true;
     openssh.enable = true;
+    podman.enable = true;
     postgresql.enable = true;
     prowlarr.enable = true;
     qbittorrent.enable = true;

@@ -11,6 +11,7 @@
     ./linkwarden
     ./miniflux
     ./openssh
+    ./podman
     ./postgresql
     ./prowlarr
     ./qbittorrent
