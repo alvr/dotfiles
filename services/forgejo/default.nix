@@ -71,9 +71,9 @@ in
         instances = lib.mapAttrs (name: value: mkRunnerInstance value // { inherit name; }) {
           docker.labels = [
             "alpine-latest:docker://node:lts-alpine"
-            "ubuntu-latest:docker://node:lts-bookworm-slim"
+            "ubuntu-latest:docker://node:lts-trixie-slim"
           ];
-          host.labels = [ "self:host" ];
+          host.labels = [ "self-hosted:host" ];
         };
       };
 

@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./autoupdate.nix
     ./btop.nix
     ./git.nix
     ./persistence.nix

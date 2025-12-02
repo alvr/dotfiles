@@ -12,8 +12,10 @@
   users.users.alvr = {
     hashedPasswordFile = config.sops.secrets.alvr-password.path;
     isNormalUser = true;
-    shell = pkgs.fish;
     openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
+    linger = true;
+    shell = pkgs.fish;
+
     extraGroups = [
       "media"
       "wheel"
@@ -21,7 +23,7 @@
   };
 
   home-manager.users.alvr =
-    { pkgs, ... }:
+    { ... }:
     {
       imports = [ ./modules ];
 
