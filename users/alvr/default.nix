@@ -29,11 +29,6 @@
         username = "alvr";
         homeDirectory = "/home/alvr";
 
-        packages = with pkgs; [
-          btop
-          yazi
-        ];
-
         stateVersion = "25.05";
       };
 

@@ -11,9 +11,11 @@
 
       { home.enableNixpkgsReleaseCheck = false; }
 
+      ./btop.nix
       ./git.nix
       ./persistence.nix
       ./sops.nix
+      ./yazi.nix
     ];
   };
 }
