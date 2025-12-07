@@ -14,28 +14,25 @@ in
         dataDir = "/var/lib/radarr";
       };
 
-      caddy.virtualHosts."radarr.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:7878
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."radarr.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "radarr.alvr.dev";
-          originServerName = "radarr.alvr.dev";
-        };
+      nginx.virtualHosts."radarr.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:7878";
       };
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/radarr";
-        user = "radarr";
-        group = "radarr";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "radarr.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/radarr";
+          user = "radarr";
+          group = "radarr";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/radarr 0700 radarr radarr -"

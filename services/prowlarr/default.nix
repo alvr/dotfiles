@@ -11,28 +11,25 @@ in
     services = {
       prowlarr.enable = true;
 
-      caddy.virtualHosts."prowlarr.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:9696
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."prowlarr.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "prowlarr.alvr.dev";
-          originServerName = "prowlarr.alvr.dev";
-        };
+      nginx.virtualHosts."prowlarr.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:9696";
       };
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/prowlarr";
-        user = "prowlarr";
-        group = "prowlarr";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "prowlarr.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/prowlarr";
+          user = "prowlarr";
+          group = "prowlarr";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/prowlarr 0700 prowlarr prowlarr -"

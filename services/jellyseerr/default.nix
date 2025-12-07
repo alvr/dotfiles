@@ -14,28 +14,25 @@ in
         configDir = "/var/lib/jellyseerr";
       };
 
-      caddy.virtualHosts."seerr.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:5055
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."seerr.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "seerr.alvr.dev";
-          originServerName = "seerr.alvr.dev";
-        };
+      nginx.virtualHosts."seerr.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:5055";
       };
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/jellyseerr";
-        user = "jellyseerr";
-        group = "jellyseerr";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "seerr.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/jellyseerr";
+          user = "jellyseerr";
+          group = "jellyseerr";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/jellyseerr 0700 jellyseerr jellyseerr -"

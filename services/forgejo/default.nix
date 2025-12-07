@@ -59,6 +59,7 @@ in
           service.DISABLE_REGISTRATION = true;
 
           server = {
+            DISABLE_SSH = true;
             DOMAIN = "git.alvr.dev";
             HTTP_PORT = 5245;
             ROOT_URL = "https://git.alvr.dev/";
@@ -77,30 +78,29 @@ in
         };
       };
 
-      caddy.virtualHosts."git.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:5245
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."git.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "git.alvr.dev";
-          originServerName = "git.alvr.dev";
-        };
+      nginx.virtualHosts."git.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        extraConfig = ''
+          client_max_body_size 512M;
+        '';
+        locations."/".proxyPass = "http://localhost:5245";
       };
     };
 
-    dot.services.postgresql.databases = [ "forgejo" ];
+    dot = {
+      services.cloudflared.ingress = [ "git.alvr.dev" ];
+      services.postgresql.databases = [ "forgejo" ];
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/forgejo";
-        user = "forgejo";
-        group = "forgejo";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/forgejo";
+          user = "forgejo";
+          group = "forgejo";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     sops.secrets."runner-token" = {
       format = "dotenv";

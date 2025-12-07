@@ -60,29 +60,25 @@ in
         };
       };
 
-      caddy.virtualHosts."qb.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:9098
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."qb.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "qb.alvr.dev";
-          originServerName = "qb.alvr.dev";
-        };
+      nginx.virtualHosts."qb.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:9098";
       };
-
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/qBittorrent";
-        user = "qbittorrent";
-        group = "qbittorrent";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "qb.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/qBittorrent";
+          user = "qbittorrent";
+          group = "qbittorrent";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/qBittorrent 0700 qbittorrent qbittorrent -"

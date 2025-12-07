@@ -61,6 +61,20 @@ in
           };
         };
       };
+
+      nginx.virtualHosts."pgadmin.int.alvr.dev" = {
+        forceSSL = true;
+        kTLS = true;
+        useACMEHost = "pgadmin.int.alvr.dev";
+
+        extraConfig = ''
+          # Allow LAN and Tailnet IPs
+          allow 192.168.1.0/24;
+          allow 100.93.93.0/24;
+          deny all;
+        '';
+        locations."/".proxyPass = "http://localhost:5435";
+      };
     };
 
     dot.system.persistence.directories = [
@@ -105,6 +119,8 @@ in
         mode = "0400";
       };
     };
+
+    security.acme.certs."pgadmin.int.alvr.dev".group = "nginx";
 
     systemd.tmpfiles.rules = [
       "d /var/lib/postgresql 0700 postgres postgres -"

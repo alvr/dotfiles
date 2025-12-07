@@ -15,30 +15,26 @@ in
         port = 4103;
       };
 
-      caddy.virtualHosts."links.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:4103
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."links.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "links.alvr.dev";
-          originServerName = "links.alvr.dev";
-        };
+      nginx.virtualHosts."links.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:4103";
       };
     };
 
-    dot.services.postgresql.databases = [ "linkwarden" ];
+    dot = {
+      services.cloudflared.ingress = [ "links.alvr.dev" ];
+      services.postgresql.databases = [ "linkwarden" ];
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/linkwarden";
-        user = "linkwarden";
-        group = "linkwarden";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/linkwarden";
+          user = "linkwarden";
+          group = "linkwarden";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     sops.secrets.linkwarden = {
       format = "dotenv";

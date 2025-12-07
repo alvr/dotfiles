@@ -19,30 +19,27 @@ in
         openFirewall = true;
       };
 
-      caddy.virtualHosts."watch.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:8096
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."watch.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "watch.alvr.dev";
-          originServerName = "watch.alvr.dev";
-        };
+      nginx.virtualHosts."watch.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:8096";
       };
 
       xserver.videoDrivers = [ "amdgpu" ];
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/jellyfin";
-        user = "jellyfin";
-        group = "jellyfin";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "watch.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/jellyfin";
+          user = "jellyfin";
+          group = "jellyfin";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     hardware.graphics = {
       enable = true;

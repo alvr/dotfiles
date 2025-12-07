@@ -1,7 +1,6 @@
 { ... }:
 {
   imports = [
-    ./caddy
     ./cloudflared
     ./duckdns
     ./flaresolverr
@@ -10,6 +9,7 @@
     ./jellyseerr
     ./linkwarden
     ./miniflux
+    ./nginx
     ./openssh
     ./podman
     ./postgresql

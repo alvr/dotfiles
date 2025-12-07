@@ -19,21 +19,17 @@ in
         };
       };
 
-      caddy.virtualHosts."rss.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:9564
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."rss.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "rss.alvr.dev";
-          originServerName = "rss.alvr.dev";
-        };
+      nginx.virtualHosts."rss.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:9564";
       };
     };
 
-    dot.services.postgresql.databases = [ "miniflux" ];
+    dot = {
+      services.cloudflared.ingress = [ "rss.alvr.dev" ];
+      services.postgresql.databases = [ "miniflux" ];
+    };
 
     users.groups.miniflux-secrets = { };
 

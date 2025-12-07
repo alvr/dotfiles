@@ -8,13 +8,31 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale-authkey.path;
-      disableTaildrop = true;
-      useRoutingFeatures = "server";
+    services = {
+      tailscale = {
+        enable = true;
+        authKeyFile = config.sops.secrets.tailscale-authkey.path;
+        disableTaildrop = true;
+        useRoutingFeatures = "server";
 
-      extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];
+        extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];
+      };
+
+      unbound = {
+        enable = true;
+        resolveLocalQueries = false;
+
+        settings = {
+          server = {
+            interface = [ "${config.services.tailscale.interfaceName}" ];
+            access-control = [ "100.93.93.0/24 allow" ];
+
+            local-zone = [ ''"int.alvr.dev." redirect'' ];
+            local-data = [ ''"int.alvr.dev. IN A 100.93.93.1"'' ];
+            local-data-ptr = [ ''"100.93.93.1 int.alvr.dev"'' ];
+          };
+        };
+      };
     };
 
     dot.system.persistence.directories = [ "/var/lib/tailscale" ];
@@ -23,6 +41,11 @@ in
       allowedTCPPorts = [ config.services.tailscale.port ];
       allowedUDPPorts = [ config.services.tailscale.port ];
       trustedInterfaces = [ "tailscale0" ];
+
+      interfaces."${config.services.tailscale.interfaceName}" = {
+        allowedTCPPorts = [ 53 ];
+        allowedUDPPorts = [ 53 ];
+      };
     };
 
     sops.secrets.tailscale-authkey = {

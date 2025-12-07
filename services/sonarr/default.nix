@@ -14,28 +14,25 @@ in
         dataDir = "/var/lib/sonarr";
       };
 
-      caddy.virtualHosts."sonarr.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:8989
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."sonarr.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "sonarr.alvr.dev";
-          originServerName = "sonarr.alvr.dev";
-        };
+      nginx.virtualHosts."sonarr.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/".proxyPass = "http://localhost:8989";
       };
     };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/sonarr";
-        user = "sonarr";
-        group = "sonarr";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+    dot = {
+      services.cloudflared.ingress = [ "sonarr.alvr.dev" ];
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/sonarr";
+          user = "sonarr";
+          group = "sonarr";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/sonarr 0700 sonarr sonarr -"

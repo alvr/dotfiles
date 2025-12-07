@@ -15,30 +15,29 @@ in
         environmentFile = config.sops.secrets.vaultwarden.path;
       };
 
-      caddy.virtualHosts."vault.alvr.dev".extraConfig = ''
-        import common
-        reverse_proxy localhost:8222
-      '';
-
-      cloudflared.tunnels.apeiron.ingress."vault.alvr.dev" = {
-        service = "https://localhost:443";
-        originRequest = {
-          httpHostHeader = "vault.alvr.dev";
-          originServerName = "vault.alvr.dev";
+      nginx.virtualHosts."vault.alvr.dev" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:8222";
+          proxyWebsockets = true;
         };
       };
     };
 
-    dot.services.postgresql.databases = [ "vaultwarden" ];
+    dot = {
+      services.cloudflared.ingress = [ "vault.alvr.dev" ];
+      services.postgresql.databases = [ "vaultwarden" ];
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/vaultwarden";
-        user = "vaultwarden";
-        group = "vaultwarden";
-        mode = "u=rwx,g=,o=";
-      }
-    ];
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/vaultwarden";
+          user = "vaultwarden";
+          group = "vaultwarden";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+    };
 
     sops.secrets.vaultwarden = {
       format = "dotenv";

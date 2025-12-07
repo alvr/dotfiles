@@ -1,7 +1,6 @@
 { ... }:
 {
   dot.services = {
-    caddy.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
     flaresolverr.enable = true;
@@ -10,6 +9,7 @@
     jellyseerr.enable = true;
     linkwarden.enable = true;
     miniflux.enable = true;
+    nginx.enable = true;
     openssh.enable = true;
     podman.enable = true;
     postgresql.enable = true;

@@ -5,6 +5,11 @@ in
 {
   options.dot.services.cloudflared = {
     enable = lib.mkEnableOption "Enable Cloudflared service";
+
+    ingress = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -15,6 +20,15 @@ in
       tunnels.apeiron = {
         credentialsFile = config.sops.secrets.cloudflare-tunnel.path;
         default = "http_status:404";
+
+        ingress = lib.genAttrs cfg.ingress (domain: {
+          service = "https://localhost";
+          originRequest = {
+            httpHostHeader = domain;
+            originServerName = domain;
+            noTLSVerify = false;
+          };
+        });
       };
     };
 
