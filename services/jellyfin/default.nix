@@ -28,7 +28,16 @@ in
     dot = {
       services.cloudflared.subdomains = [ subdomain ];
       services.nginx.hosts = [
-        { inherit subdomain port; }
+        {
+          inherit subdomain port;
+          config = {
+            locations."/".extraConfig = ''
+              proxy_buffering off;
+            '';
+
+            locations."/socket".proxyWebsockets = true;
+          };
+        }
       ];
 
       system.persistence.directories = [

@@ -96,6 +96,7 @@ in
                 forceSSL = true;
                 kTLS = true;
                 listenAddresses = [ "0.0.0.0" ];
+                quic = true;
                 useACMEHost = consts.domain;
                 locations."/".proxyPass = "http://localhost:${toString service.port}";
               };

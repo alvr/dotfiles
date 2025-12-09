@@ -17,7 +17,6 @@ in
       ports = [ 1311 ];
       openFirewall = true;
       extraConfig = ''
-
         MaxAuthTries 15
       '';
     };
