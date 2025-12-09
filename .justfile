@@ -51,8 +51,9 @@ sops-update:
 
 [group('utils')]
 fetch branch='main':
-    git fetch
-    git reset --hard origin/{{ branch }}
+    git fetch --prune
+    git reset --hard
+    git checkout -B {{ branch }} origin/{{ branch }}
 
 [group('utils')]
 fmt:

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   home-manager = {
     backupFileExtension = ".bak";
@@ -10,12 +10,7 @@
       inputs.sops-nix.homeManagerModules.sops
 
       { home.enableNixpkgsReleaseCheck = false; }
-
-      ./btop.nix
-      ./git.nix
-      ./persistence.nix
-      ./sops.nix
-      ./yazi.nix
-    ];
+    ]
+    ++ lib.dot.import ./.;
   };
 }

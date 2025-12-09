@@ -1,6 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
-  imports = [
-    ./alvr
-  ];
+  imports = lib.dot.import ./.;
 }

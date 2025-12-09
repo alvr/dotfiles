@@ -1,12 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
-  imports = [
-    ./autoupdate.nix
-    ./btop.nix
-    ./git.nix
-    ./persistence.nix
-    ./sops.nix
-    ./sshkeys.nix
-    ./yazi.nix
-  ];
+  imports = lib.dot.import ./.;
 }

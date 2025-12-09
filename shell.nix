@@ -3,9 +3,14 @@
 }:
 
 pkgs.mkShell {
-  buildInputs = [
-    pkgs.just
-    pkgs.sops
-    pkgs.statix
+  buildInputs = with pkgs; [
+    just
+    prek
+    sops
+    statix
   ];
+
+  shellHook = ''
+    prek install
+  '';
 }

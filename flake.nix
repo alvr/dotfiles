@@ -50,6 +50,7 @@
       systems = [ "x86_64-linux" ];
       eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
+      lib = import ./lib/extend.nix { inherit inputs self; };
       consts = import ./consts.nix;
       treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
 
@@ -57,7 +58,14 @@
         modulePaths:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs outputs consts; };
+          specialArgs = {
+            inherit
+              consts
+              lib
+              inputs
+              outputs
+              ;
+          };
           modules = [
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager
@@ -84,7 +92,7 @@
 
       packages.x86_64-linux.installer = nixos-generators.nixosGenerate {
         system = "x86_64-linux";
-        specialArgs = { inherit consts; };
+        specialArgs = { inherit consts lib; };
         modules = [
           ./hosts/installer/configuration.nix
         ];

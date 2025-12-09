@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: nixfmt
+        name: nixfmt
+        entry: nix fmt
+        language: system
+        pass_filenames: false
+      - id: flake-check
+        name: flake check
+        entry: nix flake check
+        language: system
+        pass_filenames: false
+      - id: statix
+        name: statix
+        entry: statix check
+        language: system
+        pass_filenames: false
