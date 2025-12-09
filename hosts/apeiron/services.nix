@@ -11,6 +11,7 @@
     miniflux.enable = true;
     nginx.enable = true;
     openssh.enable = true;
+    paperless.enable = true;
     podman.enable = true;
     postgresql.enable = true;
     prowlarr.enable = true;

@@ -1,0 +1,73 @@
+{
+  config,
+  consts,
+  lib,
+  ...
+}:
+let
+  cfg = config.dot.services.paperless;
+
+  subdomain = "papers";
+  port = 28981;
+in
+{
+  options.dot.services.paperless = {
+    enable = lib.mkEnableOption "Enable Paperless service";
+  };
+
+  config = lib.mkIf cfg.enable {
+    services.paperless = {
+      enable = true;
+      domain = "${subdomain}.${consts.domain}";
+      environmentFile = config.sops.secrets.paperless.path;
+      mediaDir = "/data/paperless/media";
+      consumptionDir = "/data/paperless/consume";
+
+      settings = {
+        PAPERLESS_DBHOST = "/run/postgresql";
+        PAPERLESS_OCR_LANGUAGE = "spa+eng";
+        PAPERLESS_TRUSTED_PROXIES = "127.0.0.1/32,::1";
+      };
+    };
+
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      postgresql.databases = [ "paperless" ];
+      nginx.hosts = [
+        {
+          inherit subdomain port;
+          config.locations."/".proxyWebsockets = true;
+        }
+      ];
+    };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/paperless";
+        user = "paperless";
+        group = "paperless";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
+
+    sops.secrets.paperless = {
+      format = "dotenv";
+      sopsFile = ../../secrets/services/paperless.env;
+      owner = "paperless";
+      group = "paperless";
+      mode = "0400";
+      restartUnits = [
+        "paperless-scheduler.service"
+        "paperless-consumer.service"
+        "paperless-web.service"
+      ];
+    };
+
+    systemd.tmpfiles.rules = [
+      "d /data/paperless 0700 paperless paperless -"
+      "d /data/paperless/media 0700 paperless paperless -"
+      "d /data/paperless/consume 0700 paperless paperless -"
+      "d /var/lib/paperless 0700 paperless paperless -"
+    ];
+  };
+}
