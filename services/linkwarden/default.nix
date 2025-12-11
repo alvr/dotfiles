@@ -1,6 +1,9 @@
 { config, lib, ... }:
 let
   cfg = config.dot.services.linkwarden;
+
+  subdomain = "links";
+  port = 4103;
 in
 {
   options.dot.services.linkwarden = {
@@ -8,33 +11,28 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      linkwarden = {
-        enable = true;
-        environmentFile = config.sops.secrets.linkwarden.path;
-        port = 4103;
-      };
-
-      nginx.virtualHosts."links.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:4103";
-      };
+    services.linkwarden = {
+      enable = true;
+      environmentFile = config.sops.secrets.linkwarden.path;
+      inherit port;
     };
 
-    dot = {
-      services.cloudflared.ingress = [ "links.alvr.dev" ];
-      services.postgresql.databases = [ "linkwarden" ];
-
-      system.persistence.directories = [
-        {
-          directory = "/var/lib/linkwarden";
-          user = "linkwarden";
-          group = "linkwarden";
-          mode = "u=rwx,g=,o=";
-        }
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      postgresql.databases = [ "linkwarden" ];
+      nginx.services = [
+        { inherit subdomain port; }
       ];
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/linkwarden";
+        user = "linkwarden";
+        group = "linkwarden";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
 
     sops.secrets.linkwarden = {
       format = "dotenv";

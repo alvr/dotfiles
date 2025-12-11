@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  consts,
+  lib,
+  ...
+}:
 let
   cfg = config.dot.services.tailscale;
 in
@@ -27,9 +32,9 @@ in
             interface = [ "${config.services.tailscale.interfaceName}" ];
             access-control = [ "100.93.93.0/24 allow" ];
 
-            local-zone = [ ''"int.alvr.dev." redirect'' ];
-            local-data = [ ''"int.alvr.dev. IN A 100.93.93.1"'' ];
-            local-data-ptr = [ ''"100.93.93.1 int.alvr.dev"'' ];
+            local-zone = [ ''"int.${consts.domain}." redirect'' ];
+            local-data = [ ''"int.${consts.domain}. IN A 100.93.93.1"'' ];
+            local-data-ptr = [ ''"100.93.93.1 int.${consts.domain}"'' ];
           };
         };
       };

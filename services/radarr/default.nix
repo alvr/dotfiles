@@ -1,6 +1,9 @@
 { config, lib, ... }:
 let
   cfg = config.dot.services.radarr;
+
+  subdomain = "radarr";
+  port = 7878;
 in
 {
   options.dot.services.radarr = {
@@ -8,21 +11,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      radarr = {
-        enable = true;
-        dataDir = "/var/lib/radarr";
-      };
-
-      nginx.virtualHosts."radarr.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:7878";
-      };
+    services.radarr = {
+      enable = true;
+      dataDir = "/var/lib/radarr";
+      settings.server.port = port;
     };
 
     dot = {
-      services.cloudflared.ingress = [ "radarr.alvr.dev" ];
+      services.cloudflared.subdomains = [ subdomain ];
+      services.nginx.services = [
+        { inherit subdomain port; }
+      ];
 
       system.persistence.directories = [
         {

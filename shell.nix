@@ -6,6 +6,7 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     just
     prek
+    rclone
     sops
     statix
   ];

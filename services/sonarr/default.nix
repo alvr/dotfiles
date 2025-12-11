@@ -1,6 +1,9 @@
 { config, lib, ... }:
 let
   cfg = config.dot.services.sonarr;
+
+  subdomain = "sonarr";
+  port = 8989;
 in
 {
   options.dot.services.sonarr = {
@@ -8,21 +11,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      sonarr = {
-        enable = true;
-        dataDir = "/var/lib/sonarr";
-      };
-
-      nginx.virtualHosts."sonarr.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:8989";
-      };
+    services.sonarr = {
+      enable = true;
+      dataDir = "/var/lib/sonarr";
+      settings.server.port = port;
     };
 
     dot = {
-      services.cloudflared.ingress = [ "sonarr.alvr.dev" ];
+      services.cloudflared.subdomains = [ subdomain ];
+      services.nginx.services = [
+        { inherit subdomain port; }
+      ];
 
       system.persistence.directories = [
         {

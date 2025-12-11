@@ -7,6 +7,11 @@ deploy host='apeiron':
     nh os switch . --hostname {{ host }} --ask --verbose
 
 [group('deploy')]
+deploy-boot host='apeiron':
+    just deploy-test {{ host }}
+    nh os boot . --hostname {{ host }} --ask --verbose
+
+[group('deploy')]
 deploy-rollback:
     nh os rollback
 
@@ -64,3 +69,28 @@ fmt:
 [group('utils')]
 installer:
     nix build .#installer
+
+[group('utils')]
+rclone action:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    remote="apeiron:/nix/persist/dotfiles"
+    local={{invocation_dir()}}
+
+    case "{{action}}" in
+    dl)
+        src="${remote}"
+        dst="${local}"
+    ;;
+    up)
+        src="${local}"
+        dst="${remote}"
+    ;;
+    *)
+        echo "Invalid action: {{action}}. Must be 'dl' or 'up'."
+        exit 1
+    ;;
+    esac
+
+    rclone sync --exclude ".git/" "${src}" "${dst}" --progress

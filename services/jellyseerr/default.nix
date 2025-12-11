@@ -1,6 +1,9 @@
 { config, lib, ... }:
 let
   cfg = config.dot.services.jellyseerr;
+
+  subdomain = "seerr";
+  port = 5055;
 in
 {
   options.dot.services.jellyseerr = {
@@ -8,21 +11,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      jellyseerr = {
-        enable = true;
-        configDir = "/var/lib/jellyseerr";
-      };
-
-      nginx.virtualHosts."seerr.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:5055";
-      };
+    services.jellyseerr = {
+      enable = true;
+      configDir = "/var/lib/jellyseerr";
+      inherit port;
     };
 
     dot = {
-      services.cloudflared.ingress = [ "seerr.alvr.dev" ];
+      services.cloudflared.subdomains = [ subdomain ];
+      services.nginx.services = [
+        { inherit subdomain port; }
+      ];
 
       system.persistence.directories = [
         {

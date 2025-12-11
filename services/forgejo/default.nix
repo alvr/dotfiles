@@ -1,11 +1,16 @@
 {
   config,
+  consts,
   lib,
   pkgs,
   ...
 }:
 let
   cfg = config.dot.services.forgejo;
+
+  subdomain = "git";
+  port = 5245;
+  url = "${subdomain}.${consts.domain}";
 
   mkRunnerInstance =
     {
@@ -15,7 +20,7 @@ let
     {
       inherit enable labels;
       tokenFile = config.sops.secrets."runner-token".path;
-      url = "https://git.alvr.dev";
+      url = "https://${url}";
     };
 in
 {
@@ -60,9 +65,9 @@ in
 
           server = {
             DISABLE_SSH = true;
-            DOMAIN = "git.alvr.dev";
-            HTTP_PORT = 5245;
-            ROOT_URL = "https://git.alvr.dev/";
+            DOMAIN = url;
+            HTTP_PORT = port;
+            ROOT_URL = "https://${url}/";
           };
         };
       };
@@ -77,30 +82,29 @@ in
           host.labels = [ "self-hosted:host" ];
         };
       };
-
-      nginx.virtualHosts."git.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        extraConfig = ''
-          client_max_body_size 512M;
-        '';
-        locations."/".proxyPass = "http://localhost:5245";
-      };
     };
 
-    dot = {
-      services.cloudflared.ingress = [ "git.alvr.dev" ];
-      services.postgresql.databases = [ "forgejo" ];
-
-      system.persistence.directories = [
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      postgresql.databases = [ "forgejo" ];
+      nginx.services = [
         {
-          directory = "/var/lib/forgejo";
-          user = "forgejo";
-          group = "forgejo";
-          mode = "u=rwx,g=,o=";
+          inherit subdomain port;
+          config.extraConfig = ''
+            client_max_body_size 512M;
+          '';
         }
       ];
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/forgejo";
+        user = "forgejo";
+        group = "forgejo";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
 
     sops.secrets."runner-token" = {
       format = "dotenv";

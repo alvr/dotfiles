@@ -1,6 +1,8 @@
 {
   config,
+  consts,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -25,6 +27,26 @@ in
 {
   options.dot.services.nginx = {
     enable = lib.mkEnableOption "Enable Nginx service";
+
+    services = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            subdomain = lib.mkOption {
+              type = lib.types.str;
+            };
+            port = lib.mkOption {
+              type = lib.types.port;
+            };
+            config = lib.mkOption {
+              type = options.services.nginx.virtualHosts.type.nestedTypes.elemType;
+              default = { };
+            };
+          };
+        }
+      );
+      default = [ ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -66,6 +88,25 @@ in
           more_clear_headers 'Last-Modified';
         '';
 
+        virtualHosts = lib.mkMerge (
+          map (
+            service:
+            let
+              domain = "${service.subdomain}.${consts.domain}";
+              baseVhost = {
+                forceSSL = true;
+                kTLS = true;
+                listenAddresses = [ "0.0.0.0" ];
+                useACMEHost = consts.domain;
+                locations."/".proxyPass = "http://localhost:${toString service.port}";
+              };
+            in
+            {
+              "${domain}" = lib.recursiveUpdate baseVhost service.config;
+            }
+          ) cfg.services
+        );
+
         tailscaleAuth = {
           enable = true;
           expectedTailnet = "dachshund-roach.ts.net";
@@ -74,6 +115,15 @@ in
 
       tailscale.permitCertUid = "nginx";
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/acme";
+        user = "acme";
+        group = "acme";
+        mode = "u=rwx,g=r,o=";
+      }
+    ];
 
     networking.firewall = {
       allowedTCPPorts = [
@@ -87,15 +137,26 @@ in
       acceptTerms = true;
 
       defaults = {
-        credentialsFile = config.sops.secrets.acme.path;
         dnsProvider = "cloudflare";
-        email = "alvaro@alvr.dev";
+        dnsResolver = "1.1.1.1:53";
+        inherit (consts) email;
+
+        credentialFiles = {
+          CF_DNS_API_TOKEN_FILE = config.sops.secrets."acme/cf-api-token".path;
+        };
+      };
+
+      certs."${consts.domain}" = {
+        inherit (consts) domain;
+        extraDomainNames = [
+          "*.${consts.domain}"
+          "*.int.${consts.domain}"
+        ];
       };
     };
 
-    sops.secrets.acme = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/acme.env;
+    sops.secrets."acme/cf-api-token" = {
+      sopsFile = ../../secrets/services/acme.yaml;
       owner = "acme";
       group = "acme";
       mode = "0400";

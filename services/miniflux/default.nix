@@ -1,6 +1,14 @@
-{ config, lib, ... }:
+{
+  config,
+  consts,
+  lib,
+  ...
+}:
 let
   cfg = config.dot.services.miniflux;
+
+  subdomain = "rss";
+  port = 9564;
 in
 {
   options.dot.services.miniflux = {
@@ -8,27 +16,21 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      miniflux = {
-        enable = true;
-        adminCredentialsFile = config.sops.secrets.miniflux.path;
-
-        config = {
-          BASE_URL = "https://rss.alvr.dev";
-          LISTEN_ADDR = "localhost:9564";
-        };
-      };
-
-      nginx.virtualHosts."rss.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:9564";
+    services.miniflux = {
+      enable = true;
+      adminCredentialsFile = config.sops.secrets.miniflux.path;
+      config = {
+        BASE_URL = "https://${subdomain}.${consts.domain}";
+        LISTEN_ADDR = "localhost:${toString port}";
       };
     };
 
-    dot = {
-      services.cloudflared.ingress = [ "rss.alvr.dev" ];
-      services.postgresql.databases = [ "miniflux" ];
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      postgresql.databases = [ "miniflux" ];
+      nginx.services = [
+        { inherit subdomain port; }
+      ];
     };
 
     users.groups.miniflux-secrets = { };

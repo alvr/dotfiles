@@ -6,6 +6,9 @@
 }:
 let
   cfg = config.dot.services.jellyfin;
+
+  subdomain = "watch";
+  port = 8096;
 in
 {
   options.dot.services.jellyfin = {
@@ -19,17 +22,14 @@ in
         openFirewall = true;
       };
 
-      nginx.virtualHosts."watch.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:8096";
-      };
-
       xserver.videoDrivers = [ "amdgpu" ];
     };
 
     dot = {
-      services.cloudflared.ingress = [ "watch.alvr.dev" ];
+      services.cloudflared.subdomains = [ subdomain ];
+      services.nginx.services = [
+        { inherit subdomain port; }
+      ];
 
       system.persistence.directories = [
         {

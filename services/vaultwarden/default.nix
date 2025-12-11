@@ -1,6 +1,14 @@
-{ config, lib, ... }:
+{
+  config,
+  consts,
+  lib,
+  ...
+}:
 let
   cfg = config.dot.services.vaultwarden;
+
+  subdomain = "vault";
+  port = 8222;
 in
 {
   options.dot.services.vaultwarden = {
@@ -8,36 +16,36 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      vaultwarden = {
-        enable = true;
-        dbBackend = "postgresql";
-        environmentFile = config.sops.secrets.vaultwarden.path;
-      };
+    services.vaultwarden = {
+      enable = true;
+      dbBackend = "postgresql";
+      environmentFile = config.sops.secrets.vaultwarden.path;
 
-      nginx.virtualHosts."vault.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://localhost:8222";
-          proxyWebsockets = true;
-        };
+      config = {
+        DOMAIN = "https://${subdomain}.${consts.domain}";
+        ROCKET_PORT = port;
       };
     };
 
-    dot = {
-      services.cloudflared.ingress = [ "vault.alvr.dev" ];
-      services.postgresql.databases = [ "vaultwarden" ];
-
-      system.persistence.directories = [
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      postgresql.databases = [ "vaultwarden" ];
+      nginx.services = [
         {
-          directory = "/var/lib/vaultwarden";
-          user = "vaultwarden";
-          group = "vaultwarden";
-          mode = "u=rwx,g=,o=";
+          inherit subdomain port;
+          config.locations."/".proxyWebsockets = true;
         }
       ];
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/vaultwarden";
+        user = "vaultwarden";
+        group = "vaultwarden";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
 
     sops.secrets.vaultwarden = {
       format = "dotenv";

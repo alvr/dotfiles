@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  consts,
+  lib,
+  ...
+}:
 let
   cfg = config.dot.services.cloudflared;
 in
@@ -6,7 +11,7 @@ in
   options.dot.services.cloudflared = {
     enable = lib.mkEnableOption "Enable Cloudflared service";
 
-    ingress = lib.mkOption {
+    subdomains = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
     };
@@ -21,14 +26,18 @@ in
         credentialsFile = config.sops.secrets.cloudflare-tunnel.path;
         default = "http_status:404";
 
-        ingress = lib.genAttrs cfg.ingress (domain: {
-          service = "https://localhost";
-          originRequest = {
-            httpHostHeader = domain;
-            originServerName = domain;
-            noTLSVerify = false;
-          };
-        });
+        ingress =
+          let
+            hostnames = map (subdomain: "${subdomain}.${consts.domain}") cfg.subdomains;
+          in
+          lib.genAttrs hostnames (hostname: {
+            service = "https://localhost";
+            originRequest = {
+              httpHostHeader = hostname;
+              originServerName = hostname;
+              noTLSVerify = false;
+            };
+          });
       };
     };
 

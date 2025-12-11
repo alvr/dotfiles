@@ -1,6 +1,9 @@
 { config, lib, ... }:
 let
   cfg = config.dot.services.prowlarr;
+
+  subdomain = "prowlarr";
+  port = 9696;
 in
 {
   options.dot.services.prowlarr = {
@@ -8,18 +11,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services = {
-      prowlarr.enable = true;
-
-      nginx.virtualHosts."prowlarr.alvr.dev" = {
-        enableACME = true;
-        forceSSL = true;
-        locations."/".proxyPass = "http://localhost:9696";
-      };
+    services.prowlarr = {
+      enable = true;
+      settings.server.port = port;
     };
 
     dot = {
-      services.cloudflared.ingress = [ "prowlarr.alvr.dev" ];
+      services.cloudflared.subdomains = [ subdomain ];
+      services.nginx.services = [
+        { inherit subdomain port; }
+      ];
 
       system.persistence.directories = [
         {
