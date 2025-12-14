@@ -20,7 +20,7 @@ in
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "linkwarden" ];
-      nginx.services = [
+      nginx.hosts = [
         { inherit subdomain port; }
       ];
     };

@@ -28,7 +28,7 @@ in
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "miniflux" ];
-      nginx.services = [
+      nginx.hosts = [
         { inherit subdomain port; }
       ];
     };

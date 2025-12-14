@@ -87,7 +87,7 @@ in
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "forgejo" ];
-      nginx.services = [
+      nginx.hosts = [
         {
           inherit subdomain port;
           config.extraConfig = ''

@@ -67,7 +67,7 @@ in
       };
     };
 
-    dot.services.nginx.services = [
+    dot.services.nginx.hosts = [
       {
         inherit subdomain port;
         config.extraConfig = ''

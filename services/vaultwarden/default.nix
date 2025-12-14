@@ -30,7 +30,7 @@ in
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "vaultwarden" ];
-      nginx.services = [
+      nginx.hosts = [
         {
           inherit subdomain port;
           config.locations."/".proxyWebsockets = true;

@@ -6,6 +6,9 @@
 }:
 let
   cfg = config.dot.services.tailscale;
+
+  tailnetSubnet = "100.93.93.0/24";
+  tailnetIp = "100.93.93.1";
 in
 {
   options.dot.services.tailscale = {
@@ -20,22 +23,23 @@ in
         disableTaildrop = true;
         useRoutingFeatures = "server";
 
-        extraUpFlags = [ "--advertise-routes=100.93.93.0/24" ];
+        extraUpFlags = [ "--advertise-routes=${tailnetSubnet}" ];
       };
 
       unbound = {
         enable = true;
         resolveLocalQueries = false;
 
-        settings = {
-          server = {
-            interface = [ "${config.services.tailscale.interfaceName}" ];
-            access-control = [ "100.93.93.0/24 allow" ];
+        settings.server = {
+          access-control = [ "${tailnetSubnet} allow" ];
+          local-zone = [ ''"int.${consts.domain}." redirect'' ];
+          local-data = [ ''"int.${consts.domain}. IN A ${tailnetIp}"'' ];
+          local-data-ptr = [ ''"${tailnetIp} int.${consts.domain}"'' ];
 
-            local-zone = [ ''"int.${consts.domain}." redirect'' ];
-            local-data = [ ''"int.${consts.domain}. IN A 100.93.93.1"'' ];
-            local-data-ptr = [ ''"100.93.93.1 int.${consts.domain}"'' ];
-          };
+          interface = [
+            tailnetIp
+            "127.0.0.1"
+          ];
         };
       };
     };

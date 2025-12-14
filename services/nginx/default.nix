@@ -2,7 +2,6 @@
   config,
   consts,
   lib,
-  options,
   pkgs,
   ...
 }:
@@ -28,7 +27,7 @@ in
   options.dot.services.nginx = {
     enable = lib.mkEnableOption "Enable Nginx service";
 
-    services = lib.mkOption {
+    hosts = lib.mkOption {
       type = lib.types.listOf (
         lib.types.submodule {
           options = {
@@ -39,7 +38,7 @@ in
               type = lib.types.port;
             };
             config = lib.mkOption {
-              type = options.services.nginx.virtualHosts.type.nestedTypes.elemType;
+              type = lib.types.attrsOf lib.types.anything;
               default = { };
             };
           };
@@ -104,7 +103,7 @@ in
             {
               "${domain}" = lib.recursiveUpdate baseVhost service.config;
             }
-          ) cfg.services
+          ) cfg.hosts
         );
 
         tailscaleAuth = {

@@ -27,7 +27,7 @@ in
 
     dot = {
       services.cloudflared.subdomains = [ subdomain ];
-      services.nginx.services = [
+      services.nginx.hosts = [
         { inherit subdomain port; }
       ];
 
