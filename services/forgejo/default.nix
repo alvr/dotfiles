@@ -19,7 +19,7 @@ let
     }:
     {
       inherit enable labels;
-      tokenFile = config.sops.secrets."runner-token".path;
+      tokenFile = config.sops.secrets."forgejo-runner/env".path;
       url = "https://${url}";
     };
 in
@@ -106,9 +106,8 @@ in
       }
     ];
 
-    sops.secrets."runner-token" = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/forgejo-runner.env;
+    sops.secrets."forgejo-runner/env" = {
+      sopsFile = ../../secrets/services/forgejo-runner.yaml;
       mode = "0400";
     };
 

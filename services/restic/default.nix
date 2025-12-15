@@ -28,14 +28,16 @@ in
       paths = [
         "/data/backups"
         "/nix/persist"
-      ] ++ cfg.include;
+      ]
+      ++ cfg.include;
 
       exclude = [
         "/nix/persist/dotfiles"
         "/nix/persist/lost+found"
         "/nix/persist/var/lib/systemd"
         "/nix/persist/var/log"
-      ] ++ cfg.exclude;
+      ]
+      ++ cfg.exclude;
 
       pruneOpts = [ "--keep-monthly 14" ];
 

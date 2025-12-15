@@ -19,7 +19,7 @@ in
     services.paperless = {
       enable = true;
       domain = "${subdomain}.${consts.domain}";
-      environmentFile = config.sops.secrets.paperless.path;
+      environmentFile = config.sops.secrets."paperless/env".path;
       mediaDir = "/data/paperless/media";
       consumptionDir = "/data/paperless/consume";
 
@@ -51,9 +51,8 @@ in
       }
     ];
 
-    sops.secrets.paperless = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/paperless.env;
+    sops.secrets."paperless/env" = {
+      sopsFile = ../../secrets/services/paperless.yaml;
       owner = "paperless";
       group = "paperless";
       mode = "0400";

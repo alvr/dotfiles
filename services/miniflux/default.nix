@@ -18,7 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     services.miniflux = {
       enable = true;
-      adminCredentialsFile = config.sops.secrets.miniflux.path;
+      adminCredentialsFile = config.sops.secrets."miniflux/env".path;
       config = {
         BASE_URL = "https://${subdomain}.${consts.domain}";
         LISTEN_ADDR = "localhost:${toString port}";
@@ -35,11 +35,11 @@ in
 
     users.groups.miniflux-secrets = { };
 
-    sops.secrets.miniflux = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/miniflux.env;
+    sops.secrets."miniflux/env" = {
+      sopsFile = ../../secrets/services/miniflux.yaml;
       group = "miniflux-secrets";
       mode = "0400";
+      restartUnits = [ "miniflux.service" ];
     };
 
     systemd.services.miniflux.serviceConfig.SupplementaryGroups = [ "miniflux-secrets" ];

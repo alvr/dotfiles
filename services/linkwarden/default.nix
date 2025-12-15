@@ -13,7 +13,7 @@ in
   config = lib.mkIf cfg.enable {
     services.linkwarden = {
       enable = true;
-      environmentFile = config.sops.secrets.linkwarden.path;
+      environmentFile = config.sops.secrets."linkwarden/env".path;
       inherit port;
     };
 
@@ -34,9 +34,8 @@ in
       }
     ];
 
-    sops.secrets.linkwarden = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/linkwarden.env;
+    sops.secrets."linkwarden/env" = {
+      sopsFile = ../../secrets/services/linkwarden.yaml;
       owner = "linkwarden";
       group = "linkwarden";
       mode = "0400";

@@ -69,9 +69,8 @@ in
       }
     ];
 
-    sops.secrets.calibre = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/calibre.env;
+    sops.secrets."calibre/env" = {
+      sopsFile = ../../secrets/services/calibre.yaml;
       owner = "calibre-web";
       group = "calibre-web";
       mode = "0400";
@@ -99,7 +98,7 @@ in
         serviceConfig = {
           Type = "oneshot";
           TimeoutStartSec = "60";
-          EnvironmentFile = config.sops.secrets.calibre.path;
+          EnvironmentFile = config.sops.secrets."calibre/env".path;
         };
         wantedBy = [ "multi-user.target" ];
         after = [ "calibre-web.service" ];

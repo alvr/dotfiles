@@ -19,7 +19,7 @@ in
     services.vaultwarden = {
       enable = true;
       dbBackend = "postgresql";
-      environmentFile = config.sops.secrets.vaultwarden.path;
+      environmentFile = config.sops.secrets."vaultwarden/env".path;
 
       config = {
         DOMAIN = "https://${subdomain}.${consts.domain}";
@@ -47,9 +47,8 @@ in
       }
     ];
 
-    sops.secrets.vaultwarden = {
-      format = "dotenv";
-      sopsFile = ../../secrets/services/vaultwarden.env;
+    sops.secrets."vaultwarden/env" = {
+      sopsFile = ../../secrets/services/vaultwarden.yaml;
       owner = "vaultwarden";
       group = "vaultwarden";
       mode = "0400";

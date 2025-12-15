@@ -14,6 +14,7 @@
     nginx.enable = true;
     openssh.enable = true;
     paperless.enable = true;
+    pocket-id.enable = true;
     podman.enable = true;
     postgresql.enable = true;
     prowlarr.enable = true;
