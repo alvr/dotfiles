@@ -31,6 +31,7 @@ in
     };
 
     dot.services = {
+      backup.include = [ "/data/paperless" ];
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "paperless" ];
       nginx.hosts = [

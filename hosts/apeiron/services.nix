@@ -1,6 +1,7 @@
 { ... }:
 {
   dot.services = {
+    backup.enable = true;
     calibre.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
@@ -18,7 +19,6 @@
     prowlarr.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;
-    restic.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;
     vaultwarden.enable = true;

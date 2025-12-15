@@ -1,32 +1,41 @@
 { config, lib, ... }:
 let
-  cfg = config.dot.services.restic;
+  cfg = config.dot.services.backup;
 in
 {
-  options.dot.services.restic = {
+  options.dot.services.backup = {
     enable = lib.mkEnableOption "Enable restic service";
+
+    include = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
+
+    exclude = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
     services.restic.backups.onedrive = {
       initialize = true;
+      checkOpts = [ "--read-data-subset=5%" ];
       rcloneConfigFile = config.sops.secrets."restic/config".path;
       repositoryFile = config.sops.secrets."restic/repo".path;
       passwordFile = config.sops.secrets."restic/password".path;
 
-      checkOpts = [ "--read-data-subset=5%" ];
-
       paths = [
         "/data/backups"
         "/nix/persist"
-      ];
+      ] ++ cfg.include;
 
       exclude = [
         "/nix/persist/dotfiles"
         "/nix/persist/lost+found"
         "/nix/persist/var/lib/systemd"
         "/nix/persist/var/log"
-      ];
+      ] ++ cfg.exclude;
 
       pruneOpts = [ "--keep-monthly 14" ];
 

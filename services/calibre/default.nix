@@ -39,6 +39,7 @@ in
     };
 
     dot.services = {
+      backup.include = [ "/media/calibre" ];
       cloudflared.subdomains = [ subdomain ];
       nginx.hosts = [
         {
