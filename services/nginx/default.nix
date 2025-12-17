@@ -31,15 +31,15 @@ in
       type = lib.types.listOf (
         lib.types.submodule {
           options = {
+            config = lib.mkOption {
+              type = lib.types.attrsOf lib.types.anything;
+              default = { };
+            };
             subdomain = lib.mkOption {
               type = lib.types.str;
             };
             port = lib.mkOption {
               type = lib.types.port;
-            };
-            config = lib.mkOption {
-              type = lib.types.attrsOf lib.types.anything;
-              default = { };
             };
           };
         }
@@ -75,16 +75,6 @@ in
             default $http_cf_connecting_ip;
             "" $remote_addr;
           }
-
-          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-          add_header X-Content-Type-Options "nosniff" always;
-          add_header X-Frame-Options "SAMEORIGIN";
-          add_header X-XSS-Protection "1; mode=block" always;
-
-          more_clear_headers 'Server';
-          more_clear_headers 'X-Powered-By';
-          more_clear_headers 'Last-Modified';
         '';
 
         virtualHosts = lib.mkMerge (
@@ -94,6 +84,7 @@ in
               domain = "${service.subdomain}.${consts.domain}";
               baseVhost = {
                 forceSSL = true;
+                http3 = true;
                 kTLS = true;
                 listenAddresses = [ "0.0.0.0" ];
                 quic = true;
@@ -106,11 +97,6 @@ in
             }
           ) cfg.hosts
         );
-
-        tailscaleAuth = {
-          enable = true;
-          expectedTailnet = "dachshund-roach.ts.net";
-        };
       };
 
       tailscale.permitCertUid = "nginx";
