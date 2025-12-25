@@ -1,15 +1,11 @@
 {
   config,
-  consts,
   lib,
   pkgs,
   ...
 }:
 let
   cfg = config.dot.services.postgresql;
-
-  subdomain = "pgadmin.int";
-  port = 5435;
 in
 {
   options.dot.services.postgresql = {
@@ -51,36 +47,9 @@ in
         location = "/data/backups/postgresql";
         startAt = "*-*-* 02:00:00";
       };
-
-      pgadmin = {
-        enable = true;
-        initialEmail = consts.email;
-        initialPasswordFile = config.sops.secrets."pgadmin/password".path;
-        openFirewall = true;
-        inherit port;
-
-        settings = {
-          FIXED_BINARY_PATHS = {
-            pg-18 = "${pkgs.postgresql_18}/bin";
-          };
-        };
-      };
     };
 
-    dot.services.nginx.hosts = [
-      {
-        inherit subdomain port;
-        config.extraConfig = ''
-          # Allow LAN and Tailnet IPs
-          allow 192.168.1.0/24;
-          allow 100.93.93.0/24;
-          deny all;
-        '';
-      }
-    ];
-
     dot.system.persistence.directories = [
-      "/var/lib/pgadmin"
       {
         directory = "/var/lib/postgresql";
         user = "postgres";
@@ -96,14 +65,6 @@ in
         group = "postgres";
         mode = "0400";
         restartUnits = [ "postgresql.service" ];
-      };
-
-      secrets."pgadmin/password" = {
-        sopsFile = ../../secrets/services/pgadmin.yaml;
-        owner = "pgadmin";
-        group = "pgadmin";
-        mode = "0400";
-        restartUnits = [ "pgadmin.service" ];
       };
 
       templates."init.sql" = {
@@ -122,25 +83,9 @@ in
       };
     };
 
-    security.acme.certs."${subdomain}.${consts.domain}".group = "nginx";
-
     systemd.tmpfiles.rules = [
       "d /var/lib/postgresql 0700 postgres postgres -"
       "d /data/backups/postgresql 0744 postgres postgres -"
     ];
-
-    # Disable pgAdmin DynamicUser
-    systemd.services.pgadmin.serviceConfig = {
-      DynamicUser = lib.mkForce false;
-      User = lib.mkForce "pgadmin";
-      Group = lib.mkForce "pgadmin";
-    };
-
-    users.groups.pgadmin = { };
-    users.users.pgadmin = {
-      home = "/var/lib/pgadmin";
-      group = "pgadmin";
-      isSystemUser = true;
-    };
   };
 }
