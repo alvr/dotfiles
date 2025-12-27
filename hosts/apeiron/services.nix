@@ -10,6 +10,7 @@
     jellyfin.enable = true;
     jellyseerr.enable = true;
     linkwarden.enable = true;
+    mariadb.enable = true;
     miniflux.enable = true;
     nginx.enable = true;
     oauth2-proxy.enable = true;
