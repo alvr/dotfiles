@@ -77,6 +77,12 @@ in
           }
         '';
 
+        upstreams = lib.mkMerge (
+          map (service: {
+            "${service.subdomain}".servers."localhost:${toString service.port}" = { };
+          }) cfg.hosts
+        );
+
         virtualHosts = lib.mkMerge (
           map (
             service:
@@ -89,7 +95,7 @@ in
                 listenAddresses = [ "0.0.0.0" ];
                 quic = true;
                 useACMEHost = consts.domain;
-                locations."/".proxyPass = "http://localhost:${toString service.port}";
+                locations."/".proxyPass = "http://${service.subdomain}";
               };
             in
             {

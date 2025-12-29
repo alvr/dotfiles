@@ -37,7 +37,16 @@ in
       nginx.hosts = [
         {
           inherit subdomain port;
-          config.locations."/".proxyWebsockets = true;
+          config.locations = {
+            "/static/" = {
+              root = config.services.paperless.package;
+              extraConfig = "rewrite ^/(.*)$ /lib/paperless-ngx/$1 break;";
+            };
+            "= /ws/status" = {
+              proxyPass = "http://${subdomain}";
+              proxyWebsockets = true;
+            };
+          };
         }
       ];
     };

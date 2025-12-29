@@ -33,7 +33,16 @@ in
       nginx.hosts = [
         {
           inherit subdomain port;
-          config.locations."/".proxyWebsockets = true;
+          config.locations = {
+            "= /notifications/anonymous-hub" = {
+              proxyPass = "http://${subdomain}";
+              proxyWebsockets = true;
+            };
+            "= /notifications/hub" = {
+              proxyPass = "http://${subdomain}";
+              proxyWebsockets = true;
+            };
+          };
         }
       ];
     };

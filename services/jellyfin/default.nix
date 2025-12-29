@@ -31,11 +31,12 @@ in
         {
           inherit subdomain port;
           config = {
-            locations."/".extraConfig = ''
-              proxy_buffering off;
-            '';
+            locations."/".extraConfig = "proxy_buffering off;";
 
-            locations."/socket".proxyWebsockets = true;
+            locations."/socket" = {
+              proxyPass = "http://${subdomain}";
+              proxyWebsockets = true;
+            };
           };
         }
       ];

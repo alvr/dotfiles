@@ -2,7 +2,6 @@
 {
   dot.services = {
     backup.enable = true;
-    calibre.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
     flaresolverr.enable = true;
