@@ -17,28 +17,33 @@ in
       settings.server.port = port;
     };
 
-    dot = {
-      services.cloudflared.subdomains = [ subdomain ];
-      services.nginx.hosts = [
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      nginx.hosts = [
         {
           inherit subdomain port;
           config.locations."/".proxyWebsockets = true;
           config.locations."/api" = {
             proxyPass = "http://${subdomain}";
-            extraConfig = "auth_basic off;";
+            extraConfig = ''
+              auth_basic off;
+              auth_request off;
+            '';
           };
         }
       ];
 
-      system.persistence.directories = [
-        {
-          directory = "/var/lib/radarr";
-          user = "radarr";
-          group = "radarr";
-          mode = "u=rwx,g=,o=";
-        }
-      ];
+      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "radarr_users" ];
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/radarr";
+        user = "radarr";
+        group = "radarr";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
 
     systemd.tmpfiles.rules = [
       "d /var/lib/radarr 0700 radarr radarr -"

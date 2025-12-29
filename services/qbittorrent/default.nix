@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.dot.services.qbittorrent;
 
@@ -52,31 +57,44 @@ in
           TempPathEnabled = true;
         };
         Preferences.WebUI = {
+          AlternativeUIEnabled = true;
+          AuthSubnetWhitelist = "127.0.0.0/8";
+          AuthSubnetWhitelistEnabled = true;
           CSRFProtection = false;
           ClickjackingProtection = false;
           HostHeaderValidation = false;
           Password_PBKDF2 = "@ByteArray(7dHRrfBf1tKMG17BiuTziw==:Wnu43L8yXNIMDs6xQue1JF84k/VbTiolKpMAwx3ELx9dYandNz7CPSLoiNTju4xjrTmXYxSE02z91H89IX2oTA==)";
+          RootFolder = "${pkgs.vuetorrent}/share/vuetorrent";
           SecureCookie = false;
+          TrustedReverseProxiesList = "127.0.0.1";
           Username = "alvr";
         };
       };
     };
 
-    dot = {
-      services.cloudflared.subdomains = [ subdomain ];
-      services.nginx.hosts = [
-        { inherit subdomain port; }
-      ];
-
-      system.persistence.directories = [
+    dot.services = {
+      cloudflared.subdomains = [ subdomain ];
+      nginx.hosts = [
         {
-          directory = "/var/lib/qBittorrent";
-          user = "qbittorrent";
-          group = "qbittorrent";
-          mode = "u=rwx,g=,o=";
+          inherit subdomain port;
+          config.locations."/api" = {
+            proxyPass = "http://${subdomain}";
+            extraConfig = "auth_request off;";
+          };
         }
       ];
+
+      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "qbittorrent_users" ];
     };
+
+    dot.system.persistence.directories = [
+      {
+        directory = "/var/lib/qBittorrent";
+        user = "qbittorrent";
+        group = "qbittorrent";
+        mode = "u=rwx,g=,o=";
+      }
+    ];
 
     systemd.tmpfiles.rules = [
       "d /var/lib/qBittorrent 0700 qbittorrent qbittorrent -"

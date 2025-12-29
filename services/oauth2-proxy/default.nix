@@ -9,10 +9,29 @@ let
 
   subdomain = "auth";
   port = 4180;
+
+  domainFor =
+    name: if lib.hasSuffix ".${consts.domain}" name then name else "${name}.${consts.domain}";
 in
 {
   options.dot.services.oauth2-proxy = {
     enable = lib.mkEnableOption "Enable OAuth2 Proxy service";
+
+    hosts = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options = {
+            allowed_groups = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "Allowed groups for the protected virtual host.";
+            };
+          };
+        }
+      );
+      default = { };
+      description = "Nginx virtual hosts (subdomain -> groups) protected by oauth2-proxy.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -31,9 +50,10 @@ in
 
       cookie = {
         domain = ".${consts.domain}";
-        refresh = "30m";
+        refresh = "1h";
         secure = true;
       };
+
       extraConfig = {
         whitelist-domain = [
           consts.domain
@@ -43,6 +63,11 @@ in
         code-challenge-method = "S256";
         insecure-oidc-skip-nonce = false;
       };
+
+      nginx.virtualHosts = lib.mapAttrs' (subdomainName: vhostCfg: {
+        name = domainFor subdomainName;
+        value = vhostCfg;
+      }) cfg.hosts;
     };
 
     dot.services = {

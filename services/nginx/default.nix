@@ -68,6 +68,10 @@ in
 
           real_ip_header CF-Connecting-IP;
           real_ip_recursive on;
+
+          proxy_buffers           4 512k;
+          proxy_buffer_size       1024k;
+          proxy_busy_buffers_size 1024k;
         '';
 
         appendHttpConfig = ''
@@ -79,7 +83,7 @@ in
 
         upstreams = lib.mkMerge (
           map (service: {
-            "${service.subdomain}".servers."localhost:${toString service.port}" = { };
+            "${service.subdomain}".servers."127.0.0.1:${toString service.port}" = { };
           }) cfg.hosts
         );
 
@@ -92,7 +96,6 @@ in
                 forceSSL = true;
                 http3 = true;
                 kTLS = true;
-                listenAddresses = [ "0.0.0.0" ];
                 quic = true;
                 useACMEHost = consts.domain;
                 locations."/".proxyPass = "http://${service.subdomain}";
