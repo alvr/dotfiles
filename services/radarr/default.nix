@@ -23,13 +23,6 @@ in
         {
           inherit subdomain port;
           config.locations."/".proxyWebsockets = true;
-          config.locations."/api" = {
-            proxyPass = "http://${subdomain}";
-            extraConfig = ''
-              auth_basic off;
-              auth_request off;
-            '';
-          };
         }
       ];
 

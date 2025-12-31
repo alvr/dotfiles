@@ -17,7 +17,7 @@ deploy-rollback:
 
 [group('deploy')]
 deploy-test host='apeiron':
-    nh os test . --hostname {{ host }} --dry --verbose
+    nh os test . --hostname {{ host }} --dry --verbose --show-trace
 
 [group('generations')]
 generations-list:

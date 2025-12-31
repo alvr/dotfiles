@@ -69,9 +69,10 @@ in
           real_ip_header CF-Connecting-IP;
           real_ip_recursive on;
 
-          proxy_buffers           4 512k;
-          proxy_buffer_size       1024k;
-          proxy_busy_buffers_size 1024k;
+          proxy_buffers               4 512k;
+          proxy_buffer_size           1024k;
+          proxy_busy_buffers_size     1024k;
+          large_client_header_buffers 8 32k;
         '';
 
         appendHttpConfig = ''

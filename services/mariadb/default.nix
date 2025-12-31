@@ -6,17 +6,44 @@
 }:
 let
   cfg = config.dot.services.mariadb;
+
+  databasesWithPassword = builtins.filter (db: db.passwordFile != null) cfg.databases;
+  passwordUpdater = pkgs.writeShellScriptBin "mariadb-update-passwords" ''
+    set -euo pipefail
+
+    ${lib.concatStringsSep "\n\n" (
+      builtins.map (db: ''
+        DB_PASSWORD=$(cat ${db.passwordFile} | tr -d '\n')
+        echo "ALTER USER '${db.name}'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;" | ${pkgs.mariadb_118}/bin/mariadb
+      '') databasesWithPassword
+    )}
+  '';
 in
 {
   options.dot.services.mariadb = {
     enable = lib.mkEnableOption "Enable MariaDB service";
 
     databases = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              description = "Name of the database and associated user";
+            };
+            passwordFile = lib.mkOption {
+              type = lib.types.nullOr lib.types.path;
+              default = null;
+              description = "Path to the secret file containing the password for this user";
+            };
+          };
+        }
+      );
       default = [ ];
       description = ''
-        List of MariaDB databases to be created.
-        Each database will have a user with the same name and be granted full access.
+        List of databases to be created with associated users.
+        Each user will have all permissions on their database.
+        If passwordFile is provided, the user's password will be set from the secret file.
       '';
     };
   };
@@ -25,12 +52,19 @@ in
     services = {
       mysql = {
         enable = true;
-        ensureDatabases = cfg.databases;
+        ensureDatabases = map (db: db.name) cfg.databases;
         package = pkgs.mariadb_118;
+        settings = {
+          mysqld = {
+            bind-address = "0.0.0.0";
+          };
+        };
 
         ensureUsers = builtins.map (db: {
-          name = db;
-          ensureDBOwnership = true;
+          inherit (db) name;
+          ensurePermissions = {
+            "${db.name}.*" = "ALL PRIVILEGES";
+          };
         }) cfg.databases;
       };
 
@@ -38,8 +72,21 @@ in
         enable = true;
         location = "/data/backups/mariadb";
         calendar = "*-*-* 02:00:00";
-        inherit (cfg) databases;
+        databases = map (db: db.name) cfg.databases;
       };
+    };
+
+    systemd.services.mariadb-password-updater = lib.mkIf (databasesWithPassword != [ ]) {
+      description = "Update MariaDB user passwords from secret files";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${passwordUpdater}/bin/mariadb-update-passwords";
+        RemainAfterExit = true;
+      };
+      after = [ "mysql.service" ];
+      wants = [ "mysql.service" ];
+      partOf = [ "mysql.service" ];
+      wantedBy = [ "multi-user.target" ];
     };
 
     dot.system.persistence.directories = [
