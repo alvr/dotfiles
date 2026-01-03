@@ -56,18 +56,30 @@ in
             ENABLED = true;
           };
 
-          repository = {
-            ENABLE_ARCHIVE = false;
-            DISABLE_DOWNLOAD_SOURCE_ARCHIVES = true;
+          oauth2_client = {
+            ACCOUNT_LINKING = "login";
+            ENABLE_AUTO_REGISTRATION = true;
+            USERNAME = "nickname";
           };
 
-          service.DISABLE_REGISTRATION = true;
+          repository = {
+            DISABLE_DOWNLOAD_SOURCE_ARCHIVES = true;
+            ENABLE_ARCHIVE = false;
+          };
 
           server = {
             DISABLE_SSH = true;
             DOMAIN = url;
             HTTP_PORT = port;
             ROOT_URL = "https://${url}/";
+          };
+
+          service = {
+            ALLOW_ONLY_EXTERNAL_REGISTRATION = true;
+            DISABLE_REGISTRATION = true;
+            ENABLE_BASIC_AUTHENTICATION = false;
+            ENABLE_INTERNAL_SIGNIN = false;
+            REQUIRE_EXTERNAL_REGISTRATION_PASSWORD = false;
           };
         };
       };
