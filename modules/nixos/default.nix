@@ -14,4 +14,8 @@
   };
 
   system.stateVersion = "25.05";
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/private 0700 - - -"
+  ];
 }

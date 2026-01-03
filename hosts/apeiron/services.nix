@@ -26,5 +26,6 @@
     sonarr.enable = true;
     tailscale.enable = true;
     vaultwarden.enable = true;
+    wakapi.enable = true;
   };
 }
