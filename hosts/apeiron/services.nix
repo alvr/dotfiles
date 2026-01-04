@@ -1,6 +1,7 @@
 { ... }:
 {
   dot.services = {
+    bazarr.enable = true;
     backup.enable = true;
     booklore.enable = true;
     cloudflared.enable = true;
