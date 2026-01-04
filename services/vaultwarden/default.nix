@@ -24,6 +24,12 @@ in
       config = {
         DOMAIN = "https://${subdomain}.${consts.domain}";
         ROCKET_PORT = port;
+
+        SSO_ENABLED = true;
+        SSO_ONLY = true;
+        SSO_AUTHORITY = "https://id.${consts.domain}";
+        SSO_CLIENT_ID = "94c69e7b-c5f7-4c88-90a6-2fc0b8f06148";
+        SSO_AUTH_ONLY_NOT_SESSION = true;
       };
     };
 
