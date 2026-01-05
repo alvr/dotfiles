@@ -6,11 +6,11 @@
     booklore.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
-    flaresolverr.enable = true;
+    flaresolverr.enable = false;
     forgejo.enable = true;
     jellyfin.enable = true;
-    jellyseerr.enable = true;
-    linkwarden.enable = true;
+    jellyseerr.enable = false;
+    linkwarden.enable = false;
     mariadb.enable = true;
     miniflux.enable = true;
     nginx.enable = true;
