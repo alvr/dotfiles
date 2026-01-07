@@ -6,7 +6,6 @@
     booklore.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
-    flaresolverr.enable = false;
     forgejo.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = false;

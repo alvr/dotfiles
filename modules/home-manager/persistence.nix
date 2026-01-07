@@ -27,7 +27,6 @@ in
 
   config = lib.mkIf cfg.enable {
     home.persistence."/nix/persist/users/${config.home.username}" = {
-      allowOther = false;
       inherit (cfg) directories files;
     };
   };
