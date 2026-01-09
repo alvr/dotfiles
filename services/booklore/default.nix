@@ -18,7 +18,7 @@ in
 
   config = lib.mkIf cfg.enable {
     virtualisation.oci-containers.containers.booklore = {
-      image = "ghcr.io/booklore-app/booklore:v1.16.5";
+      image = "ghcr.io/booklore-app/booklore:v1.17.0";
       autoStart = true;
       environment = {
         USER_ID = "0";
