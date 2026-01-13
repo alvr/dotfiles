@@ -9,7 +9,6 @@
     forgejo.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = false;
-    linkwarden.enable = false;
     mariadb.enable = true;
     miniflux.enable = true;
     nginx.enable = true;
@@ -22,6 +21,7 @@
     prowlarr.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;
+    readeck.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;
     vaultwarden.enable = true;
