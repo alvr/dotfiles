@@ -54,6 +54,7 @@
             eval "$(${pkgs.openssh}/bin/ssh-agent -s)"
             ${pkgs.openssh}/bin/ssh-add "$KEY_FILE"
 
+            ${pkgs.just}/bin/just fetch
             ${pkgs.just}/bin/just up
 
             ${pkgs.git}/bin/git config gpg.format ssh
