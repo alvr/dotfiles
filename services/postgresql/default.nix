@@ -35,7 +35,7 @@ in
             host    all         all       ::1/128           trust
         '';
 
-        ensureUsers = builtins.map (db: {
+        ensureUsers = map (db: {
           name = db;
           ensureDBOwnership = true;
         }) cfg.databases;

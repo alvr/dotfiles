@@ -24,6 +24,7 @@
     readeck.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;
+    umami.enable = true;
     vaultwarden.enable = true;
     wakapi.enable = true;
   };
