@@ -50,6 +50,8 @@ in
         };
 
         settings = {
+          DEFAULT.APP_NAME = "alvr Git Service";
+
           actions = {
             ARTIFACT_RETENTION_DAYS = 30;
             DEFAULT_ACTIONS_URL = "github";
@@ -67,6 +69,18 @@ in
             ENABLE_ARCHIVE = false;
           };
 
+          "repository.signing" = {
+            FORMAT = "ssh";
+            SIGNING_KEY = config.sops.secrets."forgejo/ssh-git-sign/pub".path;
+            SIGNING_NAME = "alvr-bot";
+            SIGNING_EMAIL = "git@alvr.dev";
+            DEFAULT_TRUST_MODEL = "collaborator";
+            CRUD_ACTIONS = "always";
+            INITIAL_COMMIT = "always";
+            MERGES = "always";
+            WIKI = "always";
+          };
+
           server = {
             DISABLE_SSH = true;
             DOMAIN = url;
@@ -80,6 +94,10 @@ in
             ENABLE_BASIC_AUTHENTICATION = false;
             ENABLE_INTERNAL_SIGNIN = false;
             REQUIRE_EXTERNAL_REGISTRATION_PASSWORD = false;
+          };
+
+          "service.explore" = {
+            REQUIRE_SIGNIN_VIEW = true;
           };
         };
       };
@@ -119,9 +137,29 @@ in
       }
     ];
 
-    sops.secrets."forgejo-runner/env" = {
-      sopsFile = ../../secrets/services/forgejo-runner.yaml;
-      mode = "0400";
+    sops.secrets = {
+      "forgejo/ssh-git-sign/pub" = {
+        sopsFile = ../../secrets/services/forgejo.yaml;
+        owner = "forgejo";
+        group = "forgejo";
+        mode = "0440";
+        path = "/var/lib/forgejo/.ssh/ssh-git-sign.pub";
+        restartUnits = [ "forgejo.service" ];
+      };
+
+      "forgejo/ssh-git-sign/prv" = {
+        sopsFile = ../../secrets/services/forgejo.yaml;
+        owner = "forgejo";
+        group = "forgejo";
+        mode = "0400";
+        path = "/var/lib/forgejo/.ssh/ssh-git-sign";
+        restartUnits = [ "forgejo.service" ];
+      };
+
+      "forgejo-runner/env" = {
+        sopsFile = ../../secrets/services/forgejo-runner.yaml;
+        mode = "0400";
+      };
     };
 
     systemd.tmpfiles.rules = [
