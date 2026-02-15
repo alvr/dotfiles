@@ -18,8 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     services.wakapi = {
       enable = true;
-      passwordSaltFile = config.sops.secrets."wakapi/salt-password".path;
-      smtpPasswordFile = config.sops.secrets."wakapi/smtp-password".path;
+      environmentFiles = [ config.sops.secrets."wakapi/env".path ];
 
       settings = {
         app = {
@@ -70,43 +69,12 @@ in
       ];
     };
 
-    sops.secrets = {
-      "wakapi/oidc-secret" = {
-        sopsFile = ../../secrets/services/wakapi.yaml;
-        owner = "wakapi";
-        group = "wakapi";
-        mode = "0400";
-        restartUnits = [ "wakapi.service" ];
-      };
-
-      "wakapi/salt-password" = {
-        sopsFile = ../../secrets/services/wakapi.yaml;
-        owner = "wakapi";
-        group = "wakapi";
-        mode = "0400";
-        restartUnits = [ "wakapi.service" ];
-      };
-
-      "wakapi/smtp-password" = {
-        sopsFile = ../../secrets/services/wakapi.yaml;
-        owner = "wakapi";
-        group = "wakapi";
-        mode = "0400";
-        restartUnits = [ "wakapi.service" ];
-      };
-    };
-
-    sops.templates."wakapi/oidc-secret" = {
-      content = ''
-        WAKAPI_OIDC_PROVIDERS_0_CLIENT_SECRET=${config.sops.placeholder."wakapi/oidc-secret"}
-      '';
+    sops.secrets."wakapi/env" = {
+      sopsFile = ../../secrets/services/wakapi.yaml;
       owner = "wakapi";
       group = "wakapi";
       mode = "0400";
+      restartUnits = [ "wakapi.service" ];
     };
-
-    systemd.services.wakapi.serviceConfig.EnvironmentFile = [
-      config.sops.templates."wakapi/oidc-secret".path
-    ];
   };
 }
