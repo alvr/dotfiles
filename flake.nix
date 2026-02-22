@@ -16,11 +16,6 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,7 +34,6 @@
       disko,
       home-manager,
       impermanence,
-      nixos-generators,
       sops-nix,
       treefmt-nix,
       ...
@@ -90,13 +84,13 @@
         ];
       };
 
-      packages.x86_64-linux.installer = nixos-generators.nixosGenerate {
-        system = "x86_64-linux";
-        specialArgs = { inherit consts lib; };
-        modules = [
-          ./hosts/installer/configuration.nix
-        ];
-        format = "install-iso";
-      };
+      packages.x86_64-linux.installer =
+        (nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit consts lib; };
+          modules = [
+            ./hosts/installer/configuration.nix
+          ];
+        }).config.system.build.isoImage;
     };
 }

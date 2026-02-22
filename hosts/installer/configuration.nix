@@ -1,11 +1,13 @@
 {
   consts,
   lib,
+  modulesPath,
   pkgs,
   ...
 }:
 {
   imports = [
+    "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     ../../modules/nixos/i18n.nix
   ];
 

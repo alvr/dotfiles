@@ -89,11 +89,18 @@ in
       requires = [
         "nginx.service"
         "pocket-id.service"
+        "cloudflared-tunnel-apeiron.service"
       ];
       after = [
         "nginx.service"
         "pocket-id.service"
+        "cloudflared-tunnel-apeiron.service"
       ];
+      serviceConfig = {
+        RestartSec = "5s";
+        RestartMaxDelaySec = "1min";
+        RestartSteps = 5;
+      };
     };
   };
 }
