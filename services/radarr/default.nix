@@ -38,6 +38,17 @@ in
       }
     ];
 
+    systemd.services.radarr = {
+      requires = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+      after = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/radarr 0700 radarr radarr -"
     ];

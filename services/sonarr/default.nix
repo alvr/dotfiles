@@ -38,6 +38,17 @@ in
       }
     ];
 
+    systemd.services.sonarr = {
+      requires = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+      after = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/sonarr 0700 sonarr sonarr -"
     ];

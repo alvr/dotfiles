@@ -37,6 +37,17 @@ in
       }
     ];
 
+    systemd.services.bazarr = {
+      requires = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+      after = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/bazarr 0700 bazarr bazarr -"
     ];

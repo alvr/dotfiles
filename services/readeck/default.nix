@@ -34,5 +34,10 @@ in
       mode = "0400";
       restartUnits = [ "readeck.service" ];
     };
+
+    systemd.services.readeck = {
+      requires = [ "nginx.service" ];
+      after = [ "nginx.service" ];
+    };
   };
 }

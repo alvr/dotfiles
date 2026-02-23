@@ -42,6 +42,16 @@ in
       restartUnits = [ "miniflux.service" ];
     };
 
-    systemd.services.miniflux.serviceConfig.SupplementaryGroups = [ "miniflux-secrets" ];
+    systemd.services.miniflux = {
+      requires = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      after = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      serviceConfig.SupplementaryGroups = [ "miniflux-secrets" ];
+    };
   };
 }

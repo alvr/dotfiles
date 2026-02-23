@@ -90,6 +90,17 @@ in
       }
     ];
 
+    systemd.services.qbittorrent = {
+      requires = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+      after = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/qBittorrent 0700 qbittorrent qbittorrent -"
 

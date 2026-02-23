@@ -26,5 +26,10 @@ in
         "/var/lib/private/jellyseerr"
       ];
     };
+
+    systemd.services.jellyseerr = {
+      requires = [ "nginx.service" ];
+      after = [ "nginx.service" ];
+    };
   };
 }

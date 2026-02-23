@@ -93,6 +93,17 @@ in
       };
     };
 
+    systemd.services.podman-booklore = {
+      requires = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      after = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d ${stateDir} 0700 booklore booklore -"
       "d ${dataDir}/books 0700 booklore booklore -"

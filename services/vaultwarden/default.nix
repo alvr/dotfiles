@@ -70,6 +70,17 @@ in
       restartUnits = [ "vaultwarden.service" ];
     };
 
+    systemd.services.vaultwarden = {
+      requires = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      after = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/vaultwarden 0700 vaultwarden vaultwarden -"
     ];

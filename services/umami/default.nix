@@ -38,5 +38,10 @@ in
       mode = "0400";
       restartUnits = [ "umami.service" ];
     };
+
+    systemd.services.umami = {
+      requires = [ "nginx.service" ];
+      after = [ "nginx.service" ];
+    };
   };
 }

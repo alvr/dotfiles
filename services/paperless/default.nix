@@ -72,6 +72,17 @@ in
       ];
     };
 
+    systemd.services.paperless-web = {
+      requires = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      after = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+    };
+
     systemd.tmpfiles.rules = [
       "d /data/paperless 0700 paperless paperless -"
       "d /data/paperless/media 0700 paperless paperless -"

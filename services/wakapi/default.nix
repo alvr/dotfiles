@@ -76,5 +76,16 @@ in
       mode = "0400";
       restartUnits = [ "wakapi.service" ];
     };
+
+    systemd.services.wakapi = {
+      requires = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+      after = [
+        "nginx.service"
+        "pocket-id.service"
+      ];
+    };
   };
 }

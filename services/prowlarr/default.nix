@@ -31,5 +31,16 @@ in
     dot.system.persistence.directories = [
       "/var/lib/private/prowlarr"
     ];
+
+    systemd.services.prowlarr = {
+      requires = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+      after = [
+        "nginx.service"
+        "oauth2-proxy.service"
+      ];
+    };
   };
 }

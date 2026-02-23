@@ -52,6 +52,22 @@ in
       restartUnits = [ "pocket-id.service" ];
     };
 
+    systemd.services.pocket-id = {
+      requires = [
+        "nginx.service"
+        "cloudflared-tunnel-apeiron.service"
+      ];
+      after = [
+        "nginx.service"
+        "cloudflared-tunnel-apeiron.service"
+      ];
+      serviceConfig = {
+        RestartSec = "5s";
+        RestartMaxDelaySec = "1min";
+        RestartSteps = 5;
+      };
+    };
+
     systemd.tmpfiles.rules = [
       "d /var/lib/pocket-id 0700 pocket-id pocket-id -"
     ];
