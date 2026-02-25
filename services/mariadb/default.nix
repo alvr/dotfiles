@@ -12,7 +12,7 @@ let
     set -euo pipefail
 
     ${lib.concatStringsSep "\n\n" (
-      builtins.map (db: ''
+      map (db: ''
         DB_PASSWORD=$(cat ${db.passwordFile} | tr -d '\n')
         echo "ALTER USER '${db.name}'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;" | ${pkgs.mariadb_118}/bin/mariadb
       '') databasesWithPassword
@@ -60,7 +60,7 @@ in
           };
         };
 
-        ensureUsers = builtins.map (db: {
+        ensureUsers = map (db: {
           inherit (db) name;
           ensurePermissions = {
             "${db.name}.*" = "ALL PRIVILEGES";
@@ -73,6 +73,12 @@ in
         location = "/data/backups/mariadb";
         calendar = "*-*-* 02:00:00";
         databases = map (db: db.name) cfg.databases;
+      };
+
+      prometheus.exporters.mysqld = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+        configFile = config.sops.templates."mariadb/exporter.cnf".path;
+        inherit (config.services.mysql) user group;
       };
     };
 
@@ -89,6 +95,10 @@ in
       wantedBy = [ "multi-user.target" ];
     };
 
+    dot.services.prometheus.scrape.mysqld = lib.mkIf config.dot.services.prometheus.enable {
+      inherit (config.services.prometheus.exporters.mysqld) port;
+    };
+
     dot.system.persistence.directories = [
       {
         directory = "/var/lib/mysql";
@@ -97,6 +107,25 @@ in
         mode = "u=rwx,g=,o=";
       }
     ];
+
+    sops = lib.mkIf config.dot.services.prometheus.enable {
+      secrets."mariadb/exporter-password" = {
+        sopsFile = ../../secrets/services/mariadb.yaml;
+        restartUnits = [ "prometheus-mysqld-exporter.service" ];
+      };
+
+      templates."mariadb/exporter.cnf" = {
+        content = ''
+          [client]
+          user=exporter
+          password=${config.sops.placeholder."mariadb/exporter-password"}
+          socket=/run/mysqld/mysqld.sock
+        '';
+        owner = "mysql";
+        group = "mysql";
+        mode = "0400";
+      };
+    };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/mysql 0700 mysql mysql -"

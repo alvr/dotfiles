@@ -15,10 +15,10 @@
 
   system.stateVersion = "25.05";
 
-  systemd.tmpfiles.rules = [
-    "z /var/lib/private 0700 root root -"
-    "z /var/cache/private 0700 root root -"
-    "z /var/log/private 0700 root root -"
-    "z /run/private 0700 root root -"
-  ];
+  system.activationScripts.fix-private-permissions = lib.stringAfter [ "var" ] ''
+    for dir in /var/lib/private /var/cache/private /var/log/private /run/private; do
+      mkdir -p "$dir"
+      chmod 0700 "$dir"
+    done
+  '';
 }

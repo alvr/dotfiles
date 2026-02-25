@@ -11,10 +11,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.sonarr = {
-      enable = true;
-      dataDir = "/var/lib/sonarr";
-      settings.server.port = port;
+    services = {
+      sonarr = {
+        enable = true;
+        dataDir = "/var/lib/sonarr";
+        settings.server.port = port;
+      };
+
+      prometheus.exporters.exportarr-sonarr = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+        apiKeyFile = config.sops.secrets."sonarr/api-key".path;
+        port = port + 1;
+        url = "http://localhost:${toString port}";
+        inherit (config.services.sonarr) user group;
+      };
     };
 
     dot.services = {
@@ -25,8 +35,10 @@ in
           config.locations."/".proxyWebsockets = true;
         }
       ];
-
       oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "sonarr_users" ];
+      prometheus.scrape.sonarr = lib.mkIf config.dot.services.prometheus.enable {
+        inherit (config.services.prometheus.exporters.exportarr-sonarr) port;
+      };
     };
 
     dot.system.persistence.directories = [
@@ -38,15 +50,36 @@ in
       }
     ];
 
-    systemd.services.sonarr = {
-      requires = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
-      after = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
+    sops.secrets."sonarr/api-key" = lib.mkIf config.dot.services.prometheus.enable {
+      sopsFile = ../../secrets/services/sonarr.yaml;
+      owner = "sonarr";
+      group = "sonarr";
+      mode = "0400";
+      restartUnits = [ "prometheus-exportarr-sonarr-exporter.service" ];
+    };
+
+    systemd.services = {
+      sonarr = {
+        requires = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+        after = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+      };
+
+      prometheus-exportarr-sonarr-exporter = lib.mkIf config.dot.services.prometheus.enable {
+        requires = [
+          "sonarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "sonarr.service"
+          "prometheus.service"
+        ];
+      };
     };
 
     systemd.tmpfiles.rules = [

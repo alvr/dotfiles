@@ -11,10 +11,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.radarr = {
-      enable = true;
-      dataDir = "/var/lib/radarr";
-      settings.server.port = port;
+    services = {
+      radarr = {
+        enable = true;
+        dataDir = "/var/lib/radarr";
+        settings.server.port = port;
+      };
+
+      prometheus.exporters.exportarr-radarr = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+        apiKeyFile = config.sops.secrets."radarr/api-key".path;
+        port = port + 1;
+        url = "http://localhost:${toString port}";
+        inherit (config.services.radarr) user group;
+      };
     };
 
     dot.services = {
@@ -25,8 +35,10 @@ in
           config.locations."/".proxyWebsockets = true;
         }
       ];
-
       oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "radarr_users" ];
+      prometheus.scrape.radarr = lib.mkIf config.dot.services.prometheus.enable {
+        inherit (config.services.prometheus.exporters.exportarr-radarr) port;
+      };
     };
 
     dot.system.persistence.directories = [
@@ -38,15 +50,36 @@ in
       }
     ];
 
-    systemd.services.radarr = {
-      requires = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
-      after = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
+    sops.secrets."radarr/api-key" = lib.mkIf config.dot.services.prometheus.enable {
+      sopsFile = ../../secrets/services/radarr.yaml;
+      owner = "radarr";
+      group = "radarr";
+      mode = "0400";
+      restartUnits = [ "prometheus-exportarr-radarr-exporter.service" ];
+    };
+
+    systemd.services = {
+      radarr = {
+        requires = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+        after = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+      };
+
+      prometheus-exportarr-radarr-exporter = lib.mkIf config.dot.services.prometheus.enable {
+        requires = [
+          "radarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "radarr.service"
+          "prometheus.service"
+        ];
+      };
     };
 
     systemd.tmpfiles.rules = [

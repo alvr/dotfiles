@@ -11,9 +11,19 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.bazarr = {
-      enable = true;
-      listenPort = port;
+    services = {
+      bazarr = {
+        enable = true;
+        listenPort = port;
+      };
+
+      prometheus.exporters.exportarr-bazarr = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+        apiKeyFile = config.sops.secrets."bazarr/api-key".path;
+        port = port + 1;
+        url = "http://localhost:${toString port}";
+        inherit (config.services.bazarr) user group;
+      };
     };
 
     dot.services = {
@@ -24,8 +34,10 @@ in
           config.locations."/".proxyWebsockets = true;
         }
       ];
-
       oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "bazarr_users" ];
+      prometheus.scrape.bazarr = lib.mkIf config.dot.services.prometheus.enable {
+        inherit (config.services.prometheus.exporters.exportarr-bazarr) port;
+      };
     };
 
     dot.system.persistence.directories = [
@@ -37,15 +49,36 @@ in
       }
     ];
 
-    systemd.services.bazarr = {
-      requires = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
-      after = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
+    sops.secrets."bazarr/api-key" = lib.mkIf config.dot.services.prometheus.enable {
+      sopsFile = ../../secrets/services/bazarr.yaml;
+      owner = "bazarr";
+      group = "bazarr";
+      mode = "0400";
+      restartUnits = [ "prometheus-exportarr-bazarr-exporter.service" ];
+    };
+
+    systemd.services = {
+      bazarr = {
+        requires = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+        after = [
+          "nginx.service"
+          "oauth2-proxy.service"
+        ];
+      };
+
+      prometheus-exportarr-bazarr-exporter = lib.mkIf config.dot.services.prometheus.enable {
+        requires = [
+          "bazarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "bazarr.service"
+          "prometheus.service"
+        ];
+      };
     };
 
     systemd.tmpfiles.rules = [

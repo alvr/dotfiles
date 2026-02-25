@@ -7,6 +7,7 @@
     cloudflared.enable = true;
     duckdns.enable = true;
     forgejo.enable = true;
+    grafana.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = false;
     mariadb.enable = true;
@@ -19,6 +20,7 @@
     pocket-id.enable = true;
     podman.enable = true;
     postgresql.enable = true;
+    prometheus.enable = true;
     prowlarr.enable = true;
     qbittorrent.enable = true;
     radarr.enable = true;

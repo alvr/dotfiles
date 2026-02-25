@@ -73,7 +73,7 @@ in
             FORMAT = "ssh";
             SIGNING_KEY = config.sops.secrets."forgejo/ssh-git-sign/pub".path;
             SIGNING_NAME = "alvr-bot";
-            SIGNING_EMAIL = "git@alvr.dev";
+            SIGNING_EMAIL = "git@${consts.domain}";
             DEFAULT_TRUST_MODEL = "collaborator";
             CRUD_ACTIONS = "always";
             INITIAL_COMMIT = "always";

@@ -26,20 +26,26 @@ in
     };
 
     dot = {
-      services.cloudflared.subdomains = [ subdomain ];
-      services.nginx.hosts = [
-        {
-          inherit subdomain port;
-          config = {
-            locations."/".extraConfig = "proxy_buffering off;";
+      services = {
+        cloudflared.subdomains = [ subdomain ];
+        nginx.hosts = [
+          {
+            inherit subdomain port;
+            config.locations = {
+              "/".extraConfig = "proxy_buffering off;";
+              "/metrics".return = 403;
 
-            locations."/socket" = {
-              proxyPass = "http://${subdomain}";
-              proxyWebsockets = true;
+              "/socket" = {
+                proxyPass = "http://${subdomain}";
+                proxyWebsockets = true;
+              };
             };
-          };
-        }
-      ];
+          }
+        ];
+        prometheus.scrape.jellyfin = lib.mkIf config.dot.services.prometheus.enable {
+          inherit port;
+        };
+      };
 
       system.persistence.directories = [
         {

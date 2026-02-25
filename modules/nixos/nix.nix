@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  consts,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   nixpkgs = {
     config.allowUnfree = true;
@@ -24,6 +29,6 @@
     enable = true;
     allowReboot = true;
     dates = "03:00";
-    flake = "git+https://git.alvr.dev/alvr/dotfiles.git";
+    flake = "git+https://git.${consts.domain}/alvr/dotfiles.git";
   };
 }

@@ -55,7 +55,7 @@
       cat > /home/nixos/installer.sh << 'EOF'
 
       #!/usr/bin/env bash
-      curl --proto '=https' --tlsv1.2 -fsSL https://git.alvr.dev/alvr/dotfiles/raw/branch/main/installer.sh | sudo bash
+      curl --proto '=https' --tlsv1.2 -fsSL https://git.${consts.domain}/alvr/dotfiles/raw/branch/main/installer.sh | sudo bash
       EOF
 
       chmod +x /home/nixos/installer.sh

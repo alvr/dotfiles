@@ -18,7 +18,6 @@ in
   config = lib.mkIf cfg.enable {
     services.uptime-kuma = {
       enable = true;
-      appriseSupport = true;
 
       settings = {
         UPTIME_KUMA_DB_TYPE = "sqlite";
@@ -29,7 +28,7 @@ in
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
       nginx.hosts = [
-        { 
+        {
           inherit subdomain port;
           config.locations."/".proxyWebsockets = true;
         }

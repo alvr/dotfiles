@@ -38,7 +38,7 @@ in
         security = {
           allow_signup = false;
           disable_frontend = true;
-          expose_metrics = false;
+          expose_metrics = true;
           insecure_cookies = false;
           invite_codes = false;
           trust_reverse_proxy_ips = "127.0.0.1,::1";
@@ -49,7 +49,7 @@ in
               display_name = "id.alvr";
               client_id = "5f913537-8bf0-4810-8a90-6399e7f9a1c5";
               client_secret = "$WAKAPI_OIDC_PROVIDERS_0_CLIENT_SECRET";
-              endpoint = "https://id.alvr.dev";
+              endpoint = "https://id.${consts.domain}";
             }
           ];
         };
@@ -65,16 +65,34 @@ in
       cloudflared.subdomains = [ subdomain ];
       postgresql.databases = [ "wakapi" ];
       nginx.hosts = [
-        { inherit subdomain port; }
+        {
+          inherit subdomain port;
+          config.locations."/api/metrics".return = 403;
+        }
       ];
+      prometheus.scrape.wakapi = lib.mkIf config.dot.services.prometheus.enable {
+        inherit port;
+        bearer_token_file = config.sops.secrets."wakapi/metrics-bearer".path;
+        metrics_path = "/api/metrics";
+      };
     };
 
-    sops.secrets."wakapi/env" = {
-      sopsFile = ../../secrets/services/wakapi.yaml;
-      owner = "wakapi";
-      group = "wakapi";
-      mode = "0400";
-      restartUnits = [ "wakapi.service" ];
+    sops.secrets = {
+      "wakapi/env" = {
+        sopsFile = ../../secrets/services/wakapi.yaml;
+        owner = "wakapi";
+        group = "wakapi";
+        mode = "0400";
+        restartUnits = [ "wakapi.service" ];
+      };
+
+      "wakapi/metrics-bearer" = lib.mkIf config.dot.services.prometheus.enable {
+        sopsFile = ../../secrets/services/wakapi.yaml;
+        owner = "prometheus";
+        group = "prometheus";
+        mode = "0400";
+        restartUnits = [ "prometheus.service" ];
+      };
     };
 
     systemd.services.wakapi = {
@@ -86,6 +104,11 @@ in
         "nginx.service"
         "pocket-id.service"
       ];
+      serviceConfig = {
+        RestartSec = "5s";
+        RestartMaxDelaySec = "1min";
+        RestartSteps = 5;
+      };
     };
   };
 }

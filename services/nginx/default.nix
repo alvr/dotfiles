@@ -58,6 +58,7 @@ in
         recommendedOptimisation = true;
         recommendedProxySettings = true;
         recommendedTlsSettings = true;
+        statusPage = true;
 
         commonHttpConfig = ''
           ${realIPFrom cfIPv4}
@@ -79,6 +80,11 @@ in
           map $http_cf_connecting_ip $client_real_ip {
             default $http_cf_connecting_ip;
             "" $remote_addr;
+          }
+
+          map $http_upgrade $connection_upgrade {
+            default upgrade;
+            "" close;
           }
         '';
 
@@ -110,6 +116,15 @@ in
       };
 
       tailscale.permitCertUid = "nginx";
+
+      prometheus.exporters.nginx = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+        inherit (config.services.nginx) user group;
+      };
+    };
+
+    dot.services.prometheus.scrape.nginx = lib.mkIf config.dot.services.prometheus.enable {
+      inherit (config.services.prometheus.exporters.nginx) port;
     };
 
     dot.system.persistence.directories = [

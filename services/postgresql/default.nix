@@ -47,6 +47,14 @@ in
         location = "/data/backups/postgresql";
         startAt = "*-*-* 02:00:00";
       };
+
+      prometheus.exporters.postgres = lib.mkIf config.dot.services.prometheus.enable {
+        enable = true;
+      };
+    };
+
+    dot.services.prometheus.scrape.postgres = lib.mkIf config.dot.services.prometheus.enable {
+      inherit (config.services.prometheus.exporters.postgres) port;
     };
 
     dot.system.persistence.directories = [
