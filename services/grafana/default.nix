@@ -7,7 +7,7 @@
 let
   cfg = config.dot.services.grafana;
 
-  subdomain = "graph";
+  subdomain = "metrics";
   port = 31313;
 in
 {
