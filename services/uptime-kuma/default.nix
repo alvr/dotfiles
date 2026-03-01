@@ -1,6 +1,5 @@
 {
   config,
-  consts,
   lib,
   ...
 }:
