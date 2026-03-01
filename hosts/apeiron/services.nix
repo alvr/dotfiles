@@ -1,6 +1,7 @@
 { ... }:
 {
   dot.services = {
+    actual-budget.enable = true;
     bazarr.enable = true;
     backup.enable = true;
     booklore.enable = true;
