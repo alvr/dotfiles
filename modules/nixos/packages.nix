@@ -4,7 +4,6 @@
     git
     just
     mergerfs
-    neovim
     sops
     statix
   ];

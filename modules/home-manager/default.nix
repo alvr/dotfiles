@@ -12,6 +12,7 @@
     useUserPackages = true;
 
     sharedModules = [
+      inputs.nixvim.homeModules.nixvim
       inputs.sops-nix.homeManagerModules.sops
 
       { home.enableNixpkgsReleaseCheck = false; }
