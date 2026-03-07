@@ -2,6 +2,7 @@
   config,
   consts,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -31,7 +32,16 @@ in
       nginx.hosts = [
         {
           inherit subdomain port;
-          config.locations."/metrics".return = 403;
+          config.locations = {
+            "/metrics".return = 403;
+            "/reactflux/" = {
+              alias = "${pkgs.reactflux.override { baseurl = "/reactflux"; }}/";
+              index = "index.html";
+              tryFiles = "$uri uri/ /index.html =404";
+              extraConfig = "expires 24h;";
+            };
+            "= /reactflux".return = "301 $request_uri/";
+          };
         }
       ];
       prometheus.scrape.miniflux = lib.mkIf config.dot.services.prometheus.enable {
