@@ -62,7 +62,6 @@ in
         "cloudflared-tunnel-apeiron.service"
       ];
       serviceConfig = {
-        RestartSec = "5s";
         RestartMaxDelaySec = "1min";
         RestartSteps = 5;
       };
