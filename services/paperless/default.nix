@@ -82,7 +82,6 @@ in
         "pocket-id.service"
       ];
       serviceConfig = {
-        Restart = "always";
         RestartMaxDelaySec = "1min";
         RestartSec = "5s";
         RestartSteps = 5;
