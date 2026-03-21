@@ -4,11 +4,11 @@
     actual-budget.enable = true;
     bazarr.enable = true;
     backup.enable = true;
-    booklore.enable = true;
     cloudflared.enable = true;
     duckdns.enable = true;
     forgejo.enable = true;
     grafana.enable = true;
+    grimmory.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = false;
     mariadb.enable = true;

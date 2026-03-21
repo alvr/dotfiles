@@ -4,12 +4,12 @@ default:
 [group('deploy')]
 deploy host='apeiron':
     just deploy-test {{ host }}
-    nh os switch . --hostname {{ host }} --ask --verbose
+    nh os switch . --hostname {{ host }} --ask --verbose --diff always
 
 [group('deploy')]
 deploy-boot host='apeiron':
     just deploy-test {{ host }}
-    nh os boot . --hostname {{ host }} --ask --verbose
+    nh os boot . --hostname {{ host }} --ask --verbose --diff always
 
 [group('deploy')]
 deploy-rollback:

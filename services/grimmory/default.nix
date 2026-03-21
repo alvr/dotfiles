@@ -4,7 +4,7 @@
   ...
 }:
 let
-  cfg = config.dot.services.booklore;
+  cfg = config.dot.services.grimmory;
 
   subdomain = "books";
   port = 6060;
@@ -12,13 +12,13 @@ let
   dataDir = "/data/booklore";
 in
 {
-  options.dot.services.booklore = {
-    enable = lib.mkEnableOption "Enable BookLore service";
+  options.dot.services.grimmory = {
+    enable = lib.mkEnableOption "Enable Grimmory service";
   };
 
   config = lib.mkIf cfg.enable {
     virtualisation.oci-containers.containers.booklore = {
-      image = "ghcr.io/booklore-app/booklore:v2.0.6";
+      image = "ghcr.io/grimmory-tools/grimmory:v2.3.0";
       autoStart = true;
       environment = {
         USER_ID = "0";
