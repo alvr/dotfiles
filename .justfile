@@ -2,22 +2,22 @@ default:
     @just --list
 
 [group('deploy')]
-deploy host='apeiron':
-    just deploy-test {{ host }}
-    nh os switch . --hostname {{ host }} --ask --verbose --diff always
+deploy:
+    just deploy-test
+    nh os switch . --ask --verbose --diff always
 
 [group('deploy')]
-deploy-boot host='apeiron':
-    just deploy-test {{ host }}
-    nh os boot . --hostname {{ host }} --ask --verbose --diff always
+deploy-boot:
+    just deploy-test
+    nh os boot . --ask --verbose --diff always
 
 [group('deploy')]
 deploy-rollback:
     nh os rollback
 
 [group('deploy')]
-deploy-test host='apeiron':
-    nh os test . --hostname {{ host }} --dry --verbose --show-trace
+deploy-test:
+    nh os test . --dry --verbose --show-trace
 
 [group('generations')]
 generations-list:
