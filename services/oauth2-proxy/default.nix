@@ -45,6 +45,10 @@ in
       provider = "oidc";
       redirectURL = "https://${subdomain}.${consts.domain}/oauth2/callback";
       reverseProxy = true;
+      trustedProxyIP = [
+        "127.0.0.1"
+        "::1"
+      ];
       scope = "openid profile email groups";
       setXauthrequest = true;
 
