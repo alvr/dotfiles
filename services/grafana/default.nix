@@ -61,10 +61,10 @@ in
     };
 
     dot.services = {
-      cloudflared.subdomains = [ subdomain ];
       nginx.hosts = [
         {
           inherit subdomain port;
+          internal = true;
           config.locations."/api/live/" = {
             proxyPass = "http://${subdomain}";
             proxyWebsockets = true;

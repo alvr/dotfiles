@@ -9,16 +9,19 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.initrd = {
-    availableKernelModules = [
-      "nvme"
-      "sd_mod"
-      "thunderbolt"
-      "usb_storage"
-      "usbhid"
-      "xhci_pci"
-    ];
+  boot = {
+    kernelModules = [ "kvm-amd" ];
+    zfs.forceImportRoot = false;
+    initrd = {
+      availableKernelModules = [
+        "nvme"
+        "sd_mod"
+        "thunderbolt"
+        "usb_storage"
+        "usbhid"
+        "xhci_pci"
+      ];
+    };
   };
 
   fileSystems = {

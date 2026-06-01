@@ -28,10 +28,10 @@ in
     };
 
     dot.services = {
-      cloudflared.subdomains = [ subdomain ];
       nginx.hosts = [
         {
           inherit subdomain port;
+          internal = true;
           config.locations."/".proxyWebsockets = true;
         }
       ];

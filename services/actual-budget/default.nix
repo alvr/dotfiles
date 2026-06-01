@@ -30,12 +30,12 @@ in
       };
     };
 
-    dot.services = {
-      cloudflared.subdomains = [ subdomain ];
-      nginx.hosts = [
-        { inherit subdomain port; }
-      ];
-    };
+    dot.services.nginx.hosts = [
+      {
+        inherit subdomain port;
+        internal = true;
+      }
+    ];
 
     dot.system.persistence.directories = [
       "/var/lib/private/actual"

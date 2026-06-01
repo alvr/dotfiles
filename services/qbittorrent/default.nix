@@ -73,9 +73,11 @@ in
     };
 
     dot.services = {
-      cloudflared.subdomains = [ subdomain ];
       nginx.hosts = [
-        { inherit subdomain port; }
+        {
+          inherit subdomain port;
+          internal = true;
+        }
       ];
 
       oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "qbittorrent_users" ];

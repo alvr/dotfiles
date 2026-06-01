@@ -41,6 +41,10 @@ in
             port = lib.mkOption {
               type = lib.types.port;
             };
+            internal = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
           };
         }
       );
@@ -123,18 +127,24 @@ in
       };
     };
 
-    dot.services.prometheus.scrape.nginx = lib.mkIf config.dot.services.prometheus.enable {
-      inherit (config.services.prometheus.exporters.nginx) port;
-    };
+    dot = {
+      services.prometheus.scrape.nginx = lib.mkIf config.dot.services.prometheus.enable {
+        inherit (config.services.prometheus.exporters.nginx) port;
+      };
 
-    dot.system.persistence.directories = [
-      {
-        directory = "/var/lib/acme";
-        user = "acme";
-        group = "acme";
-        mode = "u=rwx,g=r,o=";
-      }
-    ];
+      services.tailscale.internalDomains = map (service: "${service.subdomain}.${consts.domain}") (
+        lib.filter (service: service.internal) cfg.hosts
+      );
+
+      system.persistence.directories = [
+        {
+          directory = "/var/lib/acme";
+          user = "acme";
+          group = "acme";
+          mode = "u=rwx,g=r,o=";
+        }
+      ];
+    };
 
     networking.firewall = {
       allowedTCPPorts = [
@@ -161,7 +171,6 @@ in
         inherit (consts) domain;
         extraDomainNames = [
           "*.${consts.domain}"
-          "*.int.${consts.domain}"
         ];
       };
     };

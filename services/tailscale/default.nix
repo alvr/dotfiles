@@ -13,6 +13,11 @@ in
 {
   options.dot.services.tailscale = {
     enable = lib.mkEnableOption "Enable Tailscale service";
+
+    internalDomains = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -21,9 +26,6 @@ in
         enable = true;
         authKeyFile = config.sops.secrets.tailscale-authkey.path;
         disableTaildrop = true;
-        useRoutingFeatures = "server";
-
-        extraUpFlags = [ "--advertise-routes=${tailnetSubnet}" ];
       };
 
       unbound = {
@@ -32,9 +34,8 @@ in
 
         settings.server = {
           access-control = [ "${tailnetSubnet} allow" ];
-          local-zone = [ ''"int.${consts.domain}." redirect'' ];
-          local-data = [ ''"int.${consts.domain}. IN A ${tailnetIp}"'' ];
-          local-data-ptr = [ ''"${tailnetIp} int.${consts.domain}"'' ];
+
+          local-data = map (domain: ''"${domain}. IN A ${tailnetIp}"'') cfg.internalDomains;
 
           interface = [
             tailnetIp
