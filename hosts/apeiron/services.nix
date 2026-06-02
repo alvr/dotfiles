@@ -9,6 +9,7 @@
     forgejo.enable = true;
     grafana.enable = true;
     grimmory.enable = true;
+    home-assistant.enable = true;
     jellyfin.enable = true;
     jellyseerr.enable = false;
     mariadb.enable = true;

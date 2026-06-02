@@ -1,6 +1,5 @@
 {
   config,
-  consts,
   lib,
   ...
 }:
@@ -26,6 +25,8 @@ in
         enable = true;
         authKeyFile = config.sops.secrets.tailscale-authkey.path;
         disableTaildrop = true;
+        useRoutingFeatures = "server";
+        extraUpFlags = [ "--advertise-routes=${tailnetSubnet}" ];
       };
 
       unbound = {
