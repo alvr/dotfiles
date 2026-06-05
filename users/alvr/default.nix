@@ -23,7 +23,7 @@
   };
 
   home-manager.users.alvr =
-    { ... }:
+    { pkgs, ... }:
     {
       imports = [ ./modules ];
 
@@ -32,6 +32,11 @@
         homeDirectory = "/home/alvr";
 
         stateVersion = "25.05";
+      };
+
+      programs.fish = {
+        enable = true;
+        interactiveShellInit = "${pkgs.fastfetch}/bin/fastfetch";
       };
 
       programs.home-manager.enable = true;
