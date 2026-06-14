@@ -20,7 +20,7 @@
 
     colorschemes.catppuccin = {
       enable = true;
-      flavour = "mocha";
+      settings.flavour = "mocha";
     };
 
     plugins = {
@@ -59,7 +59,7 @@
       yazi = {
         enable = true;
 
-        keymaps = {
+        settings.keymaps = {
           "<leader>e" = "open";
         };
       };
@@ -68,13 +68,11 @@
         enable = true;
 
         servers = {
-          # nil_ls.enable = true;
-          # lua_ls.enable = true;
-          # pyright.enable = true;
-          # ts_ls.enable = true;
-          # gopls.enable = true;
-          # rust_analyzer.enable = true;
-          # bashls.enable = true;
+          bashls.enable = true;
+          just.enable = true;
+          nixd.enable = true;
+          tombi.enable = true;
+          yamlls.enable = true;
         };
       };
 
@@ -91,20 +89,16 @@
       conform-nvim = {
         enable = true;
 
-        formattersByFt = {
+        settings.formatters_by_ft = {
           nix = [ "nixfmt" ];
         };
-      };
-
-      lualine = {
-        enable = true;
-        theme = "catppuccin";
       };
 
       comment.enable = true;
       dap.enable = true;
       gitsigns.enable = true;
       lsp-lines.enable = true;
+      lualine.enable = true;
       luasnip.enable = true;
       notify.enable = true;
       web-devicons.enable = true;
