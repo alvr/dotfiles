@@ -117,6 +117,8 @@ in
 
           aiowebostv # webostv (LG webOS TV)
           thinqconnect # lg_thinq (LG ThinQ)
+
+          pydexcom # Dexcom Glucose Monitoring
         ];
 
       themes = with pkgs.home-assistant-themes; [
@@ -144,6 +146,8 @@ in
       }
     ];
 
+    hardware.bluetooth.enable = true;
+
     sops.secrets."home-assistant" = {
       sopsFile = ../../secrets/services/home-assistant.yaml;
       owner = "hass";
@@ -167,5 +171,7 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/hass 0700 hass hass -"
     ];
+
+    users.users.hass.extraGroups = [ "bluetooth" ];
   };
 }
