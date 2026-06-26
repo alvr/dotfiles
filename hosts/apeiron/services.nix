@@ -5,6 +5,7 @@
     bazarr.enable = true;
     backup.enable = true;
     cloudflared.enable = true;
+    couchdb.enable = true;
     duckdns.enable = true;
     forgejo.enable = true;
     grafana.enable = true;

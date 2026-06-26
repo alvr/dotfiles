@@ -19,6 +19,7 @@ in
   config = lib.mkIf cfg.enable {
     services.home-assistant = {
       enable = true;
+      openFirewall = true;
 
       config = {
         default_config = { };
