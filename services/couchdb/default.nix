@@ -10,12 +10,17 @@ let
   subdomain = "couchdb";
   port = 5984;
 
-  users = [
-    "obsidian-user-1"
-    "obsidian-user-2"
-  ];
+  vaults = {
+    obsidian-user-1 = [
+      "personal"
+    ];
+    obsidian-user-2 = [
+      "personal"
+      "studying"
+    ];
+  };
 
-  secretFor = user: config.sops.secrets."couchdb/users/${user}".path;
+  secretFor = user: config.sops.templates."couchdb/users/${user}".path;
 in
 {
   options.dot.services.couchdb = {
@@ -94,18 +99,37 @@ in
           "couchdb/admin" = couchdbDefaults // secretFile;
         }
         // builtins.listToAttrs (
-          map (user: {
-            name = "couchdb/users/${user}";
-            value = couchdbDefaults // secretFile;
-          }) users
+          lib.concatMap (user: [
+            {
+              name = "couchdb/users/${user}/username";
+              value = couchdbDefaults // secretFile;
+            }
+            {
+              name = "couchdb/users/${user}/password";
+              value = couchdbDefaults // secretFile;
+            }
+          ]) (builtins.attrNames vaults)
         );
 
-        templates."couchdb-admins.ini" = couchdbDefaults // {
-          content = ''
-            [admins]
-            ${config.sops.placeholder."couchdb/admin"}
-          '';
-        };
+        templates = {
+          "couchdb-admins.ini" = couchdbDefaults // {
+            content = ''
+              [admins]
+              ${config.sops.placeholder."couchdb/admin"}
+            '';
+          };
+        }
+        // builtins.listToAttrs (
+          map (user: {
+            name = "couchdb/users/${user}";
+            value = couchdbDefaults // {
+              content = ''
+                ${config.sops.placeholder."couchdb/users/${user}/username"}
+                ${config.sops.placeholder."couchdb/users/${user}/password"}
+              '';
+            };
+          }) (builtins.attrNames vaults)
+        );
       };
 
     systemd.services.couchdb = {
@@ -142,7 +166,8 @@ in
           done
 
           provision_user() {
-            { read -r user; read -r pass; read -r db; } < "$1"
+            { read -r user; read -r pass; } < "$1"
+            shift
             doc_id="org.couchdb.user:$user"
 
             # Create or update the CouchDB user document.
@@ -164,20 +189,24 @@ in
               -H "Content-Type: application/json" \
               -d "\"$pass\"" >/dev/null || true
 
-            # Create the per-user database (idempotent).
-            curl -fsS -u "$auth" -X PUT "${base}/$db" >/dev/null 2>&1 || true
+            # Create each per-user database and restrict it to the user.
+            for db_name in "$@"; do
+              full_db="$user-$db_name"
+              curl -fsS -u "$auth" -X PUT "${base}/$full_db" >/dev/null 2>&1 || true
 
-            # Restrict the database to that single member.
-            sec="$(jq -n --arg u "$user" \
-              '{admins:{names:[$u],roles:["_admin"]},members:{names:[$u],roles:[]}}')"
-            curl -fsS -u "$auth" -X PUT "${base}/$db/_security" \
-              -H "Content-Type: application/json" \
-              -d "$sec" >/dev/null || true
+              sec="$(jq -n --arg u "$user" \
+                '{admins:{names:[$u],roles:["_admin"]},members:{names:[$u],roles:[]}}')"
+              curl -fsS -u "$auth" -X PUT "${base}/$full_db/_security" \
+                -H "Content-Type: application/json" \
+                -d "$sec" >/dev/null || true
+            done
           }
 
-          ${lib.concatMapStringsSep "\n" (user: ''
-            provision_user ${secretFor user}
-          '') users}
+          ${lib.concatStringsSep "\n" (
+            lib.mapAttrsToList (userKey: dbs: ''
+              provision_user ${secretFor userKey} ${lib.concatStringsSep " " dbs}
+            '') vaults
+          )}
         '';
     };
   };
