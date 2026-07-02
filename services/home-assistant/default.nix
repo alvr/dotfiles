@@ -120,6 +120,8 @@ in
           thinqconnect # lg_thinq (LG ThinQ)
 
           pydexcom # Dexcom Glucose Monitoring
+
+          pyipp # IPP (Internet Printing Protocol) for printers
         ];
 
       themes = with pkgs.home-assistant-themes; [
