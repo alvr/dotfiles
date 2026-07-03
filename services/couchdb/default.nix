@@ -13,6 +13,7 @@ let
   vaults = {
     obsidian-user-1 = [
       "personal"
+      "work"
     ];
     obsidian-user-2 = [
       "personal"
@@ -207,6 +208,20 @@ in
               provision_user ${secretFor userKey} ${lib.concatStringsSep " " dbs}
             '') vaults
           )}
+
+          # Install the Photon template design document (skip if already installed).
+          if ! curl -fsS -u "$auth" "${base}/photon/_design/photon" >/dev/null 2>&1; then
+            curl -fsS -u "$auth" -X PUT "${base}/photon" >/dev/null 2>&1 || true
+            curl -fsS https://raw.githubusercontent.com/ermouth/couch-photon/master/photon.json | \
+              curl -fsS -u "$auth" -X PUT "${base}/photon/_design/photon" \
+                -H "Content-Type: application/json" -d @- >/dev/null 2>&1 || true
+            curl -fsS -u "$auth" -X PUT "${base}/photon/_security" \
+              -H "Content-Type: application/json" -d '{}' >/dev/null 2>&1 || true
+            curl -fsS -u "$auth" -X PUT "${base}/_node/$node_name/_config/csp/attachments_enable" \
+              -H "Content-Type: application/json" -d '"false"' >/dev/null 2>&1 || true
+            curl -fsS -u "$auth" -X PUT "${base}/_node/$node_name/_config/chttpd_auth/same_site" \
+              -H "Content-Type: application/json" -d '"lax"' >/dev/null 2>&1 || true
+          fi
         '';
     };
   };
