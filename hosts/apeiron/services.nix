@@ -15,7 +15,8 @@
     jellyseerr.enable = false;
     mariadb.enable = true;
     miniflux.enable = true;
-    n8n.enable = true;
+    n8n.enable = false;
+    nextcloud.enable = true;
     nginx.enable = true;
     oauth2-proxy.enable = true;
     openssh.enable = true;
