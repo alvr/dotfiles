@@ -12,7 +12,6 @@
     grimmory.enable = true;
     home-assistant.enable = true;
     jellyfin.enable = true;
-    jellyseerr.enable = false;
     mariadb.enable = true;
     miniflux.enable = true;
     n8n.enable = false;
@@ -29,6 +28,7 @@
     qbittorrent.enable = true;
     radarr.enable = true;
     readeck.enable = true;
+    seerr.enable = true;
     sonarr.enable = true;
     tailscale.enable = true;
     umami.enable = true;
