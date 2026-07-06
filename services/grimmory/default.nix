@@ -18,7 +18,7 @@ in
 
   config = lib.mkIf cfg.enable {
     virtualisation.oci-containers.containers.booklore = {
-      image = "ghcr.io/grimmory-tools/grimmory:v3.2.3";
+      image = "ghcr.io/grimmory-tools/grimmory:v3.2.4";
       autoStart = true;
       environment = {
         USER_ID = "0";
