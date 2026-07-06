@@ -11,7 +11,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "reactflux";
-  version = "2026.06.17";
+  version = "2026.06.22";
 
   src = fetchFromGitHub {
     owner = "electh";
