@@ -3,7 +3,7 @@
   fetchPnpmDeps,
   lib,
   nodejs,
-  pnpm,
+  pnpm_11,
   pnpmConfigHook,
   stdenvNoCC,
 
@@ -22,14 +22,15 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     nodejs
-    pnpm
+    pnpm_11
     pnpmConfigHook
   ];
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     hash = "sha256-SAAzakX65xHagWZKY3nFcV8DiQL0LR6WRtXVCnSQ+tw=";
-    fetcherVersion = 3;
+    pnpm = pnpm_11;
+    fetcherVersion = 4;
   };
 
   postPatch = ''
