@@ -48,9 +48,9 @@
     wantedBy = [ "nixos-upgrade.service" ];
     path = with pkgs; [
       coreutils
-      systemd
-      nvd
       curl
+      dix
+      systemd
     ];
 
     serviceConfig = {
@@ -68,21 +68,23 @@
               curl -s --max-time 30 -d "NixOS upgrade failed:
               $LOG" "$NTFY_URL"
             else
-              CURRENT=$(readlink /nix/var/nix/profiles/system 2>/dev/null | sed 's/.*system-\([0-9]*\)-link.*/\1/' || echo "")
-              if [ -z "$CURRENT" ] ; then
-                curl -s --max-time 30 -d "NixOS upgrade succeeded: could not determine generation" "$NTFY_URL"
+              PREVIOUS_PROFILE=$(ls -v1d /nix/var/nix/profiles/system-*-link 2>/dev/null | sed -n 'x;$p' || true)
+              PREVIOUS_SYSTEM=$( [ -n "$PREVIOUS_PROFILE" ] && readlink -f "$PREVIOUS_PROFILE" 2>/dev/null || echo "" )
+              CURRENT_SYSTEM=$(readlink -f /run/current-system 2>/dev/null || echo "")
+
+              if [ -z "$CURRENT_SYSTEM" ] ; then
+                curl -s --max-time 30 -d "NixOS upgrade succeeded: could not determine current system" "$NTFY_URL"
+              elif [ -z "$PREVIOUS_SYSTEM" ] ; then
+                curl -s --max-time 30 -d "NixOS upgrade succeeded: could not determine previous system" "$NTFY_URL"
+              elif [ "$PREVIOUS_SYSTEM" = "$CURRENT_SYSTEM" ] ; then
+                curl -s --max-time 30 -d "NixOS upgrade succeeded: no packages updated" "$NTFY_URL"
               else
-                  PREVIOUS=$((CURRENT - 1))
-                if [ "$PREVIOUS" -lt 1 ] ; then
-                  curl -s --max-time 30 -d "NixOS upgrade succeeded: first generation, no previous to compare" "$NTFY_URL"
+                DIFF=$(dix "$PREVIOUS_SYSTEM" "$CURRENT_SYSTEM" 2>/dev/null || echo "")
+                if [ -z "$DIFF" ] ; then
+                  curl -s --max-time 30 -d "NixOS upgrade succeeded: system changed, but no package version changes detected" "$NTFY_URL"
                 else
-                  DIFF=$(nvd diff "/nix/var/nix/profiles/system-$CURRENT-link" "/nix/var/nix/profiles/system-$PREVIOUS-link" 2>/dev/null || echo "")
-                  if [ -z "$DIFF" ] ; then
-                    curl -s --max-time 30 -d "NixOS upgrade succeeded: no packages updated" "$NTFY_URL"
-                  else
-                    curl -s --max-time 30 -d "NixOS upgrade succeeded:
-                    $DIFF" "$NTFY_URL"
-                  fi
+                  curl -s --max-time 30 -d "NixOS upgrade succeeded:
+                  $DIFF" "$NTFY_URL"
                 fi
               fi
             fi
