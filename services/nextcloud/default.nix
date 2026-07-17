@@ -39,6 +39,7 @@ in
 
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps)
+          bookmarks
           calendar
           contacts
           mail
