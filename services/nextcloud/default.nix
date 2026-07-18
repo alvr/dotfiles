@@ -18,7 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud33;
+      package = pkgs.nextcloud34;
 
       caching.redis = true;
       configureRedis = true;
@@ -50,7 +50,30 @@ in
 
       settings = {
         default_phone_region = "ES";
+        hide_login_form = true;
         overwriteprotocol = "https";
+        overwritecondaddr = false;
+        trusted_proxies = [
+          "127.0.0.1"
+          "::1"
+        ];
+        maintenance_window_start = 2;
+      };
+
+      poolSettings = {
+        pm = "dynamic";
+        "pm.max_children" = "16";
+        "pm.max_requests" = 500;
+        "pm.max_spare_servers" = "12";
+        "pm.min_spare_servers" = "4";
+        "pm.process_idle_timeout" = "10s";
+        "pm.start_servers" = "4";
+      };
+
+      phpOptions = {
+        "opcache.interned_strings_buffer" = "32";
+        "opcache.jit" = "1255";
+        "opcache.jit_buffer_size" = "8M";
       };
     };
 
@@ -86,6 +109,18 @@ in
       {
         "nextcloud/admin-pass" = nextcloud-secret;
         "nextcloud/db-pass" = nextcloud-secret;
+      };
+
+    systemd.services.nextcloud-mimetype-migrations =
+      let
+        inherit (config.services.nextcloud) occ;
+      in
+      {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "nextcloud-setup.service" ];
+        requires = [ "nextcloud-setup.service" ];
+        script = "${occ}/bin/nextcloud-occ maintenance:repair --include-expensive";
+        serviceConfig.Type = "oneshot";
       };
 
     systemd.tmpfiles.rules = [
