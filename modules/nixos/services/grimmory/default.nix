@@ -215,6 +215,7 @@ in
           User = cfg.user;
           Group = cfg.group;
           WorkingDirectory = cfg.dataDir;
+          StateDirectory = "grimmory";
           EnvironmentFile = cfg.environmentFile;
 
           Restart = "on-failure";
@@ -278,12 +279,6 @@ in
           EOF
         '';
       };
-
-      tmpfiles.rules = [
-        "d ${cfg.dataDir} 0700 ${cfg.user} ${cfg.group} -"
-        "d ${cfg.booksDir} 0700 ${cfg.user} ${cfg.group} -"
-        "d ${cfg.bookdropDir} 0700 ${cfg.user} ${cfg.group} -"
-      ];
     };
   };
 

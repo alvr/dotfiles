@@ -61,6 +61,12 @@ in
       ];
     };
 
+    systemd.tmpfiles.rules = [
+      "d /var/lib/booklore 0700 grimmory grimmory -"
+      "d /data/booklore/books 0700 grimmory grimmory -"
+      "d /data/booklore/drops 0700 grimmory grimmory -"
+    ];
+
     users.users.grimmory.extraGroups = [ "media" ];
   };
 }
