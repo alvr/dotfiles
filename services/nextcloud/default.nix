@@ -42,7 +42,12 @@ in
           bookmarks
           calendar
           contacts
+          deck
           mail
+          memories
+          onlyoffice
+          previewgenerator
+          recognize
           user_oidc
           tasks
           ;
