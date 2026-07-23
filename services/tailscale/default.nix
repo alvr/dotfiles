@@ -5,9 +5,6 @@
 }:
 let
   cfg = config.dot.services.tailscale;
-
-  tailnetSubnet = "100.93.93.0/24";
-  tailnetIp = "100.93.93.1";
 in
 {
   options.dot.services.tailscale = {
@@ -16,6 +13,18 @@ in
     internalDomains = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
+    };
+
+    address = lib.mkOption {
+      type = lib.types.str;
+      default = "100.93.93.1";
+      description = "This host's Tailscale IPv4 address, used to bind internal-only services to the tailnet interface.";
+    };
+
+    subnet = lib.mkOption {
+      type = lib.types.str;
+      default = "100.93.93.0/24";
+      description = "The tailnet's IPv4 subnet, used to allow-list internal-only services for tailnet clients.";
     };
   };
 
@@ -26,7 +35,7 @@ in
         authKeyFile = config.sops.secrets.tailscale-authkey.path;
         disableTaildrop = true;
         useRoutingFeatures = "server";
-        extraUpFlags = [ "--advertise-routes=${tailnetSubnet}" ];
+        extraUpFlags = [ "--advertise-routes=${cfg.subnet}" ];
       };
 
       unbound = {
@@ -34,12 +43,12 @@ in
         resolveLocalQueries = false;
 
         settings.server = {
-          access-control = [ "${tailnetSubnet} allow" ];
+          access-control = [ "${cfg.subnet} allow" ];
 
-          local-data = map (domain: ''"${domain}. IN A ${tailnetIp}"'') cfg.internalDomains;
+          local-data = map (domain: ''"${domain}. IN A ${cfg.address}"'') cfg.internalDomains;
 
           interface = [
-            tailnetIp
+            cfg.address
             "127.0.0.1"
           ];
         };

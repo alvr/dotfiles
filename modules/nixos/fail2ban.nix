@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
   services.fail2ban = {
     enable = true;
@@ -22,7 +22,7 @@
       "fc00::/7"
 
       # Tailscale
-      "100.93.93.0/24"
+      "${config.dot.services.tailscale.subnet}"
       "fd7a:115c:a1e0::/48"
 
       # Cloudflare IPv4: https://www.cloudflare.com/ips-v4

@@ -20,5 +20,10 @@
       mode = "0600";
       path = ".ssh/ssh_git_sign";
     };
+
+    "ssh-authorized-keys" = {
+      mode = "0640";
+      path = ".ssh/authorized_keys";
+    };
   };
 }

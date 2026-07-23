@@ -19,7 +19,6 @@ in
   config = lib.mkIf cfg.enable {
     services.home-assistant = {
       enable = true;
-      openFirewall = true;
 
       config = {
         default_config = { };
@@ -44,8 +43,8 @@ in
           trusted_proxies = [
             "::1"
             "127.0.0.1"
-            "192.128.1.0/24"
-            "100.93.93.0/24"
+            consts.lanSubnet
+            config.dot.services.tailscale.subnet
           ];
         };
       };

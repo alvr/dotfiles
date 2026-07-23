@@ -11,12 +11,19 @@ in
     services.openssh = {
       enable = true;
       settings = {
-        PermitRootLogin = "no";
+        AllowUsers = [ "alvr" ];
+        ClientAliveCountMax = 2;
+        ClientAliveInterval = 300;
+        LoginGraceTime = 60;
+        MaxAuthTries = 3;
+        MaxStartups = "10:30:100";
         PasswordAuthentication = false;
+        PermitEmptyPasswords = false;
+        PermitRootLogin = "no";
+        X11Forwarding = false;
       };
       ports = [ 1311 ];
       openFirewall = true;
-      extraConfig = "MaxAuthTries 15";
     };
   };
 }

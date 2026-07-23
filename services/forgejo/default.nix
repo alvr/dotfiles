@@ -109,7 +109,6 @@ in
             "alpine-latest:docker://node:lts-alpine"
             "ubuntu-latest:docker://node:lts-trixie-slim"
           ];
-          host.labels = [ "self-hosted:host" ];
         };
       };
     };

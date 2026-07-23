@@ -15,8 +15,17 @@
   nix.settings.experimental-features = "nix-command flakes";
   nixpkgs.config.allowUnfree = true;
   security.sudo.wheelNeedsPassword = false;
-  services.openssh.enable = true;
-  users.users.nixos.openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
+  users.users.nixos.initialHashedPassword = lib.mkForce "$6$WiEl3uT8Ll9CHCQ4$PErOPc7a2fPe5GwN.5Bse99iOCBE9HA9dPmQgN0tArj46/YGxNpEoVII8KFkhCLTYpajMMbOXtooO8t9.1BjD/";
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
+    ports = [ 1311 ];
+    openFirewall = true;
+  };
 
   environment.systemPackages = with pkgs; [
     age

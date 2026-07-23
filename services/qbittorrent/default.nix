@@ -18,7 +18,6 @@ in
   config = lib.mkIf cfg.enable {
     services.qbittorrent = {
       enable = true;
-      openFirewall = true;
       webuiPort = port;
 
       serverConfig = {
@@ -60,12 +59,12 @@ in
           AlternativeUIEnabled = true;
           AuthSubnetWhitelist = "127.0.0.0/8";
           AuthSubnetWhitelistEnabled = true;
-          CSRFProtection = false;
-          ClickjackingProtection = false;
-          HostHeaderValidation = false;
+          CSRFProtection = true;
+          ClickjackingProtection = true;
+          HostHeaderValidation = true;
           Password_PBKDF2 = "@ByteArray(7dHRrfBf1tKMG17BiuTziw==:Wnu43L8yXNIMDs6xQue1JF84k/VbTiolKpMAwx3ELx9dYandNz7CPSLoiNTju4xjrTmXYxSE02z91H89IX2oTA==)";
           RootFolder = "${pkgs.vuetorrent}/share/vuetorrent";
-          SecureCookie = false;
+          SecureCookie = true;
           TrustedReverseProxiesList = "127.0.0.1";
           Username = "alvr";
         };

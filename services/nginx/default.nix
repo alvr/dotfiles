@@ -110,6 +110,13 @@ in
                 quic = true;
                 useACMEHost = consts.domain;
                 locations."/".proxyPass = "http://${service.subdomain}";
+              }
+              // lib.optionalAttrs service.internal {
+                extraConfig = ''
+                  allow ${config.dot.services.tailscale.subnet};
+                  allow ${consts.lanSubnet};
+                  deny all;
+                '';
               };
             in
             {

@@ -12,7 +12,6 @@
   users.users.alvr = {
     hashedPasswordFile = config.sops.secrets.alvr-password.path;
     isNormalUser = true;
-    openssh.authorizedKeys.keys = consts.sshAuthorizedKeys;
     linger = true;
     shell = pkgs.fish;
 

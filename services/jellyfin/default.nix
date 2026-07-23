@@ -17,11 +17,7 @@ in
 
   config = lib.mkIf cfg.enable {
     services = {
-      jellyfin = {
-        enable = true;
-        openFirewall = true;
-      };
-
+      jellyfin.enable = true;
       xserver.videoDrivers = [ "amdgpu" ];
     };
 

@@ -56,7 +56,7 @@ in
         package = pkgs.mariadb_118;
         settings = {
           mysqld = {
-            bind-address = "0.0.0.0";
+            bind-address = "127.0.0.1";
           };
         };
 
