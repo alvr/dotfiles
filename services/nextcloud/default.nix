@@ -116,20 +116,32 @@ in
         "nextcloud/db-pass" = nextcloud-secret;
       };
 
-    systemd.services.nextcloud-mimetype-migrations =
-      let
-        inherit (config.services.nextcloud) occ;
-      in
-      {
-        wantedBy = [ "multi-user.target" ];
-        after = [ "nextcloud-setup.service" ];
-        requires = [ "nextcloud-setup.service" ];
-        script = "${occ}/bin/nextcloud-occ maintenance:repair --include-expensive";
-        serviceConfig.Type = "oneshot";
+    systemd = {
+      services.nextcloud-mimetype-migrations =
+        let
+          inherit (config.services.nextcloud) occ;
+        in
+        {
+          after = [
+            "nextcloud-setup.service"
+            "postgresql.service"
+            "redis-nextcloud.service"
+          ];
+          script = "${occ}/bin/nextcloud-occ maintenance:repair --include-expensive";
+          serviceConfig.Type = "oneshot";
+        };
+
+      timers.nextcloud-mimetype-migrations = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "Fri *-*-* 04:00:00";
+          Persistent = true;
+        };
       };
 
-    systemd.tmpfiles.rules = [
-      "d /var/lib/nextcloud 0700 nextcloud nextcloud -"
-    ];
+      tmpfiles.rules = [
+        "d /var/lib/nextcloud 0700 nextcloud nextcloud -"
+      ];
+    };
   };
 }
