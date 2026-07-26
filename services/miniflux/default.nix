@@ -20,6 +20,7 @@ in
     services.miniflux = {
       enable = true;
       adminCredentialsFile = config.sops.secrets."miniflux/env".path;
+      createDatabaseLocally = false;
       config = {
         BASE_URL = "https://${subdomain}.${consts.domain}";
         LISTEN_ADDR = "localhost:${toString port}";
