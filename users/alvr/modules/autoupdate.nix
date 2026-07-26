@@ -13,7 +13,7 @@
     Install.WantedBy = [ "timers.target" ];
     Unit.Description = "Weekly timer to update flake";
     Timer = {
-      OnCalendar = "Sun *-*-* 01:00:00";
+      OnCalendar = "Wed,Sun *-*-* 01:00:00";
       Persistent = true;
       Unit = "flake-auto-update.service";
     };
