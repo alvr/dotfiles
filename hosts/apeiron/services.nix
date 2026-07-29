@@ -17,7 +17,6 @@
     n8n.enable = false;
     nextcloud.enable = true;
     nginx.enable = true;
-    oauth2-proxy.enable = true;
     openssh.enable = true;
     paperless.enable = true;
     pocket-id.enable = true;

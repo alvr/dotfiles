@@ -33,9 +33,11 @@ in
           inherit subdomain port;
           internal = true;
           config.locations."/".proxyWebsockets = true;
+
+          oidc.allowedGroups = [ "radarr_users" ];
         }
       ];
-      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "radarr_users" ];
+
       prometheus.scrape.radarr = lib.mkIf config.dot.services.prometheus.enable {
         inherit (config.services.prometheus.exporters.exportarr-radarr) port;
       };
@@ -60,14 +62,8 @@ in
 
     systemd.services = {
       radarr = {
-        requires = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
-        after = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
+        requires = [ "nginx.service" ];
+        after = [ "nginx.service" ];
       };
 
       prometheus-exportarr-radarr-exporter = lib.mkIf config.dot.services.prometheus.enable {

@@ -31,9 +31,11 @@ in
           inherit subdomain port;
           internal = true;
           config.locations."/".proxyWebsockets = true;
+
+          oidc.allowedGroups = [ "prowlarr_users" ];
         }
       ];
-      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "prowlarr_users" ];
+
       prometheus.scrape.prowlarr = lib.mkIf config.dot.services.prometheus.enable {
         inherit (config.services.prometheus.exporters.exportarr-prowlarr) port;
       };
@@ -51,14 +53,8 @@ in
 
     systemd.services = {
       prowlarr = {
-        requires = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
-        after = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
+        requires = [ "nginx.service" ];
+        after = [ "nginx.service" ];
       };
 
       prometheus-exportarr-prowlarr-exporter = lib.mkIf config.dot.services.prometheus.enable {

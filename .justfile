@@ -93,4 +93,4 @@ rclone action:
     ;;
     esac
 
-    rclone sync --exclude ".git/" "${src}" "${dst}" --progress
+    rclone sync --exclude ".git/" --exclude-from .gitignore "${src}" "${dst}" --progress

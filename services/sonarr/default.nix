@@ -33,9 +33,11 @@ in
           inherit subdomain port;
           internal = true;
           config.locations."/".proxyWebsockets = true;
+
+          oidc.allowedGroups = [ "sonarr_users" ];
         }
       ];
-      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "sonarr_users" ];
+
       prometheus.scrape.sonarr = lib.mkIf config.dot.services.prometheus.enable {
         inherit (config.services.prometheus.exporters.exportarr-sonarr) port;
       };
@@ -60,14 +62,8 @@ in
 
     systemd.services = {
       sonarr = {
-        requires = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
-        after = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
+        requires = [ "nginx.service" ];
+        after = [ "nginx.service" ];
       };
 
       prometheus-exportarr-sonarr-exporter = lib.mkIf config.dot.services.prometheus.enable {

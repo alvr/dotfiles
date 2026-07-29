@@ -32,9 +32,11 @@ in
           inherit subdomain port;
           internal = true;
           config.locations."/".proxyWebsockets = true;
+
+          oidc.allowedGroups = [ "bazarr_users" ];
         }
       ];
-      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "bazarr_users" ];
+
       prometheus.scrape.bazarr = lib.mkIf config.dot.services.prometheus.enable {
         inherit (config.services.prometheus.exporters.exportarr-bazarr) port;
       };
@@ -59,14 +61,8 @@ in
 
     systemd.services = {
       bazarr = {
-        requires = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
-        after = [
-          "nginx.service"
-          "oauth2-proxy.service"
-        ];
+        requires = [ "nginx.service" ];
+        after = [ "nginx.service" ];
       };
 
       prometheus-exportarr-bazarr-exporter = lib.mkIf config.dot.services.prometheus.enable {

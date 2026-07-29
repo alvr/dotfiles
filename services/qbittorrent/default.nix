@@ -76,10 +76,10 @@ in
         {
           inherit subdomain port;
           internal = true;
+
+          oidc.allowedGroups = [ "qbittorrent_users" ];
         }
       ];
-
-      oauth2-proxy.hosts.${subdomain}.allowed_groups = [ "qbittorrent_users" ];
     };
 
     dot.system.persistence.directories = [
@@ -92,14 +92,8 @@ in
     ];
 
     systemd.services.qbittorrent = {
-      requires = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
-      after = [
-        "nginx.service"
-        "oauth2-proxy.service"
-      ];
+      requires = [ "nginx.service" ];
+      after = [ "nginx.service" ];
     };
 
     systemd.tmpfiles.rules = [
