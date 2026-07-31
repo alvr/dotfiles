@@ -24,7 +24,7 @@
     postgresql.enable = true;
     prometheus.enable = true;
     prowlarr.enable = true;
-    qbittorrent.enable = true;
+    transmission.enable = true;
     radarr.enable = true;
     readeck.enable = true;
     seerr.enable = true;
