@@ -1,0 +1,62 @@
+name: Update flake.lock
+
+on:
+  schedule:
+    - cron: "1 0 * * 0,3"
+      timezone: "Europe/Madrid"
+  workflow_dispatch:
+
+jobs:
+  update-flake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install prerequisites
+        run: |
+          apt-get update -y
+          apt-get install -y sudo xz-utils curl git openssh-client
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          mkdir -p ~/.ssh
+
+          cat > ~/.ssh/signing_key <<'EOF'
+          ${{ secrets.SSH_SIGNING_KEY }}
+          EOF
+
+          chmod 600 ~/.ssh/signing_key
+            
+          git config --global gpg.format ssh
+          git config --global user.signingkey ~/.ssh/signing_key
+          git config --global commit.gpgsign true
+
+          ssh-keygen -y -f ~/.ssh/signing_key > ~/.ssh/signing_key.pub
+
+          printf "* %s\n" "$(cat ~/.ssh/signing_key.pub)" > ~/.ssh/allowed_signers
+
+          git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31.11.0
+        with:
+          github_access_token: ${{ secrets.GH_TOKEN }}
+
+      - name: Update flake.lock
+        run: nix flake update
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          commit_message: "📦 update flake.lock"
+          commit_user_name: Álvaro Salcedo García
+          commit_user_email: alvaro@alvr.dev
+          commit_options: -S
+          commit_author: Álvaro Salcedo García <alvaro@alvr.dev>
+          branch: ${{ github.ref }}
+          file_pattern: flake.lock
+          skip_dirty_check: false
+          skip_fetch: true
