@@ -57,7 +57,8 @@ in
     sops.secrets = {
       "miniflux/env" = {
         sopsFile = ../../secrets/services/miniflux.yaml;
-        group = "miniflux-secrets";
+        owner = "miniflux";
+        group = "miniflux";
         mode = "0400";
         restartUnits = [ "miniflux.service" ];
       };
@@ -80,9 +81,14 @@ in
         "nginx.service"
         "pocket-id.service"
       ];
-      serviceConfig.SupplementaryGroups = [ "miniflux-secrets" ];
+      serviceConfig.SupplementaryGroups = [ "miniflux" ];
     };
 
-    users.groups.miniflux-secrets = { };
+    users.users.miniflux = {
+      group = "miniflux";
+      isSystemUser = true;
+    };
+
+    users.groups.miniflux = { };
   };
 }
