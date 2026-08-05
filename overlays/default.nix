@@ -2,5 +2,5 @@
 [
   (import ./lix.nix { })
   (import ./packages.nix { })
-  inputs.nix-cachyos-kernel.overlays.pinned
+  inputs.chaotic.overlays.default
 ]

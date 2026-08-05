@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   boot = {
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-server;
+    kernelPackages = pkgs.linuxPackages_cachyos-server;
     tmp.cleanOnBoot = true;
     zfs.forceImportRoot = false;
 
