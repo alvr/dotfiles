@@ -37,7 +37,8 @@ in
 
         security = {
           allow_signup = false;
-          disable_frontend = true;
+          disable_frontpage = true;
+          disable_local_auth = true;
           expose_metrics = true;
           insecure_cookies = false;
           invite_codes = false;
