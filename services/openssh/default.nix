@@ -15,7 +15,7 @@ in
         ClientAliveCountMax = 2;
         ClientAliveInterval = 300;
         LoginGraceTime = 60;
-        MaxAuthTries = 3;
+        MaxAuthTries = 5;
         MaxStartups = "10:30:100";
         PasswordAuthentication = false;
         PermitEmptyPasswords = false;
