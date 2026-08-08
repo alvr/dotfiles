@@ -215,7 +215,7 @@ in
           User = cfg.user;
           Group = cfg.group;
           WorkingDirectory = cfg.dataDir;
-          StateDirectory = "grimmory";
+          StateDirectory = lib.mkIf (cfg.dataDir == "/var/lib/grimmory") "grimmory";
           EnvironmentFile = cfg.environmentFile;
 
           Restart = "on-failure";
