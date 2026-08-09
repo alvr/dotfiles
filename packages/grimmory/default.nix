@@ -114,6 +114,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     data = ./deps.json;
   };
 
+  preConfigure = ''
+    cp -r ${frontend} frontend-dist
+    chmod -R u+w frontend-dist
+    gradleFlagsArray+=("-PfrontendDistDir=$PWD/frontend-dist")
+  '';
+
   installPhase = ''
     runHook preInstall
 
