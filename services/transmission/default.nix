@@ -27,9 +27,9 @@ in
         alt-speed-up = 1;
         alt-speed-down = 3;
 
-        speed-limit-down = 300;
+        speed-limit-down = 10 * 1000;
         speed-limit-down-enabled = true;
-        speed-limit-up = 100;
+        speed-limit-up = 5 * 1000;
         speed-limit-up-enabled = true;
 
         upload-slots-per-torrent = 200;

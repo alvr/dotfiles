@@ -1,6 +1,5 @@
 {
   config,
-  consts,
   pkgs,
   ...
 }:
@@ -12,7 +11,6 @@
   users.users.alvr = {
     hashedPasswordFile = config.sops.secrets.alvr-password.path;
     isNormalUser = true;
-    linger = true;
     shell = pkgs.fish;
 
     extraGroups = [
