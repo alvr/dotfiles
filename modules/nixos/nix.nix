@@ -1,10 +1,4 @@
-{
-  config,
-  consts,
-  inputs,
-  pkgs,
-  ...
-}:
+{ inputs, ... }:
 {
   nixpkgs = {
     config.allowUnfree = true;
@@ -12,7 +6,6 @@
   };
 
   nix = {
-    package = pkgs.lixPackageSets.stable.lix;
     settings = {
       auto-optimise-store = true;
       experimental-features = "nix-command flakes";
@@ -40,6 +33,6 @@
     enable = true;
     allowReboot = true;
     dates = "03:00";
-    flake = "git+https://git.${consts.domain}/alvr/dotfiles.git";
+    flake = "git+https://codeberg.org/alvr/dotfiles.git";
   };
 }

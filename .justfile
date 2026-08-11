@@ -4,12 +4,12 @@ default:
 [group('deploy')]
 deploy:
     just deploy-test
-    nh os switch . --ask --verbose --diff always
+    nh os switch . --ask --diff always
 
 [group('deploy')]
 deploy-boot:
     just deploy-test
-    nh os boot . --ask --verbose --diff always
+    nh os boot . --ask --diff always
 
 [group('deploy')]
 deploy-rollback:
@@ -17,7 +17,7 @@ deploy-rollback:
 
 [group('deploy')]
 deploy-test:
-    nh os test . --dry --verbose --show-trace
+    nh os test . --dry --show-trace
 
 [group('generations')]
 generations-list:
@@ -63,7 +63,8 @@ fetch branch='main':
 [group('utils')]
 fmt:
     nix fmt
-    nix flake check
+    nix flake lock
+    nix flake check --all-systems
     statix check
 
 [group('utils')]

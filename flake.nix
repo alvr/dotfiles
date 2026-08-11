@@ -2,9 +2,11 @@
   description = "alvr's dotfiles NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
+    determinate.url = "github:DeterminateSystems/determinate";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -29,6 +31,7 @@
       self,
       nixpkgs,
       disko,
+      determinate,
       home-manager,
       impermanence,
       sops-nix,
@@ -59,6 +62,7 @@
           };
           modules = [
             disko.nixosModules.disko
+            determinate.nixosModules.default
             home-manager.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             sops-nix.nixosModules.sops
