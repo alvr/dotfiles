@@ -23,6 +23,9 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
+    secrets.url = "path:./secrets";
+    secrets.flake = false;
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 

@@ -484,9 +484,22 @@
         "import-tree": "import-tree",
         "nixpkgs": "nixpkgs_4",
         "nixvim": "nixvim",
+        "secrets": "secrets",
         "sops-nix": "sops-nix",
         "treefmt-nix": "treefmt-nix"
       }
+    },
+    "secrets": {
+      "flake": false,
+      "locked": {
+        "path": "./secrets",
+        "type": "path"
+      },
+      "original": {
+        "path": "./secrets",
+        "type": "path"
+      },
+      "parent": []
     },
     "sops-nix": {
       "inputs": {

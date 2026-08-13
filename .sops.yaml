@@ -1,12 +1,22 @@
 keys:
   - &host-apeiron age1gd8r4kczp6ywrhn8kj8qn6l9sc505k7autzg868f9tmcl2x92dqq8m6wm0
+  - &host-leviathan age19p5qf9pedr30nvttqsk9vlk7tnmuyz9sexgm3dd40nq3gzd4l90suxc4hr
   - &user-alvr age1chal5wkp4jl4yn7gl6jus0gn4kk7nn2rmh9m04kg03eklergzcrshhn802
 creation_rules:
-  - path_regex: secrets[/\\]users[/\\]alvr[/\\][^/\\]+(\.(yaml|json|env|ini|conf))?$
-    key_groups:
-      - age:
-        - *user-alvr
-  - path_regex: secrets[/\\](?:[^/\\]+[/\\])?[^/\\]+(\.(yaml|json|env|ini|conf))?$
+  - path_regex: secrets[/\\]common[/\\].+$
     key_groups:
       - age:
         - *host-apeiron
+        - *host-leviathan
+  - path_regex: secrets[/\\]apeiron[/\\].+$
+    key_groups:
+      - age:
+        - *host-apeiron
+  - path_regex: secrets[/\\]leviathan[/\\].+$
+    key_groups:
+      - age:
+        - *host-leviathan
+  - path_regex: secrets[/\\]users[/\\]alvr[/\\].+$
+    key_groups:
+      - age:
+        - *user-alvr

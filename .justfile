@@ -43,10 +43,6 @@ up:
     nix flake update
 
 [group('sops')]
-sops-edit:
-    sops secrets/secrets.yaml
-
-[group('sops')]
 sops-rotate:
     find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops --rotate --in-place "$file"; done
 
@@ -64,7 +60,7 @@ fetch branch='main':
 fmt:
     nix fmt
     nix flake lock
-    nix flake check --all-systems
+    nix flake check
     statix check
 
 [group('utils')]
