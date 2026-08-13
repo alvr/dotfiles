@@ -11,6 +11,11 @@ repos:
         entry: nix flake check
         language: system
         pass_filenames: false
+      - id: flake-lock
+        name: flake lock
+        entry: nix flake lock
+        language: system
+        pass_filenames: false
       - id: statix
         name: statix
         entry: statix check

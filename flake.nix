@@ -11,11 +11,15 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     impermanence.url = "github:nix-community/impermanence";
     impermanence.inputs.nixpkgs.follows = "nixpkgs";
+
+    import-tree.url = "github:denful/import-tree";
 
     nixvim.url = "github:nix-community/nixvim";
 
@@ -26,72 +30,5 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      disko,
-      determinate,
-      home-manager,
-      impermanence,
-      sops-nix,
-      treefmt-nix,
-      ...
-    }@inputs:
-    let
-      inherit (self) outputs;
-
-      systems = [ "x86_64-linux" ];
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
-
-      lib = import ./lib/extend.nix { inherit inputs self; };
-      consts = import ./consts.nix;
-      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
-
-      mkNixOSConfig =
-        modulePaths:
-        nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit
-              consts
-              lib
-              inputs
-              outputs
-              ;
-          };
-          modules = [
-            disko.nixosModules.disko
-            determinate.nixosModules.default
-            home-manager.nixosModules.home-manager
-            impermanence.nixosModules.impermanence
-            sops-nix.nixosModules.sops
-
-            ./modules/nixos
-            ./modules/home-manager
-          ]
-          ++ modulePaths;
-        };
-    in
-    {
-      checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
-      });
-      formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
-
-      nixosConfigurations = {
-        apeiron = mkNixOSConfig [
-          ./hosts/apeiron/configuration.nix
-        ];
-      };
-
-      packages.x86_64-linux.installer =
-        (nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit consts lib; };
-          modules = [
-            ./hosts/installer/configuration.nix
-          ];
-        }).config.system.build.isoImage;
-    };
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
