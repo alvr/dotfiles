@@ -13,7 +13,6 @@ let
   vaults = {
     obsidian-user-1 = [
       "personal"
-      "work"
     ];
     obsidian-user-2 = [
       "personal"

@@ -171,11 +171,17 @@ in
               type = lib.types.str;
             };
             port = lib.mkOption {
-              type = lib.types.port;
+              type = lib.types.nullOr lib.types.port;
+              default = null;
             };
             internal = lib.mkOption {
               type = lib.types.bool;
               default = false;
+            };
+            proxy = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = "Reverse-proxy to `port`. Set to `false` for services that serve nginx directly (e.g. nextcloud).";
             };
             oidc = lib.mkOption {
               type = lib.types.nullOr (
@@ -258,7 +264,7 @@ in
         upstreams = lib.mkMerge (
           map (service: {
             "${service.subdomain}".servers."127.0.0.1:${toString service.port}" = { };
-          }) cfg.hosts
+          }) (lib.filter (service: service.proxy) cfg.hosts)
         );
 
         virtualHosts = lib.mkMerge (
@@ -272,6 +278,8 @@ in
                 kTLS = true;
                 quic = true;
                 useACMEHost = consts.domain;
+              }
+              // lib.optionalAttrs service.proxy {
                 locations."/".proxyPass = "http://${service.subdomain}";
               }
               // lib.optionalAttrs service.internal {

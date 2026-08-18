@@ -95,6 +95,13 @@ in
 
     dot.services = {
       cloudflared.subdomains = [ subdomain ];
+      nginx.hosts = [
+        {
+          inherit subdomain;
+          proxy = false;
+        }
+      ];
+
       postgresql.databases = [ "nextcloud" ];
       prometheus.scrape.nextcloud = lib.mkIf config.dot.services.prometheus.enable {
         inherit (config.services.prometheus.exporters.nextcloud) port;
@@ -109,11 +116,6 @@ in
         mode = "u=rwx,g=,o=";
       }
     ];
-
-    services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
-      forceSSL = true;
-      useACMEHost = consts.domain;
-    };
 
     sops.secrets =
       let
