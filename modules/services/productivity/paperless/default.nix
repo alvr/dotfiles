@@ -1,0 +1,89 @@
+{ inputs, ... }:
+{
+  flake.modules.nixos.paperless =
+    { config, ... }:
+    let
+      subdomain = "papers";
+      port = 28981;
+    in
+    {
+      services.paperless = {
+        enable = true;
+        domain = "${subdomain}.${config.dot.host.network.domain}";
+        environmentFile = config.sops.secrets."paperless/env".path;
+        mediaDir = "/data/paperless/media";
+        consumptionDir = "/data/paperless/consume";
+
+        settings = {
+          PAPERLESS_DBHOST = "/run/postgresql";
+          PAPERLESS_OCR_LANGUAGE = "spa+eng";
+          PAPERLESS_TRUSTED_PROXIES = "127.0.0.1/32,::1";
+        };
+      };
+
+      dot.services = {
+        restic.include = [ "/data/paperless" ];
+        postgresql.databases = [ "paperless" ];
+        nginx.hosts = [
+          {
+            inherit subdomain port;
+            internal = true;
+            config.locations = {
+              "/static/" = {
+                root = config.services.paperless.package;
+                extraConfig = "rewrite ^/(.*)$ /lib/paperless-ngx/$1 break;";
+              };
+              "= /ws/status" = {
+                proxyPass = "http://${subdomain}";
+                proxyWebsockets = true;
+              };
+            };
+          }
+        ];
+      };
+
+      dot.system.persistence.directories = [
+        {
+          directory = "/var/lib/paperless";
+          user = "paperless";
+          group = "paperless";
+          mode = "u=rwx,g=,o=";
+        }
+      ];
+
+      sops.secrets."paperless/env" = {
+        sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/paperless.yaml";
+        owner = "paperless";
+        group = "paperless";
+        mode = "0400";
+        restartUnits = [
+          "paperless-scheduler.service"
+          "paperless-consumer.service"
+          "paperless-web.service"
+        ];
+      };
+
+      systemd.services.paperless-web = {
+        requires = [
+          "nginx.service"
+          "pocket-id.service"
+        ];
+        after = [
+          "nginx.service"
+          "pocket-id.service"
+        ];
+        serviceConfig = {
+          RestartMaxDelaySec = "1min";
+          RestartSec = "5s";
+          RestartSteps = 5;
+        };
+      };
+
+      systemd.tmpfiles.rules = [
+        "d /data/paperless 0700 paperless paperless -"
+        "d /data/paperless/media 0700 paperless paperless -"
+        "d /data/paperless/consume 0700 paperless paperless -"
+        "d /var/lib/paperless 0700 paperless paperless -"
+      ];
+    };
+}
