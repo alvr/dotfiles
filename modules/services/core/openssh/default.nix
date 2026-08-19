@@ -19,5 +19,10 @@
         ports = [ 1311 ];
         openFirewall = true;
       };
+
+      programs.ssh.extraConfig = ''
+        Host *
+          SetEnv TERM=xterm-256color
+      '';
     };
 }

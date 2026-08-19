@@ -13,6 +13,8 @@
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
+    flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/0";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -21,7 +23,20 @@
 
     import-tree.url = "github:denful/import-tree";
 
+    nix-darwin.url = "github:nix-darwin/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
+
     nixvim.url = "github:nix-community/nixvim";
+
+    nur.url = "github:nix-community/NUR";
+    nur.inputs.nixpkgs.follows = "nixpkgs";
+
+    pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
+
+    packages.url = "path:./packages";
+    packages.flake = false;
 
     secrets.url = "path:./secrets";
     secrets.flake = false;
