@@ -68,11 +68,6 @@ in
         rpc-port = port;
         rpc-whitelist = "127.0.0.1";
         rpc-whitelist-enabled = true;
-
-        idle-seeding-limit = 43800;
-        idle-seeding-limit-enabled = true;
-        seed-ratio-limit = 2;
-        seed-ratio-limited = true;
       };
     };
 
