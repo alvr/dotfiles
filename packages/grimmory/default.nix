@@ -19,13 +19,13 @@
   writeShellScript,
 }:
 let
-  version = "3.3.2";
+  version = "3.3.3";
 
   src = fetchFromGitHub {
     owner = "grimmory-tools";
     repo = "grimmory";
     rev = "v${version}";
-    hash = "sha256-2mc8R9PXgTRKApFobREvnSbGoZFfCuS2WLXxD/FPQ8k=";
+    hash = "sha256-gkxQ/JCW73XqRj1Ou6Dx2bd9x0BhKu7F2QIl4y1zBsI=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
