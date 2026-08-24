@@ -171,7 +171,7 @@
                   type = lib.types.str;
                 };
                 port = lib.mkOption {
-                  type = lib.types.port;
+                  type = lib.types.nullOr lib.types.port;
                   default = null;
                 };
                 internal = lib.mkOption {
