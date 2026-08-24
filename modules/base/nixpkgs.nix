@@ -5,7 +5,8 @@
   ...
 }:
 let
-  localOverlay = config.flake.overlays.default;
+  overlay = config.flake.overlays.default;
+
   commonNixpkgs = { config, ... }: {
     nixpkgs = {
       pkgs = withSystem config.nixpkgs.hostPlatform.system ({ pkgs, ... }: pkgs);
@@ -14,7 +15,7 @@ let
       overlays = [
         inputs.chaotic.overlays.default
         inputs.nur.overlays.default
-        localOverlay
+        overlay
       ];
     };
   };

@@ -32,8 +32,14 @@
       };
 
       systemd.services.readeck = {
-        requires = [ "nginx.service" ];
-        after = [ "nginx.service" ];
+        requires = [
+          "nginx.service"
+          "pocket-id.service"
+        ];
+        after = [
+          "nginx.service"
+          "pocket-id.service"
+        ];
       };
     };
 }

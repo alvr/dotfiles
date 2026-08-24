@@ -220,6 +220,7 @@
             statusPage = true;
 
             resolver.addresses = [ "1.1.1.1" ];
+            resolver.ipv6 = false;
 
             commonHttpConfig = ''
               ${realIPFrom cfIPv4}

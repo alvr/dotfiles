@@ -1,6 +1,7 @@
+{ inputs, ... }:
 {
   flake.modules.nixos.bluetooth =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       hardware.bluetooth = {
         enable = true;
@@ -15,7 +16,9 @@
 
       services.blueman.enable = true;
 
-      dot.system.persistence.directories = [ "/var/lib/bluetooth" ];
+      dot = inputs.self.lib.mkIfPersistence config {
+        system.persistence.directories = [ "/var/lib/bluetooth" ];
+      };
 
       systemd.user.services.mpris-proxy = {
         description = "Mpris proxy";

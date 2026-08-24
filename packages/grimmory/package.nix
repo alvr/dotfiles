@@ -19,13 +19,13 @@
   writeShellScript,
 }:
 let
-  version = "3.3.1";
+  version = "3.3.3";
 
   src = fetchFromGitHub {
     owner = "grimmory-tools";
     repo = "grimmory";
     rev = "v${version}";
-    hash = "sha256-LnJtHeL8ixLtzabwEWwH7HbGJavFy3YPyDkvOpSnShI=";
+    hash = "sha256-gkxQ/JCW73XqRj1Ou6Dx2bd9x0BhKu7F2QIl4y1zBsI=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -52,7 +52,7 @@ let
         ;
       pnpm = pnpm_11;
       fetcherVersion = 4;
-      hash = "sha256-nmNcQaZnxOAs6Ipa7zniTxkIbo3bHbCJt0m6gZaqsc8=";
+      hash = "sha256-vAXmwrC80rIRYav6zmF30uwu3GixgkB7QctRtf6+vmE=";
     };
 
     env = {
@@ -129,6 +129,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     makeWrapper ${lib.getExe temurin-jre-bin-25} $out/bin/grimmory \
       --set APP_VERSION ${finalAttrs.env.APP_VERSION} \
       --set APP_REVISION ${finalAttrs.env.APP_REVISION} \
+      --prefix PATH : "${lib.makeBinPath finalAttrs.buildInputs}" \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath finalAttrs.buildInputs}" \
       --add-flags "-Djava.library.path=${lib.makeLibraryPath finalAttrs.buildInputs}" \
       --add-flags "--enable-native-access=ALL-UNNAMED --enable-preview -jar $out/share/grimmory/grimmory.jar"

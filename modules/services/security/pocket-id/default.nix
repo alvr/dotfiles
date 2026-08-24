@@ -46,11 +46,11 @@
       systemd.services.pocket-id = {
         requires = [
           "nginx.service"
-          "cloudflared-tunnel-apeiron.service"
+          "cloudflared-tunnel-${config.dot.host.name}.service"
         ];
         after = [
           "nginx.service"
-          "cloudflared-tunnel-apeiron.service"
+          "cloudflared-tunnel-${config.dot.host.name}.service"
         ];
         serviceConfig = {
           RestartMaxDelaySec = "1min";

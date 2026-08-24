@@ -7,9 +7,7 @@
       port = 6060;
     in
     {
-      imports = [
-        ./_service.nix
-      ];
+      imports = [ ./_service.nix ];
 
       services.grimmory = {
         enable = true;
