@@ -30,6 +30,7 @@ in
         SSO_AUTHORITY = "https://id.${consts.domain}";
         SSO_CLIENT_ID = "94c69e7b-c5f7-4c88-90a6-2fc0b8f06148";
         SSO_AUTH_ONLY_NOT_SESSION = true;
+        SSO_SCOPES = "email profile groups offline_access";
       };
     };
 
