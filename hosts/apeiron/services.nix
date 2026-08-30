@@ -7,6 +7,7 @@
     cloudflared.enable = true;
     couchdb.enable = true;
     duckdns.enable = true;
+    flaresolverr.enable = true;
     forgejo.enable = true;
     grafana.enable = true;
     grimmory.enable = true;
