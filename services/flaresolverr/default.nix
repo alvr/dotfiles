@@ -8,8 +8,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.flaresolverr = {
-      enable = true;
-    };
+    services.flaresolverr.enable = true;
   };
 }

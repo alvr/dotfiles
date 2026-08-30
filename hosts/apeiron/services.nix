@@ -12,6 +12,7 @@
     grafana.enable = true;
     grimmory.enable = true;
     home-assistant.enable = true;
+    jackett.enable = true;
     jellyfin.enable = true;
     mariadb.enable = true;
     miniflux.enable = true;
@@ -24,7 +25,6 @@
     podman.enable = true;
     postgresql.enable = true;
     prometheus.enable = true;
-    prowlarr.enable = true;
     transmission.enable = true;
     radarr.enable = true;
     readeck.enable = true;
