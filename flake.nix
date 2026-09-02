@@ -26,9 +26,8 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
-
-    nixvim.url = "github:nix-community/nixvim";
+    nix4nvchad.url = "github:nix-community/nix4nvchad";
+    nix4nvchad.inputs.nixpkgs.follows = "nixpkgs";
 
     nur.url = "github:nix-community/NUR";
     nur.inputs.nixpkgs.follows = "nixpkgs";
