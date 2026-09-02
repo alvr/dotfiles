@@ -6,6 +6,12 @@
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
+    devenv.url = "github:cachix/devenv";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
+
+    devenv-root.url = "file+file:///dev/null";
+    devenv-root.flake = false;
+
     determinate.url = "github:DeterminateSystems/determinate";
 
     disko.url = "github:nix-community/disko";

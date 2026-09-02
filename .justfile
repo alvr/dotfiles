@@ -64,10 +64,6 @@ fmt:
     statix check
 
 [group('utils')]
-installer:
-    nix build .#installer
-
-[group('utils')]
 rclone action:
     #!/usr/bin/env bash
     set -euo pipefail
