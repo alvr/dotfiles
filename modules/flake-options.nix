@@ -6,11 +6,6 @@
       default = { };
     };
 
-    homeConfigurations = lib.mkOption {
-      type = lib.types.lazyAttrsOf lib.types.raw;
-      default = { };
-    };
-
     lib = lib.mkOption {
       type = lib.types.attrsOf lib.types.unspecified;
       default = { };
