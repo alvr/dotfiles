@@ -51,6 +51,11 @@
           };
         };
 
+        dot.features.fail2ban.extraIgnoreIPs = lib.mkIf config.services.fail2ban.enable [
+          cfg.subnet
+          "fd7a:115c:a1e0::/48"
+        ];
+
         dot.system.persistence.directories = [ "/var/lib/tailscale" ];
 
         networking.firewall = {

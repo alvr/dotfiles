@@ -1,6 +1,5 @@
 {
   flake.modules.nixos.seerr =
-    { ... }:
     let
       subdomain = "seerr";
       port = 5055;

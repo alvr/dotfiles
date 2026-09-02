@@ -4,7 +4,7 @@
     inputs.pkgs-by-name-for-flake-parts.flakeModule
   ];
 
-  perSystem = { ... }: {
+  perSystem = {
     pkgsDirectory = inputs.packages;
   };
 

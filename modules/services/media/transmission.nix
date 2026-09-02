@@ -32,7 +32,7 @@
           preallocation = 1;
           start-added-torrents = true;
           trash-original-torrent-files = true;
-          umask = "022";
+          umask = "002";
 
           message-level = 2;
 

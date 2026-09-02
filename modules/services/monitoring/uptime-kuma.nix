@@ -1,6 +1,5 @@
 {
   flake.modules.nixos.uptime-kuma =
-    { ... }:
     let
       subdomain = "up";
       port = 4573;

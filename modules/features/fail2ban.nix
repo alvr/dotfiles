@@ -1,8 +1,18 @@
+{ lib, ... }:
 {
   flake.modules.nixos.fail2ban =
     { config, ... }:
+    let
+      cfg = config.dot.features.fail2ban;
+    in
     {
-      services.fail2ban = {
+      options.dot.features.fail2ban.extraIgnoreIPs = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "Extra IPs/CIDRs appended to services.fail2ban.ignoreIP.";
+      };
+
+      config.services.fail2ban = {
         enable = true;
 
         bantime = "24h";
@@ -22,10 +32,6 @@
           "::1/128"
           "fe80::/10"
           "fc00::/7"
-
-          # Tailscale
-          "${config.dot.services.tailscale.subnet}"
-          "fd7a:115c:a1e0::/48"
 
           # Cloudflare IPv4: https://www.cloudflare.com/ips-v4
           "173.245.48.0/20"
@@ -52,7 +58,8 @@
           "2405:8100::/32"
           "2a06:98c0::/29"
           "2c0f:f248::/32"
-        ];
+        ]
+        ++ cfg.extraIgnoreIPs;
       };
     };
 }

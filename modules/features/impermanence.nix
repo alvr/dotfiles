@@ -59,7 +59,6 @@
       in
       {
         options.dot.hm.system.persistence = {
-          enable = lib.mkEnableOption "Enable persistence home-manager system";
           directories = lib.mkOption {
             type = lib.types.listOf (
               lib.types.oneOf [
@@ -80,10 +79,8 @@
           };
         };
 
-        config = lib.mkIf cfg.enable {
-          home.persistence."/nix/persist/users/${config.dot.host.user.alias}" = {
-            inherit (cfg) directories files;
-          };
+        config.home.persistence."/nix/persist/users/${config.dot.host.user.alias}" = {
+          inherit (cfg) directories files;
         };
       };
   };

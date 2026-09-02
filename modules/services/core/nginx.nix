@@ -208,6 +208,25 @@
       };
 
       config = {
+        assertions = [
+          {
+            assertion =
+              lib.length (map (host: host.subdomain) cfg.hosts)
+              == lib.length (lib.unique (map (host: host.subdomain) cfg.hosts));
+            message = "Nginx host subdomains must be unique.";
+          }
+          {
+            assertion = lib.all (host: host.proxy -> host.port != null) cfg.hosts;
+            message = "Nginx proxy hosts must define a port.";
+          }
+          {
+            assertion = lib.all (
+              host: host.internal -> !(builtins.elem host.subdomain config.dot.services.cloudflared.subdomains)
+            ) cfg.hosts;
+            message = "Internal Nginx hosts must not be exposed through the Cloudflare tunnel.";
+          }
+        ];
+
         services = {
           nginx = {
             enable = true;
