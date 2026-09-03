@@ -45,7 +45,6 @@ in
               "/Users/${config.dot.host.user.alias}"
             else
               "/home/${config.dot.host.user.alias}";
-          packages = [ pkgs.home-manager ];
           stateVersion = config.dot.host.state.version;
         };
       };

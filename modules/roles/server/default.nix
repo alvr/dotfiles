@@ -18,5 +18,7 @@ in
         message = "servers must define dot.host.network.domain (used by the services attached to them)";
       }
     ];
+
+    users.users.${config.dot.host.user.alias}.extraGroups = [ "media" ];
   };
 }

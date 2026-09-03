@@ -7,13 +7,11 @@ let
         default = null;
         description = "Static IPv4 address. When null the interface is configured with DHCP.";
       };
-
       prefixLength = lib.mkOption {
         type = lib.types.int;
         default = 24;
         description = "Prefix length used when a static address is set.";
       };
-
       gateway = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
@@ -46,23 +44,19 @@ let
             type = lib.types.nullOr lib.types.str;
             default = null;
           };
-
           subnet = lib.mkOption {
             type = lib.types.str;
             default = "192.168.1.0/24";
           };
-
           gateway = lib.mkOption {
             type = lib.types.str;
             default = "192.168.1.1";
           };
-
           wifi = lib.mkOption {
             type = interfaceType;
             default = { };
             description = "IPv4 configuration for the wifi module's NetworkManager profile.";
           };
-
           interfaces = lib.mkOption {
             type = lib.types.attrsOf interfaceType;
             default = { };
@@ -97,6 +91,10 @@ let
           };
           name = lib.mkOption {
             type = lib.types.str;
+          };
+          sshKeys = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
           };
         };
       };

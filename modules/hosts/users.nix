@@ -10,14 +10,10 @@
       isNormalUser = true;
       shell = pkgs.fish;
       hashedPasswordFile = config.sops.secrets.password.path;
+      openssh.authorizedKeys.keyFiles = config.dot.host.user.sshKeys;
+
       extraGroups = [
-        "audio"
-        "camera"
-        "lp"
-        "media"
         "networkmanager"
-        "scanner"
-        "video"
         "wheel"
       ];
     };

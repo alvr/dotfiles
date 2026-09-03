@@ -37,7 +37,7 @@ gc:
 [group('nix')]
 repair:
     sudo nix-store --verify --check-contents --repair
-    
+
 [group('nix')]
 up:
     nix flake update
@@ -69,9 +69,9 @@ rclone action:
     set -euo pipefail
 
     remote="apeiron:/nix/persist/dotfiles"
-    local={{invocation_dir()}}
+    local={{ invocation_dir() }}
 
-    case "{{action}}" in
+    case "{{ action }}" in
     dl)
         src="${remote}"
         dst="${local}"
@@ -81,7 +81,7 @@ rclone action:
         dst="${remote}"
     ;;
     *)
-        echo "Invalid action: {{action}}. Must be 'dl' or 'up'."
+        echo "Invalid action: {{ action }}. Must be 'dl' or 'up'."
         exit 1
     ;;
     esac
