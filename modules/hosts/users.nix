@@ -10,7 +10,7 @@
       isNormalUser = true;
       shell = pkgs.fish;
       hashedPasswordFile = config.sops.secrets.password.path;
-      openssh.authorizedKeys.keyFiles = config.dot.host.user.sshKeys;
+      openssh.authorizedKeys.keys = config.dot.host.user.sshKeys;
 
       extraGroups = [
         "networkmanager"

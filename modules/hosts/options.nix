@@ -52,6 +52,15 @@ let
             type = lib.types.str;
             default = "192.168.1.1";
           };
+          ssh = lib.mkOption {
+            type = lib.types.submodule {
+              options.port = lib.mkOption {
+                type = lib.types.port;
+                default = 22;
+              };
+            };
+            default = { };
+          };
           wifi = lib.mkOption {
             type = interfaceType;
             default = { };

@@ -21,22 +21,22 @@ deploy-test:
 
 [group('generations')]
 generations-list:
-    sudo nix-env -p /nix/var/nix/profiles/system --list-generations
+    doas nix-env -p /nix/var/nix/profiles/system --list-generations
 
 [group('generations')]
 generations-switch version:
-    sudo nix-env -p /nix/var/nix/profiles/system --switch-generation {{ version }}
-    sudo /nix/var/nix/profiles/system/bin/switch-to-configuration boot
+    doas nix-env -p /nix/var/nix/profiles/system --switch-generation {{ version }}
+    doas /nix/var/nix/profiles/system/bin/switch-to-configuration boot
 
 [group('nix')]
 gc:
-    sudo nh clean all -av
-    sudo nix-collect-garbage -d
+    doas nh clean all -av
+    doas nix-collect-garbage -d
     nix-collect-garbage -d
 
 [group('nix')]
 repair:
-    sudo nix-store --verify --check-contents --repair
+    doas nix-store --verify --check-contents --repair
 
 [group('nix')]
 up:

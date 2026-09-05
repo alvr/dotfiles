@@ -16,7 +16,7 @@
           PermitRootLogin = "no";
           X11Forwarding = false;
         };
-        ports = [ 1311 ];
+        ports = [ config.dot.host.network.ssh.port ];
         openFirewall = true;
       };
 
