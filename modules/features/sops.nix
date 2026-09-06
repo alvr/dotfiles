@@ -17,7 +17,12 @@
       sops = {
         defaultSopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/secrets.yaml";
         age.keyFile = "/home/${config.dot.host.user.alias}/.config/sops/age/keys.txt";
+        age.generateKey = true;
         gnupg.sshKeyPaths = [ ];
+      };
+
+      dot = inputs.self.lib.mkIfPersistence config {
+        hm.system.persistence.files = [ ".config/sops/age/keys.txt" ];
       };
     };
 

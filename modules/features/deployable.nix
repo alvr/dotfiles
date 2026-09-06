@@ -52,22 +52,18 @@ in
   flake = {
     deploy.nodes = lib.mapAttrs deployNode deployableConfigurations;
 
-    modules.nixos.deployable =
-      { config, ... }:
-      {
-        config.system.nixos.tags = [ "deployable" ];
-        config.nix.settings.trusted-users = [ config.dot.host.user.alias ];
-      };
+    modules.nixos.deployable = { config, ... }: {
+      config.system.nixos.tags = [ "deployable" ];
+      config.nix.settings.trusted-users = [ config.dot.host.user.alias ];
+    };
   };
 
-  perSystem =
-    { system, ... }:
-    {
-      apps.deploy = {
-        type = "app";
-        program = "${lib.getExe inputs.deploy-rs.packages.${system}.default}";
-      };
-
-      checks = inputs.deploy-rs.lib.${system}.deployChecks config.flake.deploy;
+  perSystem = { system, ... }: {
+    apps.deploy = {
+      type = "app";
+      program = "${lib.getExe inputs.deploy-rs.packages.${system}.default}";
     };
+
+    checks = inputs.deploy-rs.lib.${system}.deployChecks config.flake.deploy;
+  };
 }
