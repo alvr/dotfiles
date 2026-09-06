@@ -11,7 +11,7 @@
       cfg = config.dot.services.nginx;
 
       realIPFrom = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
-      fileToList = x: lib.strings.splitString "\n" (builtins.readFile x);
+      fileToList = x: lib.filter (s: s != "") (lib.strings.splitString "\n" (builtins.readFile x));
       cfIPv4 = fileToList (
         pkgs.fetchurl {
           url = "https://www.cloudflare.com/ips-v4";
@@ -26,7 +26,21 @@
       );
 
       oidcEnabled = lib.any (h: h.oidc != null) cfg.hosts;
-      luaJson = value: "cjson.decode(${builtins.toJSON (builtins.toJSON value)})";
+      luaJson =
+        value:
+        let
+          json = builtins.toJSON value;
+          jsonFile = pkgs.writeText "oidc-json-${builtins.hashString "sha256" json}.json" json;
+        in
+        ''
+          (function()
+            local f = assert(io.open(${builtins.toJSON jsonFile}, "r"))
+            local s = f:read("*a")
+            f:close()
+            return cjson.decode(s)
+          end)()
+        '';
+
       appendConfig =
         existing: addition:
         lib.concatStringsSep "\n" (

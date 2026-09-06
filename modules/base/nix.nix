@@ -8,6 +8,7 @@ let
         "flakes"
       ];
       require-sigs = true;
+      fallback = true;
 
       substituters = [
         "https://cache.nixos.org"

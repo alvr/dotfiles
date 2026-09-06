@@ -21,7 +21,7 @@
         gnupg.sshKeyPaths = [ ];
       };
 
-      dot = inputs.self.lib.mkIfPersistence config {
+      dot = inputs.self.lib.mkIfHmPersistence config {
         hm.system.persistence.files = [ ".config/sops/age/keys.txt" ];
       };
     };

@@ -14,7 +14,7 @@
 
     services.blueman.enable = true;
 
-    dot = inputs.self.lib.mkIfPersistence config {
+    dot = inputs.self.lib.mkIfSystemPersistence config {
       system.persistence.directories = [ "/var/lib/bluetooth" ];
     };
 

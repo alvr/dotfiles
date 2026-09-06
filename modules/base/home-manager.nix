@@ -13,17 +13,19 @@ in
     nixos.base = { config, ... }: {
       imports = [ inputs.home-manager.nixosModules.home-manager ];
 
-      home-manager = lib.recursiveUpdate (commonHomeManager config) {
-        users.${config.dot.host.user.alias}.programs.home-manager.enable = true;
-      };
+      home-manager = lib.mkMerge [
+        (commonHomeManager config)
+        { users.${config.dot.host.user.alias}.programs.home-manager.enable = true; }
+      ];
     };
 
     darwin.base = { config, ... }: {
       imports = [ inputs.home-manager.darwinModules.home-manager ];
 
-      home-manager = lib.recursiveUpdate (commonHomeManager config) {
-        users.${config.dot.host.user.alias}.targets.darwin.linkApps.enable = true;
-      };
+      home-manager = lib.mkMerge [
+        (commonHomeManager config)
+        { users.${config.dot.host.user.alias}.targets.darwin.linkApps.enable = true; }
+      ];
     };
 
     homeManager.base =

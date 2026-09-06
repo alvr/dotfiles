@@ -81,6 +81,11 @@ sops-rotate:
 sops-update:
     find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops updatekeys -y "$file"; done
 
+[doc('Verify that all encrypted files can be decrypted')]
+[group('sops')]
+sops-check:
+    find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops decrypt "$file" >/dev/null; done
+
 [doc('Fetch the latest changes from the remote repository')]
 [group('utils')]
 fetch branch='main':
@@ -92,6 +97,5 @@ fetch branch='main':
 [group('utils')]
 fmt:
     nix fmt
-    nix flake lock
     nix flake check
     statix check
