@@ -1,89 +1,97 @@
 default:
     @just --list
 
-[group('deploy')]
-deploy:
-    just deploy-test
+[doc('Apply configuration on current host')]
+[group('apply')]
+apply:
+    just apply-dry
     nh os switch . --ask --diff always
 
-[group('deploy')]
-deploy-boot:
-    just deploy-test
+[doc('Apply configuration on current host, activated on boot')]
+[group('apply')]
+apply-boot:
+    just apply-test
     nh os boot . --ask --diff always
 
-[group('deploy')]
-deploy-rollback:
-    nh os rollback
-
-[group('deploy')]
-deploy-test:
+[doc('Dry test configuration on current host')]
+[group('apply')]
+apply-dry:
     nh os test . --dry --show-trace
 
+[doc('Rollback to previous configuration on current host')]
+[group('apply')]
+apply-rollback:
+    nh os rollback
+
+[doc('Deploy configuration to {{ groups }} (built on remote host)')]
+[group('deploy')]
+deploy groups='server':
+    deploy --groups {{ groups }} --targets .
+
+[doc('Deploy configuration to {{ groups }} (built on remote host, activated on boot)')]
+[group('deploy')]
+deploy-boot groups='server':
+    nix run .#deploy -- --groups {{ groups }} --targets . --boot    
+
+[doc('Deploy configuration to {{ groups }} (built on current host)')]
+[group('deploy')]
+deploy-bootstrap groups='bootstrap':
+    nix run .#deploy -- --groups {{ groups }} --targets .
+
+[doc('Dry test {{ groups }} configuration (built on remote host)')]
+[group('deploy')]
+deploy-dry groups='server':
+    nix run .#deploy -- --groups {{ groups }} --targets . --dry-activate
+
+[doc('List generations of the system profile')]
 [group('generations')]
-generations-list:
+generations:
     doas nix-env -p /nix/var/nix/profiles/system --list-generations
 
+[doc('Switch to a specific generation of the system profile')]
 [group('generations')]
 generations-switch version:
     doas nix-env -p /nix/var/nix/profiles/system --switch-generation {{ version }}
     doas /nix/var/nix/profiles/system/bin/switch-to-configuration boot
 
+[doc('Run garbage collection on the Nix store')]
 [group('nix')]
 gc:
     doas nh clean all -av
     doas nix-collect-garbage -d
     nix-collect-garbage -d
 
+[doc('Repair the Nix store')]
 [group('nix')]
 repair:
     doas nix-store --verify --check-contents --repair
 
+[doc('Update the Nix flake')]
 [group('nix')]
 up:
     nix flake update
 
+[doc('Rotate Sops keys')]
 [group('sops')]
 sops-rotate:
     find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops --rotate --in-place "$file"; done
 
+[doc('Update Sops keys')]
 [group('sops')]
 sops-update:
     find secrets/ -type f -print0 | while IFS= read -r -d $'\0' file; do sops updatekeys -y "$file"; done
 
+[doc('Fetch the latest changes from the remote repository')]
 [group('utils')]
 fetch branch='main':
     git fetch --prune
     git reset --hard
     git checkout -B {{ branch }} origin/{{ branch }}
 
+[doc('Format the Nix code')]
 [group('utils')]
 fmt:
     nix fmt
     nix flake lock
     nix flake check
     statix check
-
-[group('utils')]
-rclone action:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    remote="apeiron:/nix/persist/dotfiles"
-    local={{ invocation_dir() }}
-
-    case "{{ action }}" in
-    dl)
-        src="${remote}"
-        dst="${local}"
-    ;;
-    up)
-        src="${local}"
-        dst="${remote}"
-    ;;
-    *)
-        echo "Invalid action: {{ action }}. Must be 'dl' or 'up'."
-        exit 1
-    ;;
-    esac
-
-    rclone sync --exclude ".git/" --exclude-from .gitignore "${src}" "${dst}" --progress

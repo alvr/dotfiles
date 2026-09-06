@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   perSystem = { pkgs, ... }: {
     devenv.shells.dev-nix = {
@@ -7,9 +8,9 @@
         git
         just
         prek
-        rclone
         sops
         statix
+        inputs.deploy-rs.packages.${system}.default
       ];
 
       enterShell = ''

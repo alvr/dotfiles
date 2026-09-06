@@ -16,9 +16,9 @@
           alt-speed-up = 1;
           alt-speed-down = 3;
 
-          speed-limit-down = 10 * 1024;
+          speed-limit-down = 10 * 1000;
           speed-limit-down-enabled = true;
-          speed-limit-up = 5 * 1024;
+          speed-limit-up = 5 * 1000;
           speed-limit-up-enabled = true;
 
           upload-slots-per-torrent = 200;
@@ -58,10 +58,6 @@
           rpc-whitelist = "127.0.0.1";
           rpc-whitelist-enabled = true;
 
-          idle-seeding-limit = 43800;
-          idle-seeding-limit-enabled = true;
-          seed-ratio-limit = 2;
-          seed-ratio-limited = true;
         };
       };
 

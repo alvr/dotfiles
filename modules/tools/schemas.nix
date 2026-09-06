@@ -1,6 +1,16 @@
 { inputs, ... }:
 {
   flake.schemas = inputs.flake-schemas.exportedSchemas // {
+    deploy = {
+      version = 1;
+      doc = "The `deploy` flake output contains deploy-rs deployment targets.";
+      inventory = output: {
+        children = builtins.mapAttrs (name: _value: {
+          what = "deploy-rs node";
+        }) output.nodes;
+      };
+    };
+
     diskoConfigurations = {
       version = 1;
       doc = "The `diskoConfigurations` flake output contains disk layouts for use with disko.";

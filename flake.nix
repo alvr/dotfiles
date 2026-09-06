@@ -12,6 +12,9 @@
     devenv-root.url = "file+file:///dev/null";
     devenv-root.flake = false;
 
+    deploy-rs.url = "github:serokell/deploy-rs";
+    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+
     determinate.url = "github:DeterminateSystems/determinate";
 
     disko.url = "github:nix-community/disko";
