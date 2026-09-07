@@ -44,8 +44,8 @@
               local-data = map (domain: ''"${domain}. IN A ${cfg.address}"'') cfg.internalDomains;
 
               interface = [
+                "127.0.0.1@5353"
                 cfg.address
-                "127.0.0.1"
               ];
             };
           };

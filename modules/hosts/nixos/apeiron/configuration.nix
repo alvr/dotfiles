@@ -36,6 +36,8 @@ in
 
     dot.host = host;
 
+    dot.services.nextdns.profile = "eec13f";
+
     home-manager.users.${config.dot.host.user.alias} = {
       imports = with modules.homeManager; [
         server

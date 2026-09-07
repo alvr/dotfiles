@@ -14,6 +14,7 @@ in
         deployable
         fail2ban
         impermanence
+        nextdns
         openssh
         sops
       ];
