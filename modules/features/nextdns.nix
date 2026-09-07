@@ -9,12 +9,6 @@
     in
     {
       options.dot.services.nextdns = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "Use NextDNS (NixOS service) as primary resolver, with plain fallbacks.";
-        };
-
         profile = lib.mkOption {
           type = lib.types.str;
           default = "";
@@ -33,7 +27,7 @@
         };
       };
 
-      config = lib.mkIf cfg.enable {
+      config = {
         assertions = [
           {
             assertion = cfg.profile != "";

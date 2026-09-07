@@ -27,8 +27,7 @@ in
 
     dot.host = host;
 
-    # TODO: replace with real NextDNS profile ID from my.nextdns.io (6 chars).
-    dot.services.nextdns.profile = "000000";
+    dot.services.nextdns.profile = "c33aea";
 
     home-manager.users.${config.dot.host.user.alias} = {
       imports = with modules.homeManager; [

@@ -35,9 +35,9 @@
       jackett
       jellyfin
       radarr
+      rtorrent
       seerr
       sonarr
-      transmission
 
       # Services - Monitoring
       grafana
