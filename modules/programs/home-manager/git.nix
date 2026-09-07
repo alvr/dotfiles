@@ -4,7 +4,7 @@
       enable = true;
       settings = {
         color.ui = "auto";
-        credential.helper = "store";
+        credential.helper = "cache --timeout=3600";
         help.autocorrect = 1;
         init.defaultBranch = "main";
         push.default = "simple";

@@ -28,6 +28,8 @@
           "/nix/persist/lost+found"
           "/nix/persist/var/lib/systemd"
           "/nix/persist/var/log"
+          "/nix/persist/users/*/.config/sops/age"
+          "/nix/persist/users/*/sops/age"
         ]
         ++ cfg.exclude;
 

@@ -32,7 +32,7 @@
           directory = "/var/lib/booklore";
           user = "grimmory";
           group = "grimmory";
-          mode = "u=rwx,g=rx,o=";
+          mode = "u=rwx,g=,o=";
         }
       ];
 

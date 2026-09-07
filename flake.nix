@@ -16,6 +16,7 @@
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
     determinate.url = "github:DeterminateSystems/determinate";
+    determinate.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";

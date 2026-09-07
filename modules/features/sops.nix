@@ -9,6 +9,8 @@
         age.keyFile = "/nix/secret/age-keys.txt";
         gnupg.sshKeyPaths = [ ];
       };
+
+      systemd.tmpfiles.rules = [ "d /nix/secret 0700 root root -" ];
     };
 
     homeManager.sops = { config, ... }: {

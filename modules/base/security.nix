@@ -1,9 +1,15 @@
 {
-  flake.modules.nixos.base = {
+  flake.modules.nixos.base = { config, ... }: {
     security = {
       doas = {
         enable = true;
-        wheelNeedsPassword = false;
+        extraRules = [
+          {
+            users = [ config.dot.host.user.alias ];
+            keepEnv = true;
+            noPass = false;
+          }
+        ];
       };
       sudo.enable = false;
     };

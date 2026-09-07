@@ -6,7 +6,6 @@
       pipewire
       pipewire.jack
       playerctl
-      pulseaudioFull
       qpwgraph
     ];
 

@@ -27,6 +27,8 @@
 
       sops.secrets."readeck/env" = {
         sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/readeck.yaml";
+        owner = "readeck";
+        group = "readeck";
         mode = "0400";
         restartUnits = [ "readeck.service" ];
       };
