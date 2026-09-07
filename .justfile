@@ -10,7 +10,7 @@ apply:
 [doc('Apply configuration on current host, activated on boot')]
 [group('apply')]
 apply-boot:
-    just apply-test
+    just apply-dry
     nh os boot . --ask --diff always
 
 [doc('Dry test configuration on current host')]
