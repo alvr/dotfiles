@@ -17,7 +17,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "electh";
     repo = "ReactFlux";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-ECeNkmp03NWmHuA2khWpdJQUTBt1uaQucbF5X8KZXRc=";
+    hash = "sha256-YpOYNBvDe0w7q4WocHtVm8CmowjqP5YdpmRCoLg8vaQ=";
   };
 
   nativeBuildInputs = [
@@ -28,7 +28,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-SAAzakX65xHagWZKY3nFcV8DiQL0LR6WRtXVCnSQ+tw=";
+    hash = "sha256-I4WJ+f0mIKXdrKdjhc3j6LfvG+mKNY8qwrX3xYJrpAs=";
     pnpm = pnpm_11;
     fetcherVersion = 4;
   };
