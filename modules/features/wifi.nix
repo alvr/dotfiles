@@ -17,6 +17,8 @@
               id = "$HOME_SSID";
               type = "wifi";
               uuid = "bed12b7e-b230-4f68-870d-8ab0cf89eb26";
+              autoconnect = true;
+              autoconnect-priority = 10;
             };
             ipv4 = inputs.self.lib.mkIpv4 network.gateway network.wifi.ipv4;
             ipv6 = {

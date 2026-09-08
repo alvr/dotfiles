@@ -1,15 +1,16 @@
 { inputs, ... }:
 {
   flake.modules.nixos.base = { config, pkgs, ... }: {
-    sops.secrets.password = {
+    sops.secrets."${config.dot.host.user.alias}-password" = {
+      key = config.dot.host.user.alias;
       neededForUsers = true;
-      sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/secrets.yaml";
+      sopsFile = "${inputs.secrets}/common/user-passwords.yaml";
     };
 
     users.users.${config.dot.host.user.alias} = {
       isNormalUser = true;
       shell = pkgs.fish;
-      hashedPasswordFile = config.sops.secrets.password.path;
+      hashedPasswordFile = config.sops.secrets."${config.dot.host.user.alias}-password".path;
       openssh.authorizedKeys.keys = config.dot.host.user.sshKeys;
 
       extraGroups = [

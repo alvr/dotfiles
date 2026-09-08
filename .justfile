@@ -4,13 +4,11 @@ default:
 [doc('Apply configuration on current host')]
 [group('apply')]
 apply:
-    just apply-dry
     nh os switch . --ask --diff always
 
 [doc('Apply configuration on current host, activated on boot')]
 [group('apply')]
 apply-boot:
-    just apply-dry
     nh os boot . --ask --diff always
 
 [doc('Dry test configuration on current host')]

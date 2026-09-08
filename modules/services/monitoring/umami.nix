@@ -31,8 +31,6 @@
 
       sops.secrets."umami/app-secret" = {
         sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/umami.yaml";
-        owner = "umami";
-        group = "umami";
         mode = "0400";
         restartUnits = [ "umami.service" ];
       };
