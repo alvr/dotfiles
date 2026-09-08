@@ -12,6 +12,7 @@ in
 
       # Programs
       btop
+      direnv
       eza
       fish
       git
