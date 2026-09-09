@@ -7,7 +7,7 @@
           {
             users = [ config.dot.host.user.alias ];
             keepEnv = true;
-            noPass = false;
+            noPass = true;
           }
         ];
       };

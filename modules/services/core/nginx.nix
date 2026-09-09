@@ -306,6 +306,8 @@
                   }
                   // lib.optionalAttrs service.internal {
                     extraConfig = ''
+                      allow 127.0.0.1;
+                      allow ::1;
                       allow ${config.dot.host.network.subnet};
                       allow ${config.dot.services.tailscale.subnet};
                       deny all;
