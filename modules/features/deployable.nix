@@ -52,7 +52,7 @@ in
   flake = {
     deploy.nodes = lib.mapAttrs deployNode deployableConfigurations;
 
-    modules.nixos.deployable = { config, ... }: {
+    modules.nixos.deployable = {
       config.system.nixos.tags = [ "deployable" ];
       config.nix.settings.trusted-users = [ config.dot.host.user.alias ];
     };

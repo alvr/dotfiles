@@ -49,7 +49,7 @@
       actual-budget
       miniflux
       nextcloud
-      paperless
+      papra
       readeck
 
       # Services - Security
