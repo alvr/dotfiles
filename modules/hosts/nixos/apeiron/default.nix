@@ -34,6 +34,7 @@
       grimmory
       jackett
       jellyfin
+      jellyfin-apeiron
       radarr
       rtorrent
       seerr
