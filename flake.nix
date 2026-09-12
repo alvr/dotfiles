@@ -38,6 +38,10 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Pinned to 10.11.11 until plugins support v12 (unstable is on v12).
+    # Last nixpkgs commit with 10.11.11: c27cdad491a991b11ed731760aa2ef8db0cb0410 (2026-08-27).
+    nixpkgs-jellyfin.url = "github:NixOS/nixpkgs/c27cdad491a991b11ed731760aa2ef8db0cb0410";
+
     nix4nvchad.url = "github:nix-community/nix4nvchad";
     nix4nvchad.inputs.nixpkgs.follows = "nixpkgs";
 
