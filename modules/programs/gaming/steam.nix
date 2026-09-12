@@ -2,23 +2,28 @@
   flake.modules.nixos.steam =
     { pkgs, ... }:
     {
-      programs.steam = {
-        enable = true;
-        extest.enable = true;
-        gamescopeSession.enable = true;
-        protontricks.enable = true;
-        remotePlay.openFirewall = true;
-        localNetworkGameTransfers.openFirewall = true;
+      programs = {
+        gamemode.enable = true;
+        gamescope.capSysNice = true;
 
-        extraPackages = with pkgs; [
-          gamemode
-          gamescope
-          mangohud
-        ];
-        extraCompatPackages = with pkgs; [
-          proton-ge-bin
-          proton-cachyos_x86_64_v3
-        ];
+        steam = {
+          enable = true;
+          extest.enable = true;
+          gamescopeSession.enable = true;
+          protontricks.enable = true;
+          remotePlay.openFirewall = true;
+          localNetworkGameTransfers.openFirewall = true;
+
+          extraPackages = with pkgs; [
+            gamemode
+            gamescope
+            mangohud
+          ];
+          extraCompatPackages = with pkgs; [
+            proton-ge-bin
+            proton-cachyos_x86_64_v3
+          ];
+        };
       };
     };
 }
