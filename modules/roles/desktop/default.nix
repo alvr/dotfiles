@@ -8,6 +8,7 @@ in
       base
       audio
       bluetooth
+      fonts
       nextdns
       printing
       sops

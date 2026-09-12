@@ -20,6 +20,7 @@
     {
       services.jellyfin = {
         enable = true;
+        openFirewall = true;
         package = pkgs-jellyfin.jellyfin;
       };
 
