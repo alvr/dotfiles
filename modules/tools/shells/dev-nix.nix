@@ -1,6 +1,5 @@
-{ inputs, ... }:
 {
-  perSystem = { pkgs, ... }: {
+  perSystem = { pkgs, inputs', ... }: {
     devenv.shells.dev-nix = {
       languages.nix.enable = true;
 
@@ -10,7 +9,7 @@
         prek
         sops
         statix
-        inputs.deploy-rs.packages.${system}.default
+        inputs'.deploy-rs.packages.default
       ];
 
       enterShell = ''
