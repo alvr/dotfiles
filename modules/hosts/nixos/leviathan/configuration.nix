@@ -22,6 +22,7 @@ in
       flake.diskoConfigurations.leviathan
 
       # Features
+      gaming
       wifi
     ];
 
