@@ -14,6 +14,8 @@ in
       sops
     ];
 
+    catppuccin.cursors.enable = true;
+
     users.users.${config.dot.host.user.alias}.extraGroups = [
       "audio"
       "camera"

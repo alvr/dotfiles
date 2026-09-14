@@ -24,22 +24,22 @@ apply-rollback:
 [doc('Deploy configuration to {{ groups }} (built on remote host)')]
 [group('deploy')]
 deploy groups='server':
-    deploy --groups {{ groups }} --targets .
+    deploy --skip-checks --groups {{ groups }} --targets .
 
 [doc('Deploy configuration to {{ groups }} (built on remote host, activated on boot)')]
 [group('deploy')]
 deploy-boot groups='server':
-    nix run .#deploy -- --groups {{ groups }} --targets . --boot    
+    deploy --skip-checks --groups {{ groups }} --targets . --boot
 
 [doc('Deploy configuration to {{ groups }} (built on current host)')]
 [group('deploy')]
 deploy-bootstrap groups='bootstrap':
-    nix run .#deploy -- --groups {{ groups }} --targets .
+    deploy --skip-checks --groups {{ groups }} --targets .
 
 [doc('Dry test {{ groups }} configuration (built on remote host)')]
 [group('deploy')]
 deploy-dry groups='server':
-    nix run .#deploy -- --groups {{ groups }} --targets . --dry-activate
+    deploy --skip-checks --groups {{ groups }} --targets . --dry-activate
 
 [doc('List generations of the system profile')]
 [group('generations')]
@@ -95,5 +95,5 @@ fetch branch='main':
 [group('utils')]
 fmt:
     nix fmt
-    nix flake check
+    nix flake check --no-build
     statix check

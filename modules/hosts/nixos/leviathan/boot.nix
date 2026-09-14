@@ -1,5 +1,7 @@
 {
   flake.modules.nixos.leviathan = { pkgs, ... }: {
+    catppuccin.limine.enable = true;
+
     boot = {
       initrd.availableKernelModules = [
         "ahci"

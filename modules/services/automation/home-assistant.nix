@@ -3,6 +3,7 @@
   flake.modules.nixos.home-assistant =
     {
       config,
+      lib,
       pkgs,
       ...
     }:
@@ -11,13 +12,13 @@
       port = 8123;
     in
     {
+      catppuccin.home-assistant.enable = true;
+
       services.home-assistant = {
         enable = true;
 
         config = {
           default_config = { };
-
-          frontend = { };
 
           homeassistant = {
             name = "Hogar";
@@ -49,7 +50,6 @@
 
         customLovelaceModules = with pkgs.home-assistant-custom-lovelace-modules; [
           card-mod
-          material-you-utilities
         ];
 
         extraComponents = [
@@ -116,10 +116,6 @@
 
             pyipp # IPP (Internet Printing Protocol) for printers
           ];
-
-        themes = with pkgs.home-assistant-themes; [
-          material-you-theme
-        ];
       };
 
       dot.services.nginx.hosts = [

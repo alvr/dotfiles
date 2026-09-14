@@ -7,11 +7,23 @@ let
 
     users.${config.dot.host.user.alias}.home.stateVersion = config.dot.host.state.version;
   };
+
+  catppuccinConfig = {
+    enable = true;
+    autoEnable = false;
+    flavor = "macchiato";
+    accent = "lavender";
+  };
 in
 {
   flake.modules = {
     nixos.base = { config, ... }: {
-      imports = [ inputs.home-manager.nixosModules.home-manager ];
+      imports = [
+        inputs.catppuccin.nixosModules.catppuccin
+        inputs.home-manager.nixosModules.home-manager
+      ];
+
+      catppuccin = catppuccinConfig;
 
       home-manager = lib.mkMerge [
         (commonHomeManager config)
@@ -20,7 +32,12 @@ in
     };
 
     darwin.base = { config, ... }: {
-      imports = [ inputs.home-manager.darwinModules.home-manager ];
+      imports = [
+        inputs.catppuccin.darwinModules.catppuccin
+        inputs.home-manager.darwinModules.home-manager
+      ];
+
+      catppuccin = catppuccinConfig;
 
       home-manager = lib.mkMerge [
         (commonHomeManager config)
@@ -36,6 +53,10 @@ in
         ...
       }:
       {
+        imports = [ inputs.catppuccin.homeModules.catppuccin ];
+
+        catppuccin = catppuccinConfig;
+
         dot.host = osConfig.dot.host;
 
         systemd.user.startServices = "sd-switch";
