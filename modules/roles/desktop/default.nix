@@ -11,6 +11,7 @@ in
       fonts
       nextdns
       printing
+      productivity
       sops
     ];
 

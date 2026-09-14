@@ -11,15 +11,8 @@ in
       sops
       impermanence
 
-      # Programs - CLI
-      bat
-      btop
-      eza
-      fish
-      yazi
-      zoxide
-
-      # Programs - Development
+      # Programs
+      cli
       direnv
       git
     ];

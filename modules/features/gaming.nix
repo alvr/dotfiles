@@ -7,6 +7,9 @@ in
     { pkgs, ... }:
     {
       imports = with modules; [
+        coolercontrol
+        hytale
+        openrgb
         steam
       ];
 

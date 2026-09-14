@@ -10,22 +10,11 @@ in
       # Features
       sops
 
-      # Programs - CLI
-      bat
-      btop
-      eza
-      fish
+      # Programs
+      cli
+      development
       kitty
       starship
-      yazi
-      zoxide
-
-      # Programs - Development
-      direnv
-      gh
-      git
-      lazygit
-      nvchad
     ];
   };
 }
