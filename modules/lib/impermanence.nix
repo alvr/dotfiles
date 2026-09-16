@@ -1,4 +1,3 @@
-{ ... }:
 {
   config.flake.lib = {
     mkIfHmPersistence = config: settings: if config.home ? persistence then settings else { };

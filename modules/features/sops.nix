@@ -8,6 +8,7 @@
         defaultSopsFile = "${inputs.secrets}/${config.dot.host.name}/secrets.yaml";
         age.keyFile = "/nix/secret/age-keys.txt";
         gnupg.sshKeyPaths = [ ];
+        useSystemdActivation = true;
       };
 
       systemd.tmpfiles.rules = [ "d /nix/secret 0700 root root -" ];

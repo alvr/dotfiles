@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.jellyfin-apeiron = { ... }: {
+  flake.modules.nixos.jellyfin-apeiron = {
     # apeiron: Ryzen 7 8845HS w/ Radeon 780M (RDNA3/VCN4) via amdgpu.
     services.jellyfin = {
       hardwareAcceleration = {

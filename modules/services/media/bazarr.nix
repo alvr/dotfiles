@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.modules.nixos."bazarr" =
+  flake.modules.nixos.bazarr =
     { config, lib, ... }:
     let
       subdomain = "bazarr";

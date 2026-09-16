@@ -1,11 +1,7 @@
 { inputs, ... }:
 {
   flake.modules.nixos.miniflux =
-    {
-      config,
-      lib,
-      ...
-    }:
+    { config, lib, ... }:
     let
       subdomain = "rss";
       port = 9564;
