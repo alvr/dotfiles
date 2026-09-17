@@ -31,15 +31,5 @@
         restartUnits = [ "readeck.service" ];
       };
 
-      systemd.services.readeck = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
     };
 }

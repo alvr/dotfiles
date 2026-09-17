@@ -56,17 +56,6 @@
         ];
       };
 
-      systemd.services.jellyfin = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/jellyfin 0700 jellyfin jellyfin -"
 

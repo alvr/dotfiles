@@ -21,9 +21,5 @@
         ];
       };
 
-      systemd.services.seerr = {
-        requires = [ "nginx.service" ];
-        after = [ "nginx.service" ];
-      };
     };
 }

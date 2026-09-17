@@ -53,17 +53,7 @@
         };
       };
 
-      systemd.services.miniflux = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        serviceConfig.SupplementaryGroups = [ "miniflux" ];
-      };
+      systemd.services.miniflux.serviceConfig.SupplementaryGroups = [ "miniflux" ];
 
       users.users.miniflux = {
         group = "miniflux";

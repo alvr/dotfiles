@@ -31,15 +31,5 @@
         "/var/lib/private/actual"
       ];
 
-      systemd.services.actual = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
     };
 }

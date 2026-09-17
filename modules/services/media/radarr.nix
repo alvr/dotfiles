@@ -56,22 +56,15 @@
         restartUnits = [ "prometheus-exportarr-radarr-exporter.service" ];
       };
 
-      systemd.services = {
-        radarr = {
-          requires = [ "nginx.service" ];
-          after = [ "nginx.service" ];
-        };
-
-        prometheus-exportarr-radarr-exporter = lib.mkIf config.services.prometheus.enable {
-          requires = [
-            "radarr.service"
-            "prometheus.service"
-          ];
-          after = [
-            "radarr.service"
-            "prometheus.service"
-          ];
-        };
+      systemd.services.prometheus-exportarr-radarr-exporter = lib.mkIf config.services.prometheus.enable {
+        requires = [
+          "radarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "radarr.service"
+          "prometheus.service"
+        ];
       };
 
       systemd.tmpfiles.rules = [

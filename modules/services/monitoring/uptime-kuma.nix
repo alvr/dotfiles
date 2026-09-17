@@ -28,9 +28,5 @@
         "/var/lib/private/uptime-kuma"
       ];
 
-      systemd.services.uptime-kuma = {
-        requires = [ "nginx.service" ];
-        after = [ "nginx.service" ];
-      };
     };
 }

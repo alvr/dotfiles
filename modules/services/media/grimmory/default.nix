@@ -44,17 +44,6 @@
         restartUnits = [ "grimmory.service" ];
       };
 
-      systemd.services.grimmory = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/booklore 0700 grimmory grimmory -"
         "d /data/booklore/books 0700 grimmory grimmory -"

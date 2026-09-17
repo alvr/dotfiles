@@ -133,16 +133,8 @@
       systemd = {
         services = {
           flood = {
-            requires = [
-              "nginx.service"
-              "pocket-id.service"
-              "rtorrent.service"
-            ];
-            after = [
-              "nginx.service"
-              "pocket-id.service"
-              "rtorrent.service"
-            ];
+            requires = [ "rtorrent.service" ];
+            after = [ "rtorrent.service" ];
 
             serviceConfig = {
               ReadWritePaths = [
@@ -153,11 +145,6 @@
               SupplementaryGroups = [ config.services.rtorrent.group ];
               User = config.services.rtorrent.user;
             };
-          };
-
-          rtorrent = {
-            requires = [ "nginx.service" ];
-            after = [ "nginx.service" ];
           };
 
           nginx.serviceConfig.SupplementaryGroups = [ config.services.rtorrent.group ];

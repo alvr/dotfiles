@@ -35,9 +35,5 @@
         restartUnits = [ "umami.service" ];
       };
 
-      systemd.services.umami = {
-        requires = [ "nginx.service" ];
-        after = [ "nginx.service" ];
-      };
     };
 }

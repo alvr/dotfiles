@@ -45,17 +45,6 @@
         restartUnits = [ "papra.service" ];
       };
 
-      systemd.services.papra = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/papra 0700 papra papra -"
       ];

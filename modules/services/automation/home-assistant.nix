@@ -149,17 +149,6 @@
         path = "/var/lib/hass/secrets.yaml";
       };
 
-      systemd.services.home-assistant = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/hass 0700 hass hass -"
       ];

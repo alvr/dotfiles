@@ -14,5 +14,10 @@
         mode = "0400";
       };
     };
+
+    systemd.services.duckdns = {
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+    };
   };
 }

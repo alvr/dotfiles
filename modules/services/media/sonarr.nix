@@ -56,22 +56,15 @@
         restartUnits = [ "prometheus-exportarr-sonarr-exporter.service" ];
       };
 
-      systemd.services = {
-        sonarr = {
-          requires = [ "nginx.service" ];
-          after = [ "nginx.service" ];
-        };
-
-        prometheus-exportarr-sonarr-exporter = lib.mkIf config.services.prometheus.enable {
-          requires = [
-            "sonarr.service"
-            "prometheus.service"
-          ];
-          after = [
-            "sonarr.service"
-            "prometheus.service"
-          ];
-        };
+      systemd.services.prometheus-exportarr-sonarr-exporter = lib.mkIf config.services.prometheus.enable {
+        requires = [
+          "sonarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "sonarr.service"
+          "prometheus.service"
+        ];
       };
 
       systemd.tmpfiles.rules = [

@@ -31,11 +31,6 @@
         }
       ];
 
-      systemd.services.jackett = {
-        requires = [ "nginx.service" ];
-        after = [ "nginx.service" ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/jackett 0700 jackett jackett -"
       ];

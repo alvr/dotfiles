@@ -86,21 +86,5 @@
           restartUnits = [ "prometheus.service" ];
         };
       };
-
-      systemd.services.wakapi = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        serviceConfig = {
-          RestartSec = "5s";
-          RestartMaxDelaySec = "1min";
-          RestartSteps = 5;
-        };
-      };
     };
 }

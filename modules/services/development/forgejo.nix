@@ -158,17 +158,6 @@
         };
       };
 
-      systemd.services.forgejo = {
-        requires = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-        after = [
-          "nginx.service"
-          "pocket-id.service"
-        ];
-      };
-
       systemd.tmpfiles.rules = [
         "d /var/lib/forgejo 0700 forgejo forgejo -"
         "d /data/backups/forgejo 0744 forgejo forgejo -"

@@ -55,22 +55,15 @@
         restartUnits = [ "prometheus-exportarr-bazarr-exporter.service" ];
       };
 
-      systemd.services = {
-        bazarr = {
-          requires = [ "nginx.service" ];
-          after = [ "nginx.service" ];
-        };
-
-        prometheus-exportarr-bazarr-exporter = lib.mkIf config.services.prometheus.enable {
-          requires = [
-            "bazarr.service"
-            "prometheus.service"
-          ];
-          after = [
-            "bazarr.service"
-            "prometheus.service"
-          ];
-        };
+      systemd.services.prometheus-exportarr-bazarr-exporter = lib.mkIf config.services.prometheus.enable {
+        requires = [
+          "bazarr.service"
+          "prometheus.service"
+        ];
+        after = [
+          "bazarr.service"
+          "prometheus.service"
+        ];
       };
 
       systemd.tmpfiles.rules = [
