@@ -7,8 +7,12 @@ in
     imports = with modules; [
       bat
       btop
+      delta
       eza
+      fd
       fish
+      fzf
+      ripgrep
       yazi
       zoxide
     ];
