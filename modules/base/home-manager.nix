@@ -10,9 +10,9 @@ let
 
   catppuccinConfig = {
     enable = true;
-    autoEnable = false;
+    autoEnable = true;
     flavor = "macchiato";
-    accent = "lavender";
+    accent = "peach";
   };
 in
 {
