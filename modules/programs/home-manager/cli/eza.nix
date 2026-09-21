@@ -9,6 +9,9 @@
       extraOptions = [
         "--group-directories-first"
         "--header"
+        "--color-scale"
+        "all"
+        "--hyperlink=auto"
       ];
     };
   };
