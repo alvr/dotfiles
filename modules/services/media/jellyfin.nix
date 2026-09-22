@@ -1,27 +1,14 @@
-{ inputs, ... }:
 {
   flake.modules.nixos.jellyfin =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { config, lib, ... }:
     let
       subdomain = "watch";
       port = 8096;
-
-      # Pinned to 10.11.11 until plugins support v12.
-      pkgs-jellyfin = import inputs.nixpkgs-jellyfin {
-        inherit (pkgs.stdenv.hostPlatform) system;
-        config.allowUnfree = true;
-      };
     in
     {
       services.jellyfin = {
         enable = true;
         openFirewall = true;
-        package = pkgs-jellyfin.jellyfin;
       };
 
       dot = {

@@ -715,22 +715,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-jellyfin": {
-      "locked": {
-        "lastModified": 1787814960,
-        "narHash": "sha256-PYZq1qzCJXC2zGI0mH07vrZBsw6DRBAOX0jN1pPtqOQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c27cdad491a991b11ed731760aa2ef8db0cb0410",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c27cdad491a991b11ed731760aa2ef8db0cb0410",
-        "type": "github"
-      }
-    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -845,7 +829,6 @@
         "nix-darwin": "nix-darwin",
         "nix4nvchad": "nix4nvchad",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-jellyfin": "nixpkgs-jellyfin",
         "nur": "nur",
         "packages": "packages",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",

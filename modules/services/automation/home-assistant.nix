@@ -1,12 +1,7 @@
 { inputs, ... }:
 {
   flake.modules.nixos.home-assistant =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { config, pkgs, ... }:
     let
       subdomain = "ha";
       port = 8123;
