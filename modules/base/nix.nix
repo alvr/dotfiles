@@ -1,10 +1,10 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 let
   commonNix =
     { config, ... }:
     {
       nix = {
-        registry.dotfiles.flake = inputs.self;
+        registry.dotfiles.flake = self;
 
         extraOptions = ''
           !include ${config.sops.templates."nix-access-tokens".path}

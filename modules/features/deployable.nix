@@ -1,13 +1,13 @@
 {
-  config,
   inputs,
   lib,
+  self,
   ...
 }:
 let
   deployableConfigurations = lib.filterAttrs (
     _name: nixosConfiguration: builtins.elem "deployable" nixosConfiguration.config.system.nixos.tags
-  ) config.flake.nixosConfigurations;
+  ) self.nixosConfigurations;
 
   hostAddress =
     host:
@@ -63,6 +63,6 @@ in
       program = "${lib.getExe inputs.deploy-rs.packages.${system}.default}";
     };
 
-    checks = inputs.deploy-rs.lib.${system}.deployChecks config.flake.deploy;
+    checks = inputs.deploy-rs.lib.${system}.deployChecks self.deploy;
   };
 }

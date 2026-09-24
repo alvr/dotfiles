@@ -1,4 +1,4 @@
-{ config, ... }:
+{ self, ... }:
 let
   host = {
     name = "apeiron";
@@ -19,15 +19,12 @@ let
       ];
     };
   };
-
-  inherit (config) flake;
-  inherit (config.flake) modules;
 in
 {
   flake.modules.nixos.apeiron = { config, ... }: {
-    imports = with modules.nixos; [
+    imports = with self.modules.nixos; [
       server
-      flake.diskoConfigurations.apeiron
+      self.diskoConfigurations.apeiron
 
       # Features
       podman
@@ -39,7 +36,7 @@ in
     dot.services.nextdns.profile = "eec13f";
 
     home-manager.users.${config.dot.host.user.alias} = {
-      imports = with modules.homeManager; [
+      imports = with self.modules.homeManager; [
         server
       ];
     };

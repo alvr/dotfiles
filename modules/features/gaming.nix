@@ -1,12 +1,9 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.nixos;
-in
+{ self, ... }:
 {
   flake.modules.nixos.gaming =
     { pkgs, ... }:
     {
-      imports = with modules; [
+      imports = with self.modules.nixos; [
         coolercontrol
         hytale
         openrgb

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ self, ... }:
 {
   flake.modules.nixos.base =
     {
@@ -26,7 +26,7 @@
               type = "ethernet";
               interface-name = name;
             };
-            ipv4 = inputs.self.lib.mkIpv4 network.gateway interface.ipv4;
+            ipv4 = self.lib.mkIpv4 network.gateway interface.ipv4;
             ipv6.method = "auto";
           }) network.interfaces;
         };

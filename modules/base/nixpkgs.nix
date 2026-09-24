@@ -1,11 +1,11 @@
 {
-  config,
   inputs,
+  self,
   withSystem,
   ...
 }:
 let
-  overlay = config.flake.overlays.default;
+  overlay = self.overlays.default;
 
   commonNixpkgs = { config, ... }: {
     nixpkgs = {

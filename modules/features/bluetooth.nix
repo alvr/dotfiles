@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ self, ... }:
 {
   flake.modules.nixos.bluetooth = { config, pkgs, ... }: {
     hardware.bluetooth = {
@@ -14,7 +14,7 @@
 
     services.blueman.enable = true;
 
-    dot = inputs.self.lib.mkIfSystemPersistence config {
+    dot = self.lib.mkIfSystemPersistence config {
       system.persistence.directories = [ "/var/lib/bluetooth" ];
     };
 

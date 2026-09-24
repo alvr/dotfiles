@@ -1,4 +1,4 @@
-{ config, ... }:
+{ self, ... }:
 let
   host = {
     name = "leviathan";
@@ -11,15 +11,12 @@ let
       name = "Álvaro Salcedo García";
     };
   };
-
-  inherit (config) flake;
-  inherit (config.flake) modules;
 in
 {
   flake.modules.nixos.leviathan = { config, ... }: {
-    imports = with modules.nixos; [
+    imports = with self.modules.nixos; [
       desktop
-      flake.diskoConfigurations.leviathan
+      self.diskoConfigurations.leviathan
 
       # Features
       gaming
@@ -31,7 +28,7 @@ in
     dot.services.nextdns.profile = "c33aea";
 
     home-manager.users.${config.dot.host.user.alias} = {
-      imports = with modules.homeManager; [
+      imports = with self.modules.homeManager; [
         desktop
       ];
     };

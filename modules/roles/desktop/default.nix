@@ -1,10 +1,7 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.nixos;
-in
+{ self, ... }:
 {
   flake.modules.nixos.desktop = { config, ... }: {
-    imports = with modules; [
+    imports = with self.modules.nixos; [
       base
       audio
       bluetooth

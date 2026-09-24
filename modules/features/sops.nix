@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 {
   flake.modules = {
     nixos.sops = { config, ... }: {
@@ -24,7 +24,7 @@
         gnupg.sshKeyPaths = [ ];
       };
 
-      dot = inputs.self.lib.mkIfHmPersistence config {
+      dot = self.lib.mkIfHmPersistence config {
         hm.system.persistence.files = [ ".config/sops/age/keys.txt" ];
       };
     };

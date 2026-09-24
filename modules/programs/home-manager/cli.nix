@@ -1,10 +1,7 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.homeManager;
-in
+{ self, ... }:
 {
   flake.modules.homeManager.cli = {
-    imports = with modules; [
+    imports = with self.modules.homeManager; [
       bat
       btop
       delta

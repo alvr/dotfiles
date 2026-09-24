@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 {
   flake.modules.nixos.wifi =
     { config, ... }:
@@ -20,7 +20,7 @@
               autoconnect = true;
               autoconnect-priority = 10;
             };
-            ipv4 = inputs.self.lib.mkIpv4 network.gateway network.wifi.ipv4;
+            ipv4 = self.lib.mkIpv4 network.gateway network.wifi.ipv4;
             ipv6 = {
               addr-gen-mode = "default";
               method = "auto";

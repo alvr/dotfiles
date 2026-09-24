@@ -1,11 +1,7 @@
-{
-  config,
-  inputs,
-  ...
-}:
+{ inputs, self, ... }:
 {
   flake.nixosConfigurations.apeiron = inputs.nixpkgs.lib.nixosSystem {
-    modules = with config.flake.modules.nixos; [
+    modules = with self.modules.nixos; [
       # System
       apeiron
 

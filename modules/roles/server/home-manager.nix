@@ -1,10 +1,7 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.homeManager;
-in
+{ self, ... }:
 {
   flake.modules.homeManager.server = {
-    imports = with modules; [
+    imports = with self.modules.homeManager; [
       base
 
       # Features

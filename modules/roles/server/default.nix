@@ -1,7 +1,4 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.nixos;
-in
+{ self, ... }:
 {
   flake.modules.nixos.server =
     { config, lib, ... }:
@@ -9,7 +6,7 @@ in
       network = config.dot.host.network;
     in
     {
-      imports = with modules; [
+      imports = with self.modules.nixos; [
         base
         deployable
         fail2ban

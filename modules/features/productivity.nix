@@ -1,10 +1,7 @@
-{ config, ... }:
-let
-  modules = config.flake.modules.nixos;
-in
+{ self, ... }:
 {
   flake.modules.nixos.productivity = {
-    imports = with modules; [
+    imports = with self.modules.nixos; [
       betterbird
       browsers
     ];
