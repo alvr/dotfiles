@@ -26,6 +26,7 @@
 
       # Services - Media
       bazarr
+      bookorbit
       flaresolverr
       grimmory
       jackett

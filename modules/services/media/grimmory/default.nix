@@ -45,9 +45,10 @@
       };
 
       systemd.tmpfiles.rules = [
-        "d /var/lib/booklore 0700 grimmory grimmory -"
-        "d /data/booklore/books 0700 grimmory grimmory -"
-        "d /data/booklore/drops 0700 grimmory grimmory -"
+        # Z: adjust the existing trees recursively so the bookorbit service
+        # (grimmory/media groups) can read books and covers during migration.
+        "Z /var/lib/booklore 0750 grimmory grimmory -"
+        "Z /data/booklore/books 0770 grimmory media -"
       ];
 
       users.users.grimmory.extraGroups = [ "media" ];
