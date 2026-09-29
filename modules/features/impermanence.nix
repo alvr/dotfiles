@@ -79,7 +79,7 @@
           };
         };
 
-        config.home.persistence."/nix/persist/users/${config.dot.host.user.alias}" = {
+        config.home.persistence."/nix/persist" = {
           inherit (cfg) directories files;
         };
       };

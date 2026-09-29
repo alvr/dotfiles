@@ -19,7 +19,7 @@
 
       sops = {
         defaultSopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/secrets.yaml";
-        age.keyFile = "/home/${config.dot.host.user.alias}/.config/sops/age/keys.txt";
+        age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
         age.generateKey = true;
         gnupg.sshKeyPaths = [ ];
       };
