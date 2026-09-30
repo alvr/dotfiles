@@ -136,6 +136,8 @@
             requires = [ "rtorrent.service" ];
             after = [ "rtorrent.service" ];
 
+            path = [ pkgs.mediainfo ];
+
             serviceConfig = {
               ReadWritePaths = [
                 completedDir
