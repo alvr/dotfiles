@@ -1,3 +1,4 @@
+{ self, ... }:
 {
   flake.modules.homeManager.git = { config, ... }: {
     programs.git = {
@@ -13,10 +14,14 @@
           ci = "commit";
           st = "status";
           br = "branch";
-          lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+          lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
         };
         user = { inherit (config.dot.host.user) email name; };
       };
+    };
+
+    dot = self.lib.mkIfHmPersistence config {
+      hm.system.persistence.files = [ ".config/git/ignore" ];
     };
   };
 }
