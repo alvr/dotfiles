@@ -3,7 +3,7 @@
   flake.modules.nixos.bookorbit =
     { config, ... }:
     let
-      subdomain = "books-v2";
+      subdomain = "books";
       port = 6061;
     in
     {

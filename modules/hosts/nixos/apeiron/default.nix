@@ -28,7 +28,6 @@
       bazarr
       bookorbit
       flaresolverr
-      grimmory
       jackett
       jellyfin
       jellyfin-apeiron
