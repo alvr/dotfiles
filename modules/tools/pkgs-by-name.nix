@@ -15,8 +15,11 @@
       config.packages // { local = config.packages; }
     )
     // {
-      # compat shim for sops-nix still on buildGo125Module, drop when upstream moves to buildGo126Module+
-      # https://github.com/Mic92/sops-nix/issues/983
-      buildGo125Module = prev.buildGoModule;
+      # WORKAROUND for Podman >= 5.8.7 (CVE-2025-11395 hardening) / Docker 29.7.0
+      # Backport of https://gitea.com/gitea/runner/pulls/1130 adapted to Forgejo's
+      # Upstream daemon bug: https://github.com/moby/moby/issues/53258
+      forgejo-runner = prev.forgejo-runner.overrideAttrs (oldAttrs: {
+        patches = (oldAttrs.patches or [ ]) ++ [ ./forgejo-runner-var-run-symlink.patch ];
+      });
     };
 }

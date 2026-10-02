@@ -1,0 +1,197 @@
+--- a/act/container/docker/run.go
++++ b/act/container/docker/run.go
+@@ -11,6 +11,7 @@
+ 	"io"
+ 	"net/netip"
+ 	"os"
++	"path"
+ 	"path/filepath"
+ 	"regexp"
+ 	"runtime"
+@@ -865,24 +866,63 @@
+ 	}
+ }
+
+-func (cr *containerReference) CopyTarStream(ctx context.Context, destPath string, tarStream io.Reader) error {
+-	// Mkdir
++// mkdirInContainer creates containerPath and returns it with the symlinked components
++// replaced by the targets the daemon reports for them. Podman 5.8.7 / Docker 29.7
++// reject tar entries traversing a symlink to an absolute target, like the "/var/run"
++// of most images, with "path escapes from parent", and not every daemon creates the
++// implied parents of a directory entry, so one entry per missing component is
++// extracted at the deepest existing ancestor.
++// WORKAROUND: https://github.com/moby/moby/issues/53258
++func (cr *containerReference) mkdirInContainer(ctx context.Context, containerPath string) (string, error) {
++	parts := strings.Split(strings.Trim(path.Clean(containerPath), "/"), "/")
++	existing := "/"
++	for i, part := range parts {
++		if part == "" {
++			return existing, nil
++		}
++		stat, err := cr.cli.ContainerStatPath(ctx, cr.id, client.ContainerStatPathOptions{Path: path.Join(existing, part)})
++		if err != nil {
++			// nothing below exists either, so create the remaining components
++			return path.Join(existing, path.Join(parts[i:]...)), cr.mkdirEntries(ctx, existing, parts[i:])
++		}
++		existing = path.Join(existing, part)
++		if target := stat.Stat.LinkTarget; target != "" {
++			if !path.IsAbs(target) {
++				target = path.Join(path.Dir(existing), target)
++			}
++			existing = target
++		}
++	}
++	return existing, nil
++}
++
++func (cr *containerReference) mkdirEntries(ctx context.Context, destPath string, missing []string) error {
+ 	buf := &bytes.Buffer{}
+ 	tw := tar.NewWriter(buf)
+-	_ = tw.WriteHeader(&tar.Header{
+-		Name:     destPath,
+-		Mode:     0o777,
+-		Typeflag: tar.TypeDir,
+-	})
++	for i := range missing {
++		_ = tw.WriteHeader(&tar.Header{
++			Name:     path.Join(missing[:i+1]...),
++			Mode:     0o777,
++			Typeflag: tar.TypeDir,
++		})
++	}
+ 	if err := tw.Close(); err != nil {
+ 		log.Debugf("Could not close tar writer for creating %q: %s", destPath, err)
+ 	}
+-	copyOpts := client.CopyToContainerOptions{DestinationPath: "/", Content: buf}
+-	if _, err := cr.cli.CopyToContainer(ctx, cr.id, copyOpts); err != nil {
+-		return fmt.Errorf("failed to create destination %q for copying to container: %w", destPath, err)
++	_, err := cr.cli.CopyToContainer(ctx, cr.id, client.CopyToContainerOptions{
++		DestinationPath: destPath,
++		Content:         buf,
++	})
++	return err
++}
++
++func (cr *containerReference) CopyTarStream(ctx context.Context, destPath string, tarStream io.Reader) error {
++	destPath, err := cr.mkdirInContainer(ctx, destPath)
++	if err != nil {
++		return fmt.Errorf("failed to mkdir to copy content to container: %w", err)
+ 	}
+ 	// Copy Content
+-	copyOpts = client.CopyToContainerOptions{DestinationPath: destPath, Content: tarStream}
++	copyOpts := client.CopyToContainerOptions{DestinationPath: destPath, Content: tarStream}
+ 	if _, err := cr.cli.CopyToContainer(ctx, cr.id, copyOpts); err != nil {
+ 		return fmt.Errorf("copyTarStream: failed to copy content to container: %w", err)
+ 	}
+@@ -896,6 +936,10 @@
+ func (cr *containerReference) copyDir(dstPath, srcPath string, useGitIgnore bool) common.Executor {
+ 	return func(ctx context.Context) error {
+ 		logger := common.Logger(ctx)
++		dstPath, err := cr.mkdirInContainer(ctx, dstPath)
++		if err != nil {
++			return fmt.Errorf("failed to mkdir to copy directory to container: %w", err)
++		}
+ 		tarFile, err := os.CreateTemp("", "act")
+ 		if err != nil {
+ 			return err
+--- a/act/container/docker/run_test.go
++++ b/act/container/docker/run_test.go
+@@ -1,6 +1,7 @@
+ package docker
+
+ import (
++	"archive/tar"
+ 	"bufio"
+ 	"bytes"
+ 	"context"
+@@ -94,6 +95,22 @@
+ 	return args.Get(0).(client.CopyToContainerResult), args.Error(1)
+ }
+
++func (m *mockDockerClient) ContainerStatPath(ctx context.Context, containerID string, opts client.ContainerStatPathOptions) (client.ContainerStatPathResult, error) {
++	args := m.Called(ctx, containerID, opts)
++	return args.Get(0).(client.ContainerStatPathResult), args.Error(1)
++}
++
++// stubStatPath answers path resolution: the given paths exist, mapped to their target
++// when they are a symlink, everything else does not exist.
++func stubStatPath(c *mockDockerClient, existing map[string]string) {
++	for containerPath, target := range existing {
++		c.On("ContainerStatPath", mock.Anything, "123", client.ContainerStatPathOptions{Path: containerPath}).
++			Return(client.ContainerStatPathResult{Stat: container.PathStat{LinkTarget: target}}, nil).Maybe()
++	}
++	c.On("ContainerStatPath", mock.Anything, "123", mock.Anything).
++		Return(client.ContainerStatPathResult{}, fmt.Errorf("not found")).Maybe()
++}
++
+ type endlessReader struct {
+ 	io.Reader
+ }
+@@ -188,20 +205,31 @@
+ 	mockClient.AssertExpectations(t)
+ }
+
++// The mkdir tarball is extracted at the deepest existing ancestor, with entries relative
++// to it that never traverse the "/var/run" symlink, see moby/moby#53258.
+ func TestDockerCopyTarStream(t *testing.T) {
+ 	ctx := t.Context()
+
+ 	conn := &mockConn{}
+
++	var mkdirNames []string
+ 	mockClient := &mockDockerClient{}
++	stubStatPath(mockClient, map[string]string{"/var": "", "/var/run": "/run", "/run": ""})
+ 	mockClient.
+ 		On("CopyToContainer", ctx, "123", mock.MatchedBy(func(opts client.CopyToContainerOptions) bool {
+-			return opts.DestinationPath == "/" && opts.Content != nil
++			if opts.DestinationPath != "/run" || opts.Content == nil {
++				return false
++			}
++			tr := tar.NewReader(opts.Content)
++			for hdr, err := tr.Next(); err == nil; hdr, err = tr.Next() {
++				mkdirNames = append(mkdirNames, hdr.Name)
++			}
++			return true
+ 		})).
+ 		Return(client.CopyToContainerResult{}, nil)
+ 	mockClient.
+ 		On("CopyToContainer", ctx, "123", mock.MatchedBy(func(opts client.CopyToContainerOptions) bool {
+-			return opts.DestinationPath == "/var/run/act" && opts.Content != nil
++			return opts.DestinationPath == "/run/act" && opts.Content != nil
+ 		})).
+ 		Return(client.CopyToContainerResult{}, nil)
+
+@@ -213,7 +241,8 @@
+ 		},
+ 	}
+
+-	_ = cr.CopyTarStream(ctx, "/var/run/act", &bytes.Buffer{})
++	require.NoError(t, cr.CopyTarStream(ctx, "/var/run/act", &bytes.Buffer{}))
++	assert.Equal(t, []string{"act"}, mkdirNames)
+
+ 	conn.AssertExpectations(t)
+ 	mockClient.AssertExpectations(t)
+@@ -227,9 +256,10 @@
+ 	merr := fmt.Errorf("Failure")
+
+ 	mockClient := &mockDockerClient{}
++	stubStatPath(mockClient, map[string]string{"/var": ""})
+ 	mockClient.
+ 		On("CopyToContainer", ctx, "123", mock.MatchedBy(func(opts client.CopyToContainerOptions) bool {
+-			return opts.DestinationPath == "/"
++			return opts.DestinationPath == "/var" && opts.Content != nil
+ 		})).
+ 		Return(client.CopyToContainerResult{}, merr)
+
+@@ -256,9 +286,10 @@
+ 	merr := fmt.Errorf("Failure")
+
+ 	mockClient := &mockDockerClient{}
++	stubStatPath(mockClient, map[string]string{"/var": "", "/var/run": ""})
+ 	mockClient.
+ 		On("CopyToContainer", ctx, "123", mock.MatchedBy(func(opts client.CopyToContainerOptions) bool {
+-			return opts.DestinationPath == "/" && opts.Content != nil
++			return opts.DestinationPath == "/var/run" && opts.Content != nil
+ 		})).
+ 		Return(client.CopyToContainerResult{}, nil)
+ 	mockClient.

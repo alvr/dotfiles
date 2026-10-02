@@ -3,7 +3,6 @@
   flake.modules.nixos.forgejo =
     {
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -11,17 +10,6 @@
       subdomain = "git";
       port = 5245;
       url = "${subdomain}.${config.dot.host.network.domain}";
-
-      mkRunnerInstance =
-        {
-          labels,
-          enable ? true,
-        }:
-        {
-          inherit enable labels;
-          tokenFile = config.sops.secrets."forgejo-runner/env".path;
-          url = "https://${url}";
-        };
     in
     {
       services = {
@@ -97,13 +85,26 @@
           };
         };
 
-        gitea-actions-runner = {
+        forgejo-runner = {
           package = pkgs.forgejo-runner;
-          instances = lib.mapAttrs (name: value: mkRunnerInstance value // { inherit name; }) {
-            docker.labels = [
-              "alpine-latest:docker://node:lts-alpine"
-              "ubuntu-latest:docker://node:lts-trixie-slim"
-            ];
+          instances.docker = {
+            enable = true;
+
+            settings = {
+              container.docker_host = "unix:///run/podman/podman.sock";
+
+              runner.labels = [
+                "alpine-latest:docker://node:lts-alpine"
+                "ubuntu-latest:docker://node:lts-trixie-slim"
+              ];
+
+              server.connections.default = {
+                url = "https://${url}";
+                uuid = "6fcb780c-50c8-4056-8f41-3943ad9961fa";
+              };
+            };
+
+            secrets.server.connections.default.token_url = config.sops.secrets."forgejo-runner/token".path;
           };
         };
       };
@@ -150,7 +151,7 @@
           restartUnits = [ "forgejo.service" ];
         };
 
-        "forgejo-runner/env" = {
+        "forgejo-runner/token" = {
           sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/forgejo-runner.yaml";
           mode = "0400";
         };
