@@ -14,7 +14,7 @@
       services = {
         nextcloud = {
           enable = true;
-          package = pkgs.nextcloud34;
+          package = pkgs.nextcloud35;
 
           caching.redis = true;
           configureRedis = true;
@@ -40,10 +40,10 @@
               contacts
               deck
               mail
-              memories
+              # memories
               onlyoffice
-              previewgenerator
-              recognize
+              # previewgenerator
+              # recognize
               user_oidc
               tasks
               ;

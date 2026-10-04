@@ -19,7 +19,11 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
-    determinate.url = "github:DeterminateSystems/determinate";
+    # Pinned to v3.22.5 (2026-09-17) to avoid nix-output-monitor failure on
+    # newer Determinate Nix: `invalid activity type: 10113`
+    # (`querying info about missing paths`).
+    # TODO: unpin once nom handles the new activity type.
+    determinate.url = "github:DeterminateSystems/determinate/35e914102d4992b10bac4c12e94ec606d109633d";
     determinate.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
