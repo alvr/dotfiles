@@ -4,6 +4,7 @@
       languages.nix.enable = true;
 
       packages = with pkgs; [
+        flake-edit
         git
         just
         prek
