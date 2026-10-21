@@ -24,8 +24,6 @@
           phpPackage = pkgs.php85;
 
           config = {
-            adminuser = "alvr";
-            adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
             dbtype = "pgsql";
             dbname = "nextcloud";
             dbhost = "/run/postgresql";
@@ -83,7 +81,7 @@
           group = "nextcloud";
           user = "nextcloud";
           url = "https://${config.services.nextcloud.hostName}";
-          username = config.services.nextcloud.config.adminuser;
+          username = "alvr";
           passwordFile = config.sops.secrets."nextcloud/admin-pass".path;
         };
       };
@@ -127,6 +125,20 @@
         };
 
       systemd = {
+        services.nextcloud-setup = {
+          serviceConfig.LoadCredential = [
+            "adminpass:${config.sops.secrets."nextcloud/admin-pass".path}"
+          ];
+          serviceConfig.ExecStartPost = [
+            (pkgs.writeShellScript "nextcloud-create-admin" ''
+              if ! ${config.services.nextcloud.occ}/bin/nextcloud-occ user:info alvr >/dev/null 2>&1; then
+                NC_PASS="$(<"$CREDENTIALS_DIRECTORY/adminpass")" \
+                  ${config.services.nextcloud.occ}/bin/nextcloud-occ user:add --password-from-env --group admin alvr
+              fi
+            '')
+          ];
+        };
+
         services.nextcloud-mimetype-migrations =
           let
             inherit (config.services.nextcloud) occ;
