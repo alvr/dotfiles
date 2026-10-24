@@ -6,6 +6,7 @@
 
       # Features
       sops
+      window-manager
 
       # Programs
       cli

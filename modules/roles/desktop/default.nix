@@ -10,6 +10,7 @@
       printing
       productivity
       sops
+      window-manager
     ];
 
     users.users.${config.dot.host.user.alias}.extraGroups = [
