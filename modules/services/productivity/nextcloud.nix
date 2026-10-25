@@ -125,33 +125,43 @@
         };
 
       systemd = {
-        services.nextcloud-setup = {
-          serviceConfig.LoadCredential = [
-            "adminpass:${config.sops.secrets."nextcloud/admin-pass".path}"
-          ];
-          serviceConfig.ExecStartPost = [
-            (pkgs.writeShellScript "nextcloud-create-admin" ''
-              if ! ${config.services.nextcloud.occ}/bin/nextcloud-occ user:info alvr >/dev/null 2>&1; then
-                NC_PASS="$(<"$CREDENTIALS_DIRECTORY/adminpass")" \
-                  ${config.services.nextcloud.occ}/bin/nextcloud-occ user:add --password-from-env --group admin alvr
-              fi
-            '')
-          ];
-        };
-
-        services.nextcloud-mimetype-migrations =
-          let
-            inherit (config.services.nextcloud) occ;
-          in
-          {
-            after = [
-              "nextcloud-setup.service"
-              "postgresql.service"
-              "redis-nextcloud.service"
-            ];
-            script = "${occ}/bin/nextcloud-occ maintenance:repair --include-expensive";
-            serviceConfig.Type = "oneshot";
+        services = {
+          nextcloud-update-db = {
+            after = [ "postgresql.target" ];
+            requires = [ "postgresql.target" ];
           };
+
+          nextcloud-setup = {
+            after = [ "postgresql.target" ];
+            requires = [ "postgresql.target" ];
+
+            serviceConfig.LoadCredential = [
+              "adminpass:${config.sops.secrets."nextcloud/admin-pass".path}"
+            ];
+            serviceConfig.ExecStartPost = [
+              (pkgs.writeShellScript "nextcloud-create-admin" ''
+                if ! ${config.services.nextcloud.occ}/bin/nextcloud-occ user:info alvr >/dev/null 2>&1; then
+                  NC_PASS="$(<"$CREDENTIALS_DIRECTORY/adminpass")" \
+                    ${config.services.nextcloud.occ}/bin/nextcloud-occ user:add --password-from-env --group admin alvr
+                fi
+              '')
+            ];
+          };
+
+          nextcloud-mimetype-migrations =
+            let
+              inherit (config.services.nextcloud) occ;
+            in
+            {
+              after = [
+                "nextcloud-setup.service"
+                "postgresql.service"
+                "redis-nextcloud.service"
+              ];
+              script = "${occ}/bin/nextcloud-occ maintenance:repair --include-expensive";
+              serviceConfig.Type = "oneshot";
+            };
+        };
 
         timers.nextcloud-mimetype-migrations = {
           wantedBy = [ "timers.target" ];

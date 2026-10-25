@@ -10,7 +10,7 @@
       services = {
         bazarr = {
           enable = true;
-          listenPort = port;
+          settings.general.port = port;
         };
 
         prometheus.exporters.exportarr-bazarr = lib.mkIf config.services.prometheus.enable {
