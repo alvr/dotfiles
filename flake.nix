@@ -63,6 +63,8 @@
     nix4nvchad.url = "github:nix-community/nix4nvchad";
     nix4nvchad.inputs.nixpkgs.follows = "nixpkgs";
 
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -84,6 +86,9 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     umbriel.url = "github:noctalia-dev/umbriel/cachix";
+
+    wallpapers.url = "path:./wallpapers";
+    wallpapers.flake = false;
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
