@@ -101,6 +101,14 @@
             default_workspace = "Music";
             default_scrolling_extent = 0.5;
           }
+          {
+            match.app_id = [
+              "^zapfast$"
+              "^equibop$"
+            ];
+            default_output = "HDMI-A-1";
+            default_workspace = "Messaging";
+          }
         ];
 
         scratchpad = [
@@ -298,6 +306,7 @@
               1920
               0
             ];
+            focus_at_startup = true;
           };
         };
 
@@ -308,6 +317,10 @@
           }
           {
             name = "Music";
+            output = "HDMI-A-1";
+          }
+          {
+            name = "Messaging";
             output = "HDMI-A-1";
           }
           {

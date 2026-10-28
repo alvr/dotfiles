@@ -136,7 +136,10 @@
         };
 
         theme = {
-          source = "community";
+          mode = "dark";
+          source = "wallpaper";
+          wallpaper_scheme = "soft";
+
           builtin = "Catppuccin";
           community_palette = "Catppuccin Mocha Peach";
 
