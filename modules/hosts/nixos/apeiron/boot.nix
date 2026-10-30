@@ -31,7 +31,6 @@
       };
 
       tmp.cleanOnBoot = true;
-      zfs.forceImportRoot = false;
     };
   };
 }

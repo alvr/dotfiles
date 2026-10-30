@@ -1,3 +1,5 @@
 .devenv/
 .direnv/
 .opencode/
+result*
+*.qcow2

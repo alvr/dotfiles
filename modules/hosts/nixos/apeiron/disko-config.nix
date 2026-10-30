@@ -18,7 +18,7 @@
 
       disk = {
         nvme0 = {
-          device = "/dev/nvme0n1";
+          device = "/dev/disk/by-id/nvme-FORESEE_XP1000F001T_QAA567Q000122";
           type = "disk";
           content = {
             type = "gpt";
@@ -49,7 +49,7 @@
         };
 
         nvme1 = {
-          device = "/dev/nvme1n1";
+          device = "/dev/disk/by-id/nvme-WD_PC_SN560_SDDPNQE-1T00-1006_22200A640806";
           type = "disk";
           content = {
             type = "gpt";

@@ -9,7 +9,7 @@
 
     disko.devices = {
       disk.nvme0 = {
-        device = "/dev/nvme0n1";
+        device = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_1TB_S6Z1NU0X232411Y";
         type = "disk";
         content = {
           type = "gpt";

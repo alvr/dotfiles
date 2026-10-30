@@ -41,6 +41,16 @@ deploy-bootstrap groups='bootstrap':
 deploy-dry groups='server':
     deploy --skip-checks --groups {{ groups }} --targets . --dry-activate
 
+[doc('Build the NixOS installer ISO image')]
+[group('build')]
+build-installer:
+    nix build .#nixosConfigurations.installer.config.system.build.isoImage -o result-iso
+
+[doc('Build {{ host }} as a VM (run it with result-vm-{{ host }}/bin/run-{{ host }}-vm)')]
+[group('build')]
+build-vm host:
+    nix build .#nixosConfigurations.{{ host }}.config.system.build.vm -o result-vm-{{ host }}
+
 [doc('List generations of the system profile')]
 [group('generations')]
 generations:
