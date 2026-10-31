@@ -1,4 +1,9 @@
-{ inputs, lib, ... }:
+{
+  inputs,
+  lib,
+  self,
+  ...
+}:
 let
   commonHomeManager = config: {
     backupFileExtension = ".bak";
@@ -7,23 +12,14 @@ let
 
     users.${config.dot.host.user.alias}.home.stateVersion = config.dot.host.state.version;
   };
-
-  catppuccinConfig = {
-    enable = true;
-    autoEnable = true;
-    flavor = "macchiato";
-    accent = "peach";
-  };
 in
 {
   flake.modules = {
     nixos.base = { config, ... }: {
       imports = [
-        inputs.catppuccin.nixosModules.catppuccin
         inputs.home-manager.nixosModules.home-manager
+        self.modules.nixos.catppuccin
       ];
-
-      catppuccin = catppuccinConfig;
 
       home-manager = lib.mkMerge [
         (commonHomeManager config)
@@ -33,11 +29,9 @@ in
 
     darwin.base = { config, ... }: {
       imports = [
-        inputs.catppuccin.darwinModules.catppuccin
         inputs.home-manager.darwinModules.home-manager
+        self.modules.darwin.catppuccin
       ];
-
-      catppuccin = catppuccinConfig;
 
       home-manager = lib.mkMerge [
         (commonHomeManager config)
@@ -53,9 +47,7 @@ in
         ...
       }:
       {
-        imports = [ inputs.catppuccin.homeModules.catppuccin ];
-
-        catppuccin = catppuccinConfig;
+        imports = [ self.modules.homeManager.catppuccin ];
 
         dot.host = osConfig.dot.host;
 
