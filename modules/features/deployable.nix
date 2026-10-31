@@ -57,10 +57,10 @@ in
     };
   };
 
-  perSystem = { system, ... }: {
+  perSystem = { pkgs, system, ... }: {
     apps.deploy = {
       type = "app";
-      program = "${lib.getExe inputs.deploy-rs.packages.${system}.default}";
+      program = "${lib.getExe pkgs.deploy-rs}";
     };
 
     checks = inputs.deploy-rs.lib.${system}.deployChecks self.deploy;
