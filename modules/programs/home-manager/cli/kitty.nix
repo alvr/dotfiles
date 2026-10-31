@@ -1,5 +1,7 @@
 {
   flake.modules.homeManager.kitty = {
+    catppuccin.kitty.enable = true;
+
     programs.kitty = {
       enable = true;
       settings = {

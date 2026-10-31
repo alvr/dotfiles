@@ -22,16 +22,6 @@ jobs:
         uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
         with:
           github_access_token: ${{ secrets.GH_TOKEN }}
-          extra_nix_config: |
-            extra-substituters = https://catppuccin.cachix.org
-            extra-trusted-public-keys = catppuccin.cachix.org-1:noG/4HkbhJb+lUAdKrph6LaozJvAeEEZj4N732IysmU=
-
-      - name: Prefetch catppuccin palette
-        run: |
-          nix build --no-link --impure --expr '
-            let flake = builtins.getFlake (toString ./.);
-            in flake.inputs.catppuccin.packages.${builtins.currentSystem}.palette
-          '
 
       - name: Run flake check
         run: nix develop .#dev-nix -c nix flake check --no-build
