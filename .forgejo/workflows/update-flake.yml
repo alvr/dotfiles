@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Configure Git
         run: |
@@ -49,14 +50,23 @@ jobs:
         run: nix flake update
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
-        with:
-          commit_message: "📦 update flake.lock"
-          commit_user_name: Álvaro Salcedo García
-          commit_user_email: alvaro@alvr.dev
-          commit_options: -S
-          commit_author: Álvaro Salcedo García <alvaro@alvr.dev>
-          branch: ${{ github.ref }}
-          file_pattern: flake.lock
-          skip_dirty_check: false
-          skip_fetch: true
+        env:
+          FORGEJO_TOKEN: ${{ secrets.FORGE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          git config --local user.name "Álvaro Salcedo García"
+          git config --local user.email "alvaro@alvr.dev"
+
+          git add flake.lock
+
+          if git diff --cached --quiet; then
+            echo "flake.lock unchanged, nothing to push"
+            exit 0
+          fi
+
+          git commit -S -m "📦 update flake.lock"
+
+          git -c credential.helper= \
+            -c credential.helper='!f() { printf "username=alvr\npassword=%s\n" "$FORGEJO_TOKEN"; }; f' \
+            push origin "HEAD:${{ github.ref }}"
