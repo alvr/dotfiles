@@ -10,16 +10,16 @@ jobs:
   update-flake:
     runs-on: ubuntu-latest
     steps:
-      - name: Install prerequisites
-        run: |
-          apt-get update -y
-          apt-get install -y sudo xz-utils curl git openssh-client
-
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Setup Nix
+        uses: ./.forgejo/actions/setup-nix
+        with:
+          github-access-token: ${{ secrets.GH_TOKEN }}          
 
       - name: Configure Git
         run: |
@@ -40,11 +40,6 @@ jobs:
           printf "* %s\n" "$(cat ~/.ssh/signing_key.pub)" > ~/.ssh/allowed_signers
 
           git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
-        with:
-          github_access_token: ${{ secrets.GH_TOKEN }}
 
       - name: Update flake.lock
         run: nix flake update

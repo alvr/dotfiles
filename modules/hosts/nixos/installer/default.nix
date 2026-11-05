@@ -54,7 +54,7 @@ in
           ];
           substituters = [
             "https://cache.nixos.org"
-            "https://nyx-cache.chaotic.cx/"
+            "https://nyx-cache.chaotic.cx"
             "https://nix-community.cachix.org"
             "https://devenv.cachix.org"
           ];
