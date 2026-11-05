@@ -24,4 +24,4 @@ jobs:
           github_access_token: ${{ secrets.GH_TOKEN }}
 
       - name: Run flake check
-        run: nix develop .#dev-nix -c nix flake check --no-build
+        run: nix flake check --no-build

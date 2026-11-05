@@ -41,10 +41,7 @@
 
         customComponents = with pkgs.home-assistant-custom-components; [
           auth_oidc
-        ];
-
-        customLovelaceModules = with pkgs.home-assistant-custom-lovelace-modules; [
-          card-mod
+          uix
         ];
 
         extraComponents = [
