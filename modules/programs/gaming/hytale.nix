@@ -1,7 +1,7 @@
 {
   flake.modules.nixos.hytale = { pkgs, ... }: {
     environment.systemPackages = [
-      pkgs.nur.repos.forkprince.hytale
+      pkgs.omniflake.hytale-launcher-nix.hytale-launcher
     ];
   };
 }

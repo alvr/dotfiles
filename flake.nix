@@ -56,8 +56,8 @@
 
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
-    nur = {
-      url = "github:nix-community/NUR";
+    omniflake = {
+      url = "github:fzakaria/omniflake";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };

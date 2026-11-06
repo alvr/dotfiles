@@ -7,6 +7,14 @@
 let
   overlay = self.overlays.default;
 
+  # Expose every omniflake package set as `pkgs.omniflake.<flake>`. The
+  # attribute set is lazy, so only the flakes actually referenced are fetched.
+  omniflakeOverlay = final: _prev: {
+    omniflake = builtins.mapAttrs (
+      _: flake: flake.packages.${final.stdenv.hostPlatform.system} or { }
+    ) inputs.omniflake.flakes;
+  };
+
   commonNixpkgs = { config, ... }: {
     nixpkgs = {
       pkgs = withSystem config.nixpkgs.hostPlatform.system ({ pkgs, ... }: pkgs);
@@ -14,7 +22,7 @@ let
 
       overlays = [
         inputs.chaotic.overlays.default
-        inputs.nur.overlays.default
+        omniflakeOverlay
         overlay
       ];
     };
