@@ -16,18 +16,6 @@
       };
     };
 
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        nixd.inputs.treefmt-nix.follows = "treefmt-nix";
-      };
-    };
-
-    devenv-root.url = "file+file:///dev/null";
-    devenv-root.flake = false;
-
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -37,6 +25,9 @@
     # TODO: unpin once nom handles the new activity type.
     determinate.url = "github:DeterminateSystems/determinate/35e914102d4992b10bac4c12e94ec606d109633d";
     determinate.inputs.nixpkgs.follows = "nixpkgs";
+
+    devshell.url = "github:numtide/devshell";
+    devshell.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";

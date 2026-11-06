@@ -23,7 +23,6 @@ Both hosts run `x86_64-linux`. nix-darwin scaffolding exists in `modules/`, but 
 - **sops-nix with age** — per-host and per-user secrets, decrypted at activation.
 - **disko** — declarative disk layouts: tmpfs root with impermanence on the server, btrfs with snapper snapshots on the desktop.
 - **deploy-rs** — remote, build-on-target deployments for server hosts.
-- **Catppuccin Macchiato** theming and a reproducible development shell via devenv.
 
 ## Repository layout
 
@@ -39,7 +38,7 @@ Both hosts run `x86_64-linux`. nix-darwin scaffolding exists in `modules/`, but 
 │   ├── programs/        # program configuration (CLI, dev tools, WM, gaming)
 │   ├── roles/           # desktop/server composition of modules
 │   ├── services/        # self-hosted services used by apeiron
-│   └── tools/           # flake plumbing: devenv, disko, treefmt, schemas
+│   └── tools/           # flake plumbing: devshell, disko, treefmt, schemas
 ├── packages/            # local packages, exposed through pkgs-by-name
 ├── secrets/             # sops-encrypted secrets (flake input)
 └── .justfile            # day-to-day commands
