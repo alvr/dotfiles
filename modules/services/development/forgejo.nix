@@ -100,7 +100,7 @@
 
               runner.labels = [
                 "alpine-latest:docker://node:lts-alpine"
-                "ubuntu-latest:docker://node:lts-trixie-slim"
+                "ubuntu-latest:docker://node:lts-trixie"
               ];
 
               server.connections.default = {

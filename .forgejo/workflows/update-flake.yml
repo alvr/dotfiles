@@ -13,55 +13,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
-          persist-credentials: false
+          token: ${{ secrets.FORGE_TOKEN }}
 
       - name: Setup Nix
         uses: ./.forgejo/actions/setup-nix
         with:
-          github-access-token: ${{ secrets.GH_TOKEN }}          
+          github-access-token: ${{ secrets.GH_TOKEN }}
 
       - name: Configure Git
+        env:
+          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
         run: |
           mkdir -p ~/.ssh
-
-          cat > ~/.ssh/signing_key <<'EOF'
-          ${{ secrets.SSH_SIGNING_KEY }}
-          EOF
-
+          printf '%s\n' "$SSH_SIGNING_KEY" > ~/.ssh/signing_key
           chmod 600 ~/.ssh/signing_key
-            
+
           git config --global gpg.format ssh
           git config --global user.signingkey ~/.ssh/signing_key
           git config --global commit.gpgsign true
-
-          ssh-keygen -y -f ~/.ssh/signing_key > ~/.ssh/signing_key.pub
-
-          printf "* %s\n" "$(cat ~/.ssh/signing_key.pub)" > ~/.ssh/allowed_signers
-
-          git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
 
       - name: Update flake.lock
         run: nix flake update
 
       - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
         env:
-          FORGEJO_TOKEN: ${{ secrets.FORGE_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          git config --local user.name "Álvaro Salcedo García"
-          git config --local user.email "alvaro@alvr.dev"
-
-          git add flake.lock
-
-          if git diff --cached --quiet; then
-            echo "flake.lock unchanged, nothing to push"
-            exit 0
-          fi
-
-          git commit -S -m "📦 update flake.lock"
-
-          git -c credential.helper= \
-            -c credential.helper='!f() { printf "username=alvr\npassword=%s\n" "$FORGEJO_TOKEN"; }; f' \
-            push origin "HEAD:${{ github.ref }}"
+          FORGE_TOKEN: ${{ secrets.FORGE_TOKEN }}
+        with:
+          commit_message: "📦 update flake.lock"
+          commit_user_name: "Álvaro Salcedo García"
+          commit_user_email: "alvaro@alvr.dev"
+          commit_author: "Álvaro Salcedo García <alvaro@alvr.dev>"
+          branch: ${{ github.ref_name }}
+          file_pattern: flake.lock
+          skip_fetch: true
+          before_push_hook: |
+            export GIT_CONFIG_COUNT=1
+            export GIT_CONFIG_KEY_0=credential.helper
+            export GIT_CONFIG_VALUE_0='!f() { printf "username=alvr\npassword=%s\n" "$FORGE_TOKEN"; }; f'
