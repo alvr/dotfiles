@@ -114,8 +114,8 @@ in
           pkgs.runCommand "install-host-check"
             {
               nativeBuildInputs = with pkgs; [
-                installHost
                 age
+                installHost
                 jq
                 sops
               ];
@@ -124,12 +124,6 @@ in
               bash ${./install-host-check.sh} ${./install-host.sh}
               touch $out
             '';
-
-        checks.vm-config =
-          assert lib.all (host: !host.config.virtualisation.vmVariant.system.autoUpgrade.enable) (
-            lib.attrValues hosts
-          );
-          pkgs.runCommand "vm-config-check" { } "touch $out";
       }
     );
 }

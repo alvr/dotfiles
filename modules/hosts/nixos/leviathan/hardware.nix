@@ -1,23 +1,16 @@
 {
-  flake.modules.nixos.leviathan =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    {
-      hardware = {
-        cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-        graphics.enable = true;
+  flake.modules.nixos.leviathan = { config, lib, ... }: {
+    hardware = {
+      cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+      graphics.enable = true;
 
-        nvidia = {
-          open = true;
-          nvidiaSettings = true;
-          package = pkgs.nvidia_cachyos;
-        };
+      nvidia = {
+        open = true;
+        nvidiaSettings = true;
+        package = config.boot.kernelPackages.nvidiaPackages.cachyos;
       };
-
-      services.xserver.videoDrivers = [ "nvidia" ];
     };
+
+    services.xserver.videoDrivers = [ "nvidia" ];
+  };
 }

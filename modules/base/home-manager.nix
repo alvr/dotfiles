@@ -53,6 +53,8 @@ in
 
         systemd.user.startServices = "sd-switch";
 
+        xdg.mimeApps.enable = true;
+
         home = {
           username = config.dot.host.user.alias;
           homeDirectory =

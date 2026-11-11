@@ -13,6 +13,7 @@
     };
 
     dot = self.lib.mkIfSystemPersistence config {
+      services.restic.exclude = [ "/nix/persist/var/lib/containers" ];
       system.persistence.directories = [ "/var/lib/containers" ];
     };
   };

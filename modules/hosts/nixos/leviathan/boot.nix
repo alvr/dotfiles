@@ -18,10 +18,21 @@
         efi.canTouchEfiVariables = true;
         timeout = 5;
 
-        # TODO: configure limine
         limine = {
           enable = true;
+          enableEditor = false;
           maxGenerations = 10;
+          resolution = "2560x1440x32";
+
+          additionalFiles = {
+            "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.EFI";
+          };
+
+          extraEntries = ''
+            /MemTest86
+              protocol: chainload
+              path: boot():///efi/memtest86/memtest86.efi
+          '';
         };
       };
     };

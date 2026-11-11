@@ -14,20 +14,7 @@
       cfIps = config.dot.lib.cloudflare;
 
       oidcEnabled = lib.any (h: h.oidc != null) cfg.hosts;
-      luaJson =
-        value:
-        let
-          json = builtins.toJSON value;
-          jsonFile = pkgs.writeText "oidc-json-${builtins.hashString "sha256" json}.json" json;
-        in
-        ''
-          (function()
-            local f = assert(io.open(${builtins.toJSON jsonFile}, "r"))
-            local s = f:read("*a")
-            f:close()
-            return cjson.decode(s)
-          end)()
-        '';
+      luaJson = value: "cjson.decode(${builtins.toJSON (builtins.toJSON value)})";
 
       appendConfig =
         existing: addition:
@@ -53,7 +40,16 @@
             end
           end
 
+          local secret_cache = package.loaded.oidc_secrets
+          if not secret_cache then
+            secret_cache = {}
+            package.loaded.oidc_secrets = secret_cache
+          end
+
           local function read_secret(path)
+            if secret_cache[path] then
+              return secret_cache[path]
+            end
             local f = io.open(path, "r")
             if not f then
               ngx.log(ngx.ERR, "OIDC: cannot read secret ", path)
@@ -65,7 +61,11 @@
               ngx.log(ngx.ERR, "OIDC: failed to read secret ", path)
               return nil
             end
-            return (val:gsub("%s+$", ""))
+            val = val:gsub("%s+$", "")
+            if val ~= "" then
+              secret_cache[path] = val
+            end
+            return val
           end
 
           local client_id = read_secret(${builtins.toJSON clientIdPath})
@@ -263,13 +263,6 @@
                 lua_shared_dict discovery 1m;
                 lua_shared_dict jwks 1m;
               ''}
-            '';
-
-            appendHttpConfig = ''
-              map $http_cf_connecting_ip $client_real_ip {
-                default $http_cf_connecting_ip;
-                "" $remote_addr;
-              }
             '';
 
             lua = lib.mkIf oidcEnabled {

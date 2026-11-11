@@ -2,11 +2,11 @@
 {
   flake.modules = {
     nixos.x-craft = {
-      imports = [ inputs.omniflake.flakes.nix-craftapps.nixosModules.default ];
+      imports = [ inputs.craftapps.nixosModules.default ];
     };
 
     homeManager.x-craft = {
-      imports = [ inputs.omniflake.flakes.nix-craftapps.homeManagerModules.default ];
+      imports = [ inputs.craftapps.homeManagerModules.default ];
 
       programs.craftapps = {
         enable = true;
@@ -34,7 +34,7 @@
     };
 
     darwin.x-craft = {
-      imports = [ inputs.omniflake.flakes.nix-craftapps.darwinModules.default ];
+      imports = [ inputs.craftapps.darwinModules.default ];
     };
   };
 }

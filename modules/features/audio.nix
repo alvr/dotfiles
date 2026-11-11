@@ -15,7 +15,7 @@
 
         [ -n "$PHYSICAL" ] || exit 1
 
-        pactl list sinks short | grep -q " $VIRTUAL " || \
+        pactl list sinks short | awk -v v="$VIRTUAL" '$2 == v {f=1} END {exit !f}' || \
           pactl load-module module-remap-sink \
             sink_name="$VIRTUAL" \
             master="$PHYSICAL" \
@@ -48,7 +48,6 @@
         enable = true;
         alsa.enable = true;
         alsa.support32Bit = true;
-        jack.enable = true;
         pulse.enable = true;
         wireplumber.enable = true;
       };

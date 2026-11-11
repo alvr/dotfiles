@@ -1,28 +1,19 @@
-{
-  inputs,
-  self,
-  withSystem,
-  ...
-}:
+{ inputs, self, ... }:
 let
   overlay = self.overlays.default;
 
-  # Expose every omniflake package set as `pkgs.omniflake.<flake>`. The
-  # attribute set is lazy, so only the flakes actually referenced are fetched.
-  omniflakeOverlay = final: _prev: {
-    omniflake = builtins.mapAttrs (
-      _: flake: flake.packages.${final.stdenv.hostPlatform.system} or { }
-    ) inputs.omniflake.flakes;
-  };
-
   commonNixpkgs = { config, ... }: {
+    nix.settings = {
+      extra-substituters = [ "https://nyx-cache.chaotic.cx" ];
+      extra-trusted-public-keys = [ "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk=" ];
+    };
+
     nixpkgs = {
-      pkgs = withSystem config.nixpkgs.hostPlatform.system ({ pkgs, ... }: pkgs);
+      config.allowUnfree = true;
       hostPlatform = config.dot.host.system;
 
       overlays = [
         inputs.chaotic.overlays.default
-        omniflakeOverlay
         overlay
       ];
     };

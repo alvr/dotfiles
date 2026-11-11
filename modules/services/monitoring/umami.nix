@@ -12,7 +12,7 @@
 
         settings = {
           APP_SECRET_FILE = config.sops.secrets."umami/app-secret".path;
-          CLIENT_IP_HEADER = "CF-Connecting-IP";
+          CLIENT_IP_HEADER = "X-Real-IP";
           COLLECT_API_ENDPOINT = "/api/kirby";
           DISABLE_TELEMETRY = true;
           PORT = port;

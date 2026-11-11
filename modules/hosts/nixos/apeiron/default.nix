@@ -17,7 +17,6 @@
 
       # Services - Databases
       couchdb
-      mariadb
       postgresql
 
       # Services - Development

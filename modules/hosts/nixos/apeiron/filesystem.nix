@@ -12,6 +12,10 @@
         "/data" = {
           fsType = "fuse.mergerfs";
           device = "/storage/*";
+          depends = [
+            "/storage/primary"
+            "/storage/secondary"
+          ];
           options = [
             "defaults"
             "allow_other"

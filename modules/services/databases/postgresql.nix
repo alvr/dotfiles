@@ -1,4 +1,10 @@
 { inputs, ... }:
+let
+  passwordInitSql = passwordFile: ''
+    SELECT format('ALTER ROLE postgres WITH PASSWORD %L', pg_read_file('${passwordFile}'))
+    \gexec
+  '';
+in
 {
   flake.modules.nixos.postgresql =
     {
@@ -27,7 +33,6 @@
           postgresql = {
             enable = true;
             ensureDatabases = cfg.databases;
-            initialScript = config.sops.templates."init.sql".path;
             package = pkgs.postgresql_18;
             authentication = pkgs.lib.mkOverride 10 ''
               # type    database    DBuser    origin-address    auth-method
@@ -54,43 +59,37 @@
           };
         };
 
-        dot.services.prometheus.scrape.postgres = lib.mkIf config.services.prometheus.enable {
-          inherit (config.services.prometheus.exporters.postgres) port;
+        dot = {
+          services = {
+            prometheus.scrape.postgres = lib.mkIf config.services.prometheus.enable {
+              inherit (config.services.prometheus.exporters.postgres) port;
+            };
+            restic.exclude = [ "/nix/persist/var/lib/postgresql" ];
+          };
+
+          system.persistence.directories = [
+            {
+              directory = "/var/lib/postgresql";
+              user = "postgres";
+              group = "postgres";
+              mode = "u=rwx,g=,o=";
+            }
+          ];
         };
 
-        dot.system.persistence.directories = [
-          {
-            directory = "/var/lib/postgresql";
-            user = "postgres";
-            group = "postgres";
-            mode = "u=rwx,g=,o=";
+        sops.secrets."postgres/password" = {
+          sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/postgres.yaml";
+          owner = "postgres";
+          group = "postgres";
+          mode = "0400";
+          restartUnits = [ "postgresql-setup.service" ];
+        };
+
+        systemd.services.postgresql-setup.postStart = ''
+          psql -X -v ON_ERROR_STOP=1 -d postgres -f ${
+            pkgs.writeText "postgresql-init.sql" (passwordInitSql config.sops.secrets."postgres/password".path)
           }
-        ];
-
-        sops = {
-          secrets."postgres/password" = {
-            sopsFile = "${inputs.secrets}/${config.dot.host.name}/services/postgres.yaml";
-            owner = "postgres";
-            group = "postgres";
-            mode = "0400";
-            restartUnits = [ "postgresql.service" ];
-          };
-
-          templates."init.sql" = {
-            content = ''
-              DO $$
-              DECLARE
-                new_password text := '${config.sops.placeholder."postgres/password"}';
-              BEGIN
-                EXECUTE format('ALTER ROLE postgres WITH PASSWORD %L', new_password);
-              END
-              $$;
-            '';
-            owner = "postgres";
-            group = "postgres";
-            mode = "0400";
-          };
-        };
+        '';
 
         systemd.tmpfiles.rules = [
           "d /var/lib/postgresql 0700 postgres postgres -"

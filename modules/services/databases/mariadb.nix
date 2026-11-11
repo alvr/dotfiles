@@ -9,6 +9,7 @@
     }:
     let
       cfg = config.dot.services.mariadb;
+      mariadbPackage = pkgs.mariadb_118;
 
       databasesWithPassword = builtins.filter (db: db.passwordFile != null) cfg.databases;
       passwordUpdater = pkgs.writeShellScriptBin "mariadb-update-passwords" ''
@@ -16,8 +17,11 @@
 
         ${lib.concatStringsSep "\n\n" (
           map (db: ''
-            DB_PASSWORD=$(cat ${db.passwordFile} | tr -d '\n')
-            echo "ALTER USER '${db.name}'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;" | ${pkgs.mariadb_118}/bin/mariadb
+            DB_PASSWORD=$(tr -d '\n' < ${db.passwordFile})
+            DB_PASSWORD_SQL=''${DB_PASSWORD//\\/\\\\}
+            DB_PASSWORD_SQL=''${DB_PASSWORD_SQL//\'/\'\'}
+            printf "ALTER USER '%s'@'localhost' IDENTIFIED BY '%s';\nFLUSH PRIVILEGES;\n" \
+              ${lib.escapeShellArg db.name} "$DB_PASSWORD_SQL" | ${mariadbPackage}/bin/mariadb
           '') databasesWithPassword
         )}
       '';
@@ -54,7 +58,7 @@
           mysql = {
             enable = true;
             ensureDatabases = map (db: db.name) cfg.databases;
-            package = pkgs.mariadb_118;
+            package = mariadbPackage;
             settings = {
               mysqld = {
                 bind-address = "127.0.0.1";
@@ -96,8 +100,11 @@
           wantedBy = [ "multi-user.target" ];
         };
 
-        dot.services.prometheus.scrape.mysqld = lib.mkIf config.services.prometheus.enable {
-          inherit (config.services.prometheus.exporters.mysqld) port;
+        dot.services = {
+          prometheus.scrape.mysqld = lib.mkIf config.services.prometheus.enable {
+            inherit (config.services.prometheus.exporters.mysqld) port;
+          };
+          restic.exclude = [ "/nix/persist/var/lib/mysql" ];
         };
 
         dot.system.persistence.directories = [

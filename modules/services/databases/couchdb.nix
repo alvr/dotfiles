@@ -141,8 +141,15 @@
           ''
             set -euo pipefail
 
-            admin_file="$(cat ${config.sops.secrets."couchdb/admin".path})"
-            IFS=' = ' read -r admin_user admin_pass <<< "$(grep -v '^\[' <<< "$admin_file")"
+            admin_line="$(${pkgs.gnugrep}/bin/grep -v '^\[' ${
+              config.sops.secrets."couchdb/admin".path
+            } | head -n1)"
+            admin_user="''${admin_line%% = *}"
+            admin_pass="''${admin_line#* = }"
+            [ -n "$admin_user" ] && [ "$admin_pass" != "$admin_line" ] || {
+              echo "Malformed CouchDB admin credentials" >&2
+              exit 1
+            }
             auth="$admin_user:$admin_pass"
 
             # Wait until CouchDB is ready to accept authenticated requests.
@@ -153,9 +160,6 @@
               sleep 1
             done
 
-            # Discover the local node name for the config API.
-            node_name="$(curl -fsS -u "$auth" "${base}/_membership" | jq -r '.all_nodes[0]')"
-
             # Ensure the system databases exist (idempotent).
             for db in _users _replicator _global_changes; do
               curl -fsS -u "$auth" -X PUT "${base}/$db" >/dev/null 2>&1 || true
@@ -164,6 +168,10 @@
             provision_user() {
               { read -r user; read -r pass; } < "$1"
               shift
+              if [ "$user" = "$admin_user" ]; then
+                echo "Obsidian users must not share the server admin username" >&2
+                return 1
+              fi
               doc_id="org.couchdb.user:$user"
 
               # Create or update the CouchDB user document.
@@ -173,17 +181,20 @@
               if [ -n "$rev" ]; then
                 curl -fsS -u "$auth" -X PUT "${base}/_users/$doc_id" \
                   -H "If-Match: $rev" -H "Content-Type: application/json" \
-                  -d "$doc" >/dev/null || true
+                  -d "$doc" >/dev/null || return 1
               else
                 curl -fsS -u "$auth" -X PUT "${base}/_users/$doc_id" \
                   -H "Content-Type: application/json" \
-                  -d "$doc" >/dev/null || true
+                  -d "$doc" >/dev/null || return 1
               fi
 
-              # Register the user as a server admin (required by the plugin for database deletion).
-              curl -fsS -u "$auth" -X PUT "${base}/_node/$node_name/_config/admins/$user" \
-                -H "Content-Type: application/json" \
-                -d "\"$pass\"" >/dev/null || true
+              # Create the ordinary account before removing its persisted admin grant.
+              status="$(curl -sS -u "$auth" -X DELETE \
+                "${base}/_node/_local/_config/admins/$user" -o /dev/null -w '%{http_code}')" || return 1
+              case "$status" in
+                200|404) ;;
+                *) echo "Could not revoke the server-admin grant for $user (HTTP $status)" >&2; return 1 ;;
+              esac
 
               # Create each per-user database and restrict it to the user.
               for db_name in "$@"; do
@@ -191,10 +202,10 @@
                 curl -fsS -u "$auth" -X PUT "${base}/$full_db" >/dev/null 2>&1 || true
 
                 sec="$(jq -n --arg u "$user" \
-                  '{admins:{names:[$u],roles:["_admin"]},members:{names:[$u],roles:[]}}')"
+                  '{admins:{names:[],roles:["_admin"]},members:{names:[$u],roles:[]}}')"
                 curl -fsS -u "$auth" -X PUT "${base}/$full_db/_security" \
                   -H "Content-Type: application/json" \
-                  -d "$sec" >/dev/null || true
+                  -d "$sec" >/dev/null || return 1
               done
             }
 
@@ -203,20 +214,6 @@
                 provision_user ${secretFor userKey} ${lib.concatStringsSep " " dbs}
               '') vaults
             )}
-
-            # Install the Photon template design document (skip if already installed).
-            if ! curl -fsS -u "$auth" "${base}/photon/_design/photon" >/dev/null 2>&1; then
-              curl -fsS -u "$auth" -X PUT "${base}/photon" >/dev/null 2>&1 || true
-              curl -fsS https://raw.githubusercontent.com/ermouth/couch-photon/master/photon.json | \
-                curl -fsS -u "$auth" -X PUT "${base}/photon/_design/photon" \
-                  -H "Content-Type: application/json" -d @- >/dev/null 2>&1 || true
-              curl -fsS -u "$auth" -X PUT "${base}/photon/_security" \
-                -H "Content-Type: application/json" -d '{}' >/dev/null 2>&1 || true
-              curl -fsS -u "$auth" -X PUT "${base}/_node/$node_name/_config/csp/attachments_enable" \
-                -H "Content-Type: application/json" -d '"false"' >/dev/null 2>&1 || true
-              curl -fsS -u "$auth" -X PUT "${base}/_node/$node_name/_config/chttpd_auth/same_site" \
-                -H "Content-Type: application/json" -d '"lax"' >/dev/null 2>&1 || true
-            fi
           '';
       };
     };

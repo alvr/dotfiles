@@ -15,7 +15,7 @@ let
 in
 {
   flake.modules.homeManager.zen-browser = {
-    imports = [ inputs.omniflake.flakes.zen-browser-flake.homeModules.default ];
+    imports = [ inputs.zen-browser.homeModules.default ];
 
     programs.zen-browser = {
       enable = true;

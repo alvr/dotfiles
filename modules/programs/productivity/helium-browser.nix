@@ -1,7 +1,35 @@
 { inputs, ... }:
 {
   flake.modules.nixos.helium-browser = { config, ... }: {
-    imports = [ inputs.omniflake.flakes.nix-flake-helium-browser.nixosModules.default ];
+    imports = [ inputs.helium-browser.nixosModules.default ];
+
+    programs.helium = {
+      enable = true;
+
+      flags = [
+        "--ozone-platform-hint=auto"
+      ];
+
+      policies = {
+        BrowserSignin = 0;
+        PasswordManagerEnabled = false;
+        SyncDisabled = true;
+        SpellcheckEnabled = true;
+        SpellcheckLanguage = [ "es-ES" ];
+      };
+    };
+
+    systemd.tmpfiles.settings."10-noctalia-chromium"."/etc/chromium/policies/managed/noctalia-color.json".f =
+      {
+        user = config.dot.host.user.alias;
+        group = "users";
+        mode = "0644";
+        argument = "{}";
+      };
+  };
+
+  flake.modules.homeManager.helium-browser = { pkgs, ... }: {
+    imports = [ inputs.helium-browser.homeModules.default ];
 
     programs.helium = {
       enable = true;
@@ -32,16 +60,6 @@
       };
     };
 
-    systemd.tmpfiles.settings."10-noctalia-chromium"."/etc/chromium/policies/managed/noctalia-color.json".f =
-      {
-        user = config.dot.host.user.alias;
-        group = "users";
-        mode = "0644";
-        argument = "{}";
-      };
-  };
-
-  flake.modules.homeManager.helium-browser = { pkgs, ... }: {
     xdg.configFile."net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text =
       builtins.toJSON
         {

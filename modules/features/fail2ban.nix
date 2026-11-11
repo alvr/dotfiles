@@ -29,7 +29,7 @@
         ignoreIP = [
           # local
           "127.0.0.0/8"
-          "192.168.0.0/16"
+          config.dot.host.network.subnet
           "::1/128"
           "fe80::/10"
           "fc00::/7"

@@ -25,8 +25,7 @@ let
     in
     {
       hostname = hostAddress host;
-      sshUser = host.user.alias;
-      sudo = "doas -u";
+      sshUser = "root";
       sshOpts = [
         "-p"
         (toString host.network.ssh.port)
@@ -61,6 +60,7 @@ in
     apps.deploy = {
       type = "app";
       program = "${lib.getExe pkgs.deploy-rs}";
+      meta.description = "Deploy NixOS configurations to deployable hosts with deploy-rs";
     };
 
     checks = inputs.deploy-rs.lib.${system}.deployChecks self.deploy;

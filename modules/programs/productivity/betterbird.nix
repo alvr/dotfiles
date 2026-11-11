@@ -1,8 +1,9 @@
+{ inputs, ... }:
 {
   flake.modules = {
     nixos.betterbird = { pkgs, ... }: {
       environment.systemPackages = [
-        pkgs.omniflake.betterbird-nix.betterbird
+        inputs.betterbird.packages.${pkgs.stdenv.hostPlatform.system}.betterbird
       ];
     };
 

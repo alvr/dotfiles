@@ -15,6 +15,10 @@
         pkgs,
         ...
       }:
+      let
+        signingKey = config.dot.host.user.gitSigningKey;
+        mkSign = value: lib.mkIf (signingKey != null) value;
+      in
       {
         catppuccin.lazygit.enable = true;
 
@@ -28,9 +32,9 @@
             help.autocorrect = 1;
             init.defaultBranch = "main";
             push.default = "simple";
-            commit.gpgsign = true;
-            tag.gpgsign = true;
-            gpg.format = "ssh";
+            commit.gpgsign = mkSign true;
+            tag.gpgsign = mkSign true;
+            gpg.format = mkSign "ssh";
             alias = {
               co = "checkout";
               ci = "commit";
@@ -38,7 +42,10 @@
               br = "branch";
               lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
             };
-            user = { inherit (config.dot.host.user) email name; };
+            user = {
+              inherit (config.dot.host.user) email name;
+              signingkey = mkSign signingKey;
+            };
           };
         };
 

@@ -104,12 +104,15 @@ printf 'set -euo pipefail\n%s\n' "$script" >"$work/install-host-test.sh"
 printf '{}\n' >src/flake.nix
 touch "$work/disk"
 
-cat >"$work/disko" <<'EOF'
-#!/usr/bin/env bash
+{
+  # The sandbox has no /usr/bin/env, so patch the shebang like nixpkgs would.
+  printf '#!%s\n' "$(type -P sh)"
+  cat <<'EOF'
 set -euo pipefail
 echo disko >>"$work/calls"
 mkdir -p "$root"
 EOF
+} >"$work/disko"
 chmod +x "$work/disko"
 
 nix() {

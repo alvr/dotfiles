@@ -25,7 +25,7 @@
                 sed -e '/^<<< /d' -e '/^>>> /d' -e 's/^\(\[..\] [^ ]\{1,\}\) \{1,\}/\1: /')"
         else
             title="NixOS upgrade failed on ${config.networking.hostName}"
-            body="$(journalctl -u nixos-upgrade.service -n 40 --no-pager --output=cat 2>/dev/null || true)"
+            body="Upgrade failed (result: $status). Check the logs on the host: journalctl -u nixos-upgrade.service"
         fi
 
         [ -n "$body" ] || body="$title"
@@ -123,7 +123,7 @@
           script = ''
             result="''${MONITOR_SERVICE_RESULT:-}"
             [ -n "$result" ] || result="$(systemctl show -p Result --value nixos-upgrade.service)"
-            ${notifyScript} $result || true
+            ${notifyScript} "''${result:-failure}" || true
           '';
         };
       };

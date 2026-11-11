@@ -15,7 +15,7 @@
           type = "gpt";
           partitions = {
             boot = {
-              size = "2G";
+              size = "4G";
               type = "EF00";
               content = {
                 type = "filesystem";

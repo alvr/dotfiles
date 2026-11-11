@@ -9,6 +9,7 @@ let
     user = {
       email = "alvaro@alvr.dev";
       name = "Álvaro Salcedo García";
+      gitSigningKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKzuOx+a7yFMdjZym16n4Jalv8RPv0y4xKAkPDgBlMM";
     };
   };
 in
@@ -19,7 +20,6 @@ in
       self.diskoConfigurations.leviathan
 
       # Features
-      gaming
       wifi
     ];
 

@@ -94,6 +94,7 @@
             proxy = false;
           }
         ];
+        restic.include = [ "/data/nextcloud" ];
         postgresql.databases = [ "nextcloud" ];
         prometheus.scrape.nextcloud = lib.mkIf config.services.prometheus.enable {
           inherit (config.services.prometheus.exporters.nextcloud) port;

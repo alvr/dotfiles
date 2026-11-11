@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.modules.nixos.base = { config, pkgs, ... }: {
+  flake.modules.nixos.base = { config, ... }: {
     sops.secrets."${config.dot.host.user.alias}-password" = {
       key = config.dot.host.user.alias;
       neededForUsers = true;
@@ -9,7 +9,6 @@
 
     users.users.${config.dot.host.user.alias} = {
       isNormalUser = true;
-      shell = pkgs.fish;
       hashedPasswordFile = config.sops.secrets."${config.dot.host.user.alias}-password".path;
       openssh.authorizedKeys.keys = config.dot.host.user.sshKeys;
 

@@ -105,6 +105,11 @@ let
             type = lib.types.listOf lib.types.str;
             default = [ ];
           };
+          gitSigningKey = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "SSH public key used by git to sign commits and tags. Signing stays disabled while null.";
+          };
         };
       };
     };

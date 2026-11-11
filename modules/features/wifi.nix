@@ -6,6 +6,8 @@
       network = config.dot.host.network;
     in
     {
+      networking.wireless.iwd.enable = true;
+
       networking.networkmanager = {
         wifi.backend = "iwd";
 

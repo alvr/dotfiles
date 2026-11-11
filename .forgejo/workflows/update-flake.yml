@@ -35,6 +35,9 @@ jobs:
       - name: Update flake.lock
         run: nix flake update
 
+      - name: Run flake check
+        run: nix develop .#dev-nix -c nix flake check --no-build
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
         env:
