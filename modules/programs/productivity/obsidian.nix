@@ -12,8 +12,6 @@
     homeManager.obsidian =
       { pkgs, ... }:
       {
-        catppuccin.obsidian.enable = true;
-
         programs.obsidian = {
           enable = true;
 

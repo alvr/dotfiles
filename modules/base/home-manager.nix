@@ -1,7 +1,6 @@
 {
   inputs,
   lib,
-  self,
   ...
 }:
 let
@@ -18,7 +17,6 @@ in
     nixos.base = { config, ... }: {
       imports = [
         inputs.home-manager.nixosModules.home-manager
-        self.modules.nixos.catppuccin
       ];
 
       home-manager = lib.mkMerge [
@@ -30,7 +28,6 @@ in
     darwin.base = { config, ... }: {
       imports = [
         inputs.home-manager.darwinModules.home-manager
-        self.modules.darwin.catppuccin
       ];
 
       home-manager = lib.mkMerge [
@@ -47,8 +44,6 @@ in
         ...
       }:
       {
-        imports = [ self.modules.homeManager.catppuccin ];
-
         dot.host = osConfig.dot.host;
 
         systemd.user.startServices = "sd-switch";

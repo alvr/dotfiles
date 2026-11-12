@@ -1,13 +1,13 @@
 {
   flake.modules.homeManager.ghostty = {
-    catppuccin.ghostty.enable = true;
-
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;
       installBatSyntax = true;
 
       settings = {
+        theme = "noctalia";
+
         background-blur = 32;
         background-opacity = 0.75;
 

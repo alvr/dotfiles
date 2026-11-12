@@ -1,10 +1,5 @@
 {
   flake.modules.homeManager.vscodium = {
-    catppuccin.vscodium.profiles.default = {
-      enable = true;
-      icons.enable = true;
-    };
-
     programs.vscodium.enable = true;
 
     xdg.mimeApps.defaultApplications = {

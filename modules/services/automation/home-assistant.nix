@@ -7,8 +7,6 @@
       port = 8123;
     in
     {
-      catppuccin.home-assistant.enable = true;
-
       services.home-assistant = {
         enable = true;
 

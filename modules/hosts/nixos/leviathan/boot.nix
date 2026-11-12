@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.leviathan = { pkgs, ... }: {
-    catppuccin.limine.enable = true;
+    stylix.targets.limine.enable = true;
 
     boot = {
       initrd.availableKernelModules = [

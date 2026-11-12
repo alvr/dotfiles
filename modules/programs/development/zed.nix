@@ -1,10 +1,5 @@
 {
   flake.modules.homeManager.zed = {
-    catppuccin.zed = {
-      enable = true;
-      icons.enable = true;
-    };
-
     programs.zed-editor = {
       enable = true;
 

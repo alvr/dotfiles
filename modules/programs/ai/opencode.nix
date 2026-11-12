@@ -7,8 +7,6 @@
     };
 
     homeManager.opencode = {
-      catppuccin.opencode.enable = true;
-
       programs.opencode = {
         enable = true;
         settings = {

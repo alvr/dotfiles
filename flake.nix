@@ -4,11 +4,18 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    autofirma = {
+      url = "github:nix-community/autofirma-nix";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    betterbird.url = "github:TheAnachronism/betterbird-nix";
+    betterbird.inputs.nixpkgs.follows = "nixpkgs";
+
     bootvine.url = "git+https://codeberg.org/wvhulle/bootvine";
     bootvine.inputs.nixpkgs.follows = "nixpkgs";
-
-    catppuccin.url = "github:catppuccin/nix";
-    catppuccin.inputs.nixpkgs.follows = "nixpkgs";
 
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -19,14 +26,13 @@
       };
     };
 
+    craftapps.url = "github:olafkfreund/nix-craftapps";
+    craftapps.inputs.nixpkgs.follows = "nixpkgs";
+
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Pinned to v3.22.5 (2026-09-17) to avoid nix-output-monitor failure on
-    # newer Determinate Nix: `invalid activity type: 10113`
-    # (`querying info about missing paths`).
-    # TODO: unpin once nom handles the new activity type.
-    determinate.url = "github:DeterminateSystems/determinate/35e914102d4992b10bac4c12e94ec606d109633d";
+    determinate.url = "github:DeterminateSystems/determinate";
     determinate.inputs.nixpkgs.follows = "nixpkgs";
 
     devshell.url = "github:numtide/devshell";
@@ -40,8 +46,14 @@
 
     flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/0";
 
+    helium-browser.url = "github:oxcl/nix-flake-helium-browser";
+    helium-browser.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    hytale-launcher.url = "github:JPyke3/hytale-launcher-nix";
+    hytale-launcher.inputs.nixpkgs.follows = "nixpkgs";
 
     impermanence = {
       url = "github:nix-community/impermanence";
@@ -59,12 +71,6 @@
 
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
-    omniflake = {
-      url = "github:fzakaria/omniflake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
 
     packages.url = "path:./packages";
@@ -75,6 +81,12 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
 
     obsidian-extensions = {
       url = "github:karaolidis/nix-obsidian-extensions";
@@ -89,6 +101,12 @@
 
     wallpapers.url = "path:./wallpapers";
     wallpapers.flake = false;
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

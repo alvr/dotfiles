@@ -1,8 +1,6 @@
 { self, ... }:
 {
   flake.modules.homeManager.yazi = { config, ... }: {
-    catppuccin.yazi.enable = true;
-
     programs.yazi = {
       enable = true;
       enableFishIntegration = true;

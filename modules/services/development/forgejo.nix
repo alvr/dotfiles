@@ -12,11 +12,6 @@
       url = "${subdomain}.${config.dot.host.network.domain}";
     in
     {
-      catppuccin = {
-        forgejo.enable = true;
-        gitea.enable = true;
-      };
-
       services = {
         forgejo = {
           enable = true;

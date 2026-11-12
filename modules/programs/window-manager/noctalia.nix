@@ -175,9 +175,6 @@
             source = "wallpaper";
             wallpaper_scheme = "soft";
 
-            builtin = "Catppuccin";
-            community_palette = "Catppuccin Mocha Peach";
-
             templates = {
               builtin_ids = [
                 "btop"
@@ -205,13 +202,12 @@
                 "steam"
                 "vicinae"
                 "betterbird"
+                "chromium-based"
                 "cosmic"
                 "bat"
                 "fzf"
                 "herdr"
                 "herdr-app"
-                "lazygit"
-                "starship"
                 "yazi"
               ];
             };

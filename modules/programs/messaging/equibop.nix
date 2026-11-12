@@ -1,40 +1,30 @@
 {
-  flake.modules.homeManager.equibop =
-    { config, ... }:
-    let
-      theme = "catppuccin-${config.catppuccin.flavor}-${config.catppuccin.accent}.theme";
-    in
-    {
-      programs.equibop = {
-        enable = true;
+  flake.modules.homeManager.equibop = {
+    programs.equibop = {
+      enable = true;
 
-        equicord = {
-          themes.${theme} = ''
-            @import url("https://catppuccin.github.io/discord/dist/${theme}.css");
-          '';
-          settings = {
-            autoUpdate = false;
-            autoUpdateNotification = false;
-            disableMinSize = true;
+      equicord = {
+        settings = {
+          autoUpdate = false;
+          autoUpdateNotification = false;
+          disableMinSize = true;
 
-            plugins = {
-              MessageLogger = {
-                enabled = true;
-                ignoreSelf = true;
-              };
-              FakeNitro.enabled = true;
+          plugins = {
+            MessageLogger = {
+              enabled = true;
+              ignoreSelf = true;
             };
-
-            enabledThemes = [ "${theme}.css" ];
+            FakeNitro.enabled = true;
           };
         };
+      };
 
-        settings = {
-          appBadge = false;
-          arRPC = true;
-          disableMinSize = true;
-          staticTitle = true;
-        };
+      settings = {
+        appBadge = true;
+        arRPC = true;
+        disableMinSize = false;
+        staticTitle = false;
       };
     };
+  };
 }

@@ -35,6 +35,12 @@ jobs:
       - name: Update flake.lock
         run: nix flake update
 
+      - name: Resolve evaluation-time dependencies
+        run: |
+          for host in $(nix eval --raw .#nixosConfigurations --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)'); do
+            nix eval --option allow-import-from-derivation true --raw ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" > /dev/null
+          done
+
       - name: Run flake check
         run: nix develop .#dev-nix -c nix flake check --no-build
 

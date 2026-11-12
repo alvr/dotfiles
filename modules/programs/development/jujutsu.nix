@@ -3,16 +3,21 @@
     nixos.jujutsu = { pkgs, ... }: {
       environment.systemPackages = with pkgs; [
         gg-jj
-        jjui
       ];
     };
 
     homeManager.jujutsu = { config, ... }: {
-      programs.jujutsu = {
-        enable = true;
+      stylix.targets.jjui.enable = true;
 
-        settings.user = {
-          inherit (config.dot.host.user) name email;
+      programs = {
+        jjui.enable = true;
+
+        jujutsu = {
+          enable = true;
+
+          settings.user = {
+            inherit (config.dot.host.user) name email;
+          };
         };
       };
     };

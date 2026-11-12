@@ -1,10 +1,9 @@
 { self, ... }:
 {
   flake.modules = {
-    nixos.fish = {
-      catppuccin.fish.enable = true;
-
+    nixos.fish = { config, pkgs, ... }: {
       programs.fish.enable = true;
+      users.users.${config.dot.host.user.alias}.shell = pkgs.fish;
     };
 
     homeManager.fish =
@@ -15,8 +14,6 @@
         ...
       }:
       {
-        catppuccin.fish.enable = true;
-
         programs.fish = {
           enable = true;
           interactiveShellInit = "${lib.getExe pkgs.microfetch}";

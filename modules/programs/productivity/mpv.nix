@@ -1,6 +1,6 @@
 {
   flake.modules.homeManager.mpv = {
-    catppuccin.mpv.enable = true;
+    stylix.targets.mpv.enable = true;
 
     programs.mpv = {
       enable = true;

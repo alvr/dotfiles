@@ -20,8 +20,6 @@
         mkSign = value: lib.mkIf (signingKey != null) value;
       in
       {
-        catppuccin.lazygit.enable = true;
-
         programs.git = {
           enable = true;
           package = pkgs.gitFull;

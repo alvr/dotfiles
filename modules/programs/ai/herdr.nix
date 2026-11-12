@@ -13,7 +13,6 @@
 
         settings = {
           onboarding = false;
-          theme.name = "catppuccin";
         };
       };
     };

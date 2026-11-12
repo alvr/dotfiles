@@ -32,10 +32,13 @@ in
           "nextdns"
           "printing"
           "sops"
+          "stylix"
         ]
         ++ shared
         ++ systemOnly
       );
+
+      stylix.autoEnable = false;
 
       users.users.${config.dot.host.user.alias}.extraGroups = [
         "audio"
@@ -46,12 +49,19 @@ in
       ];
     };
 
-    homeManager.desktop.imports = pick homeManager (
-      [
-        "base"
-        "sops"
-      ]
-      ++ shared
-    );
+    homeManager.desktop = {
+      imports = pick homeManager (
+        [
+          "base"
+          "sops"
+        ]
+        ++ shared
+      );
+
+      stylix.targets = {
+        lazygit.enable = true;
+        starship.enable = true;
+      };
+    };
   };
 }
