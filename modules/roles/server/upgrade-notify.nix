@@ -21,7 +21,7 @@
             fi
 
             title="NixOS upgraded on ${config.networking.hostName}"
-            body="$(dix --color never "$previous_system" "$current_system" 2>/dev/null |
+            body="$(dix --color never diff "$previous_system" "$current_system" 2>/dev/null |
                 sed -e '/^<<< /d' -e '/^>>> /d' -e 's/^\(\[..\] [^ ]\{1,\}\) \{1,\}/\1: /')"
         else
             title="NixOS upgrade failed on ${config.networking.hostName}"
