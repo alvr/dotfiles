@@ -30,6 +30,7 @@ in
           "bootvine"
           "fonts"
           "nextdns"
+          "oo7"
           "printing"
           "sops"
           "stylix"

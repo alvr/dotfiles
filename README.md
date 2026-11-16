@@ -22,7 +22,7 @@ flake.nix (inputs + flake-parts)
   └── import-tree ./modules
         ├── modules/hosts/options.nix   ──► defines options.dot.host.{name,system,network,state,user}
         ├── modules/base/               ──► flake.modules.{nixos,darwin,homeManager}.base
-        ├── modules/features/           ──► opt-in capabilities (audio, bootvine, impermanence, sops, wifi, …)
+        ├── modules/features/           ──► opt-in capabilities (audio, bootvine, oo7, sops, stylix, wifi, …)
         ├── modules/programs/<category> ──► co-located NixOS + Darwin + Home Manager program modules
         ├── modules/services/<category> ──► self-hosted server workloads (nginx, cloudflared, jellyfin, …)
         ├── modules/roles/{desktop,server}
@@ -43,7 +43,7 @@ The flake exposes per-system tooling for `aarch64-darwin`, `aarch64-linux`, and 
 | **Entrypoint** | `flake.nix`, `modules/flake-parts.nix`, `modules/flake-options.nix` | Declares flake inputs and invokes `flake-parts.lib.mkFlake` with `inputs.import-tree ./modules` so every module file is discovered automatically without manual import lists. |
 | **Host Schema (`dot.host`)** | `modules/hosts/options.nix` | Exposes `options.dot.host` (`name`, `system`, `network`, `state`, `user`) across `nixos.base`, `darwin.base`, and `homeManager.base`. Populated once per host and referenced as `config.dot.host.*` everywhere else. |
 | **Base (`base`)** | `modules/base/` | Shared system and user foundation (`boot`, `determinate`, `home-manager`, `i18n`, `networking`, `nix`, `nixpkgs`, `security`, `state-version`, `vm`). Imported by every role. |
-| **Features (`features`)** | `modules/features/` | Opt-in system/user capabilities (`audio`, `bluetooth`, `bootvine`, `deployable`, `fail2ban`, `fonts`, `impermanence`, `nextdns`, `openssh`, `podman`, `printing`, `sops`, `wifi`). |
+| **Features (`features`)** | `modules/features/` | Opt-in system/user capabilities (`audio`, `bluetooth`, `bootvine`, `deployable`, `fail2ban`, `fonts`, `impermanence`, `nextdns`, `oo7`, `openssh`, `podman`, `printing`, `sops`, `stylix`, `wifi`). |
 | **Programs (`programs`)** | `modules/programs/<category>/` | One file per application (co-locating `nixos`, `darwin`, and `homeManager` blocks) plus a `<category>/default.nix` aggregator so hosts and roles can import either a full category or a single program. |
 | **Services (`services`)** | `modules/services/<category>/` | Self-hosted NixOS modules grouped by domain; wired into server hosts and parameterized via `config.dot.host.network.domain` and `sops-nix` secrets. |
 | **Roles (`roles`)** | `modules/roles/{desktop,server}/` | Composes `base`, archetype features, and default program sets for both `flake.modules.nixos.<role>` and `flake.modules.homeManager.<role>`, plus server assertions and auto-upgrade policies. |
@@ -53,7 +53,7 @@ Host metadata is set in each host's `configuration.nix`. `modules/hosts/options.
 
 Files such as a host's `boot.nix`, `filesystem.nix`, and `hardware.nix` contribute to the same named module through flake-parts merging; they do not need a directory-level import list. Likewise, the server role's sibling modules add activation notifications and auto-upgrades. Service modules are selected separately in `apeiron/default.nix`, not implicitly by the `server` role.
 
-The `deployable` feature tags a configuration for automatic inclusion in `flake.deploy.nodes`. It derives the address and SSH settings from `dot.host`, with a remote-build `server` profile and a local-build `bootstrap` profile. The server role asserts that a domain, SSH keys, and a static IPv4 address are configured.
+The `deployable` feature tags a configuration for automatic inclusion in `flake.deploy.nodes`. It derives the address and SSH settings from `dot.host` (connecting as `root` via key-only auth), with a remote-build `system` profile (`server` group) and a local-build `bootstrap` profile (`bootstrap` group). The server role asserts that a domain, SSH keys, and a static IPv4 address are configured.
 
 ## Hosts
 
@@ -69,10 +69,10 @@ Both active hosts run `x86_64-linux`. `nix-darwin` module scaffolding exists acr
 Defined in `modules/hosts/nixos/apeiron/` (`default.nix`, `configuration.nix`, `disko-config.nix`, `filesystem.nix`, `boot.nix`, `hardware.nix`, `jellyfin-apeiron.nix`).
 
 - **Inherited from `server` role (`modules/roles/server/`)**:
-  - **NixOS**: `base`, `bootvine`, `deployable`, `fail2ban`, `impermanence`, `nextdns`, `openssh`, `sops`, `cli`, plus unattended `auto-upgrade`, `activation`, and `upgrade-notify` units
+  - **NixOS**: `base`, `bootvine`, `deployable`, `fail2ban`, `impermanence`, `nextdns`, `openssh`, `sops`, `stylix` (`autoEnable = true`), `cli`, plus unattended `auto-upgrade`, `activation`, and `upgrade-notify` units
   - **Home Manager**: `base`, `impermanence`, `sops`, `cli`, `direnv`, `git`
 - **Host-specific features**: `podman`, `wifi`
-- **Storage & deployment**: dual-NVMe LVM, an 8 GiB `tmpfs` root, Btrfs `/nix`, ext4 `/nix/persist`, and ext4 storage volumes pooled at `/data` with `mergerfs`. `/etc/nixos` is a read-only bind mount of `/nix/persist/dotfiles`. Uses `deploy-rs` (`server` or `bootstrap` profile).
+- **Storage & deployment**: dual-NVMe LVM, an 8 GiB `tmpfs` root, Btrfs `/nix`, ext4 `/nix/persist`, and ext4 storage volumes pooled at `/data` with `mergerfs`. `/etc/nixos` is a read-only bind mount of `/nix/persist/dotfiles`. Uses `deploy-rs` (`system` or `bootstrap` profile).
 - **Hardware**: AMD CPU and AMD graphics; host-specific Jellyfin acceleration settings live in `jellyfin-apeiron.nix`.
 - **Self-hosted services (`modules/services/`)**:
   - **Automation**: `home-assistant`
@@ -89,11 +89,13 @@ Defined in `modules/hosts/nixos/apeiron/` (`default.nix`, `configuration.nix`, `
 Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`, `disko-config.nix`, `filesystem.nix`, `boot.nix`, `hardware.nix`, `vm.nix`).
 
 - **Inherited from `desktop` role (`modules/roles/desktop/`)**:
-  - **NixOS baseline & features**: `base`, `audio`, `bluetooth`, `bootvine`, `fonts`, `nextdns`, `printing`, `sops`
+  - **NixOS baseline & features**: `base`, `audio`, `bluetooth`, `bootvine`, `fonts`, `nextdns`, `oo7`, `printing`, `sops`, `stylix` (`autoEnable = false`)
   - **Shared program categories (NixOS + Home Manager)**: `ai`, `cli`, `development`, `messaging`, `productivity`, `window-manager`
   - **System-only program categories**: `gaming`, `hardware`, `vpn`
   - **Home Manager baseline & features**: `base`, `sops`
 - **Host-specific features**: `wifi`; program categories are inherited from the role, not added by this host.
+- **Theming**: Noctalia drives desktop theming by default, while `stylix` (`autoEnable = false`) styles targets without Noctalia templates or with Home Manager-managed configs (`limine`, `starship`, `lazygit`, `jjui`, `mpv`, `ncspot`).
+- **Credentials**: `oo7` provides a PAM-unlocked `org.freedesktop.secrets` keyring (`login` and `greetd`) for `bitwarden-desktop`, Noctalia, and `gitFull` (`libsecret`), while `rbw` (using `pinentry-qt`) and `bitwarden-desktop` authenticate to `https://vault.alvr.dev` over OIDC SSO (`SSO_ONLY = true`).
 - **Storage & deployment**: single-NVMe Btrfs subvolumes, root/home Snapper snapshots, monthly Btrfs scrubbing, and additional ext4/XFS data mounts. Rebuilt locally with `just apply`; no deploy-rs node is configured.
 - **Hardware**: AMD CPU and NVIDIA open driver (`nvidia_cachyos`); the VM variant removes the NVIDIA driver.
 - **Enabled program categories (`modules/programs/`, combined system/user inventory)**:
@@ -119,6 +121,7 @@ Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`,
 │   ├── base/            # shared NixOS, nix-darwin, and Home Manager baseline
 │   ├── features/        # opt-in system features (audio, bluetooth, wifi, sops, …)
 │   ├── hosts/
+│   │   ├── checks.nix   # host evaluation checks and vm-config assertions
 │   │   ├── options.nix  # shared dot.host schema
 │   │   ├── users.nix    # system/user identity wiring
 │   │   └── nixos/
@@ -265,8 +268,8 @@ nix flake check --no-build
 statix check
 ```
 
-The dev shell installs a pre-commit hook with [prek](https://github.com/j178/prek) that runs the same three checks. Flake checks include evaluation of both machine configurations on every declared development platform, deploy-rs checks, and (on `x86_64-linux`) installer-script verification and an assertion that VM variants disable auto-upgrades. `--no-build` evaluates checks without executing their build-time tests; use `nix flake check` on a suitable Linux builder to run them.
+The dev shell installs a pre-commit hook with [prek](https://github.com/j178/prek) that runs the same three checks. Flake checks include evaluation of both machine configurations on every declared development platform (`modules/hosts/checks.nix`), deploy-rs checks, and (on `x86_64-linux`) installer-script verification and an assertion that VM variants disable auto-upgrades. `--no-build` evaluates checks without executing their build-time tests; use `nix flake check` on a suitable Linux builder to run them.
 
 VM variants disable disko and auto-upgrades, use the standard kernel, and default to 4 GiB RAM and an 8 GiB disk. They use the user alias as the initial login password; treat them as test environments.
 
-Flake inputs are updated by `.forgejo/workflows/update-flake.yml` at 01:00 Europe/Madrid on days matching `*/3` of each month (`0 1 */3 * *`), or manually with `just up`. The workflow evaluates `nix flake check --no-build` before committing the lock file. Determinate is currently pinned in `flake.nix` to avoid a documented nix-output-monitor activity-type incompatibility.
+Flake inputs are updated by `.forgejo/workflows/update-flake.yml` at 01:00 Europe/Madrid on days matching `*/3` of each month (`0 1 */3 * *`), or manually with `just up`. Both `.forgejo/workflows/pr-checks.yml` and `update-flake.yml` pre-resolve evaluation-time IFD dependencies with `allow-import-from-derivation true` before running `nix flake check --no-build`.
