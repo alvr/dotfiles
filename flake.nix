@@ -4,11 +4,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    agent-skills.url = "github:Kyure-A/agent-skills-nix";
+    agent-skills.inputs.nixpkgs.follows = "nixpkgs";
+
     autofirma = {
       url = "github:nix-community/autofirma-nix";
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     betterbird.url = "github:TheAnachronism/betterbird-nix";
@@ -78,6 +80,15 @@
 
     secrets.url = "path:./secrets";
     secrets.flake = false;
+
+    skills-android.url = "github:android/skills";
+    skills-android.flake = false;
+
+    skills-mattpocock.url = "github:mattpocock/skills";
+    skills-mattpocock.flake = false;
+
+    skills-ponytail.url = "github:DietrichGebert/ponytail";
+    skills-ponytail.flake = false;
 
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";

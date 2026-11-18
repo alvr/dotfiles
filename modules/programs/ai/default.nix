@@ -10,7 +10,8 @@
 
     homeManager.ai = {
       imports = with self.modules.homeManager; [
-        herdr
+        ai-mcp
+        ai-skills
         opencode
         pi
       ];
