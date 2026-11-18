@@ -55,6 +55,8 @@ Files such as a host's `boot.nix`, `filesystem.nix`, and `hardware.nix` contribu
 
 The `deployable` feature tags a configuration for automatic inclusion in `flake.deploy.nodes`. It derives the address and SSH settings from `dot.host` (connecting as `root` via key-only auth), with a remote-build `system` profile (`server` group) and a local-build `bootstrap` profile (`bootstrap` group). The server role asserts that a domain, SSH keys, and a static IPv4 address are configured.
 
+AI tooling shares one definition across harnesses (`modules/programs/ai/`): `mcp.nix` declares all MCP servers once via Home Manager's `programs.mcp` registry — OpenCode consumes it natively, Pi through a generated `~/.pi/agent/mcp.json`. `skills.nix` auto-discovers every flake input named `skills-*` (e.g. `skills-android`, `skills-ponytail`), builds them with `agent-skills-nix`, and installs them under `~/.agents/skills/<source>/` for any agent that reads the shared directory. Adding a harness or skill source is an adapter/input, not a duplicate config.
+
 ## Hosts
 
 | Host | Role | System | Boot & Storage | Description |
@@ -69,8 +71,9 @@ Both active hosts run `x86_64-linux`. `nix-darwin` module scaffolding exists acr
 Defined in `modules/hosts/nixos/apeiron/` (`default.nix`, `configuration.nix`, `disko-config.nix`, `filesystem.nix`, `boot.nix`, `hardware.nix`, `jellyfin-apeiron.nix`).
 
 - **Inherited from `server` role (`modules/roles/server/`)**:
-  - **NixOS**: `base`, `bootvine`, `deployable`, `fail2ban`, `impermanence`, `nextdns`, `openssh`, `sops`, `stylix` (`autoEnable = true`), `cli`, plus unattended `auto-upgrade`, `activation`, and `upgrade-notify` units
+  - **NixOS**: `base`, `bootvine`, `deployable`, `fail2ban`, `impermanence`, `nextdns`, `openssh`, `sops`, `cli`, plus unattended `auto-upgrade`, `activation`, and `upgrade-notify` units
   - **Home Manager**: `base`, `impermanence`, `sops`, `cli`, `direnv`, `git`
+- **Theming**: none — servers are reached over SSH, so `stylix` is not imported and the CLI programs keep their default palettes (`btop`/`fzf`/`fish`/`starship`/`lazygit` follow the terminal's ANSI colors).
 - **Host-specific features**: `podman`, `wifi`
 - **Storage & deployment**: dual-NVMe LVM, an 8 GiB `tmpfs` root, Btrfs `/nix`, ext4 `/nix/persist`, and ext4 storage volumes pooled at `/data` with `mergerfs`. `/etc/nixos` is a read-only bind mount of `/nix/persist/dotfiles`. Uses `deploy-rs` (`system` or `bootstrap` profile).
 - **Hardware**: AMD CPU and AMD graphics; host-specific Jellyfin acceleration settings live in `jellyfin-apeiron.nix`.
@@ -102,7 +105,7 @@ Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`,
   - **Window Manager (`window-manager`)**: `umbriel`, `noctalia`, `noctalia-greeter`, `vicinae`, and `file-manager` (Dolphin, Ark, PhotoQt)
   - **CLI (`cli`)**: `fish`, `starship`, `yazi`, `zoxide`, `fzf`, `ripgrep`, `fd`, `eza`, `bat`, `delta`, `btop`
   - **Development (`development`)**: `git`, `jujutsu`, `gh`, `direnv`, `nvchad`, `zed`, `vscodium`, `jetbrains-toolbox`, `jadx`
-  - **AI (`ai`)**: `opencode`, `pi`, `lmstudio`, `herdr`, `deepseek`
+  - **AI (`ai`)**: `opencode` (system + HM), `pi` and `herdr`, plus the shared `ai-mcp`/`ai-skills` Home Manager modules
   - **Productivity (`productivity`)**: `ghostty`, `zen-browser`, `helium-browser`, `obsidian`, `bitwarden`, `betterbird`, `mpv`, `music`, `transmission`, `nextcloud-client`, `obs-studio`, `x-craft`. `autofirma` exists but is excluded from the category imports because of a stale dependency hash.
   - **Gaming (`gaming`)**: `steam`, `gaming-clients`, `amethyst`, `azahar`, `ryubing`, `hytale`, `coolercontrol`, `goverlay`, `openrgb`
   - **Messaging (`messaging`)**: `equibop` (Discord client), `telegram`, `whatsapp`
@@ -130,7 +133,7 @@ Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`,
 │   │       └── installer/ # ISO, install-host script, and verification script
 │   ├── lib/             # helper functions (cloudflare, impermanence, networking)
 │   ├── programs/        # program configuration, one file per program
-│   │   ├── ai/          # OpenCode, Pi, LM Studio, Herdr, DeepSeek
+│   │   ├── ai/          # OpenCode, Pi, Herdr + shared MCP servers and agent skills
 │   │   ├── cli/         # Fish, Starship, Yazi, Zoxide, Fzf, Ripgrep, Bat, Btop, …
 │   │   ├── development/ # Git, Jujutsu, NvChad, Zed, VSCodium, JetBrains Toolbox, …
 │   │   ├── gaming/      # Steam, emulators, CoolerControl, OpenRGB
@@ -220,7 +223,7 @@ Targets can also be referenced directly as `.#leviathan` or `.#apeiron` (e.g. `n
 
 ## Installing a new host
 
-Build and boot the installer ISO, then run the interactive `install-host` tool from inside the installer:
+See [INSTALL.md](INSTALL.md) for the full guide (host creation, age keys, secrets, disk verification, install, post-boot checks). Quick version — build and boot the installer ISO, then run the interactive `install-host` tool from inside the installer:
 
 ```sh
 just build-installer
