@@ -9,6 +9,7 @@
 
     users.users.${config.dot.host.user.alias} = {
       isNormalUser = true;
+      uid = 1000;
       hashedPasswordFile = config.sops.secrets."${config.dot.host.user.alias}-password".path;
       openssh.authorizedKeys.keys = config.dot.host.user.sshKeys;
 
