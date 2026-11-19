@@ -20,8 +20,8 @@
             mangohud
           ];
           extraCompatPackages = with pkgs; [
-            proton-ge-custom
-            proton-cachyos_x86_64_v3
+            proton-ge-bin_edge
+            proton-cachyos-bin_x86_64_v3
           ];
         };
       };

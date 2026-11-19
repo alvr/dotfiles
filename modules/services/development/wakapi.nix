@@ -53,6 +53,22 @@
         };
       };
 
+      systemd.services.wakapi = {
+        after = [
+          "nginx.service"
+          "pocket-id.service"
+          "cloudflared-tunnel-${config.dot.host.name}.service"
+        ];
+        wants = [
+          "nginx.service"
+          "pocket-id.service"
+          "cloudflared-tunnel-${config.dot.host.name}.service"
+        ];
+
+        startLimitIntervalSec = 0;
+        serviceConfig.RestartSec = "5s";
+      };
+
       dot.services = {
         cloudflared.subdomains = [ subdomain ];
         postgresql.databases = [ "wakapi" ];
