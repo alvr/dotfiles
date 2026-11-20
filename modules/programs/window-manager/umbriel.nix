@@ -16,6 +16,7 @@
       {
         lib,
         pkgs,
+        osConfig,
         ...
       }:
       let
@@ -33,6 +34,11 @@
             include.optional.files = [ "noctalia.toml" ];
 
             input = {
+              cursor = {
+                theme = osConfig.stylix.cursor.name;
+                size = osConfig.stylix.cursor.size;
+              };
+
               mouse = {
                 accel_profile = "flat";
                 sensitivity = -0.175;

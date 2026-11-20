@@ -3,11 +3,11 @@
     nixos.file-manager = { pkgs, ... }: {
       environment.systemPackages = with pkgs.kdePackages; [
         ark
+        breeze-icons
         dolphin
         kio
         kio-extras
         kio-fuse
-        qt6ct
 
         pkgs.photoqt
       ];

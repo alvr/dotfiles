@@ -32,6 +32,11 @@ in
         presets.arkenfox.enable = true;
         presets.betterfox.enable = true;
 
+        settings = {
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "devtools.chrome.enabled" = true;
+        };
+
         search = {
           force = true;
           default = "ddg";

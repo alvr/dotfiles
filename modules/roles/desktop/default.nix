@@ -21,25 +21,24 @@ let
 in
 {
   flake.modules = {
-    nixos.desktop = { config, ... }: {
+    nixos.desktop = { config, pkgs, ... }: {
       imports = pick nixos (
         [
           "base"
           "audio"
           "bluetooth"
           "bootvine"
-          "fonts"
           "nextdns"
           "oo7"
           "printing"
           "sops"
-          "stylix"
+          "theming"
         ]
         ++ shared
         ++ systemOnly
       );
 
-      stylix.autoEnable = false;
+      environment.systemPackages = [ pkgs.wl-clipboard ];
 
       users.users.${config.dot.host.user.alias}.extraGroups = [
         "audio"
@@ -55,14 +54,10 @@ in
         [
           "base"
           "sops"
+          "theming"
         ]
         ++ shared
       );
-
-      stylix.targets = {
-        lazygit.enable = true;
-        starship.enable = true;
-      };
 
       xdg.userDirs = {
         enable = true;

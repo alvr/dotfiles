@@ -30,7 +30,7 @@
       ];
     };
 
-    homeManager.noctalia = {
+    homeManager.noctalia = { config, ... }: {
       imports = [ inputs.noctalia.homeModules.default ];
 
       programs.noctalia = {
@@ -80,10 +80,12 @@
                 action = "lock";
                 timeout = 300.0;
               };
+
               screen-off = {
                 action = "screen_off";
                 timeout = 330.0;
               };
+
               lock-and-suspend = {
                 action = "lock_and_suspend";
                 timeout = 600.0;
@@ -95,11 +97,7 @@
 
           lockscreen_widgets = {
             enabled = true;
-            widget_order = [
-              "lockscreen-login-box@WL-1"
-              "lockscreen-login-box@HDMI-A-1"
-              "lockscreen-login-box@DP-3"
-            ];
+
             widget = {
               "lockscreen-login-box@WL-1" = {
                 type = "login_box";
@@ -111,6 +109,7 @@
                 placement_width = 2256.0;
                 placement_height = 1386.0;
               };
+
               "lockscreen-login-box@HDMI-A-1" = {
                 type = "login_box";
                 output = "HDMI-A-1";
@@ -121,6 +120,7 @@
                 placement_width = 1920.0;
                 placement_height = 1080.0;
               };
+
               "lockscreen-login-box@DP-3" = {
                 type = "login_box";
                 output = "DP-3";
@@ -131,6 +131,12 @@
                 placement_width = 2560.0;
                 placement_height = 1440.0;
               };
+
+              widget_order = [
+                "lockscreen-login-box@WL-1"
+                "lockscreen-login-box@HDMI-A-1"
+                "lockscreen-login-box@DP-3"
+              ];
             };
           };
 
@@ -152,12 +158,11 @@
           ];
 
           shell = {
-            font_family = "Iosevka Fixed SS14";
-            umbriel_overview_type_to_launch_enabled = true;
+            font_family = config.stylix.fonts.sansSerif.name;
+            greeter_sync.auto_sync = true;
             polkit_agent = true;
             screen_time_enabled = true;
-
-            greeter_sync.auto_sync = true;
+            umbriel_overview_type_to_launch_enabled = true;
 
             launcher = {
               app_grid = true;
@@ -185,6 +190,7 @@
                 "qt"
                 "umbriel"
               ];
+
               community_ids = [
                 "opencode"
                 "pi-agent"
@@ -213,8 +219,6 @@
             };
           };
 
-          # Random wallpaper on login and every 30 min (automation.interval_seconds
-          # defaults to 1800, order defaults to random).
           wallpaper = {
             directory = "${inputs.wallpapers}";
             transition_on_startup = true;

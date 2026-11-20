@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.ghostty = {
+  flake.modules.homeManager.ghostty = { config, ... }: {
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;
@@ -11,7 +11,7 @@
         background-blur = 32;
         background-opacity = 0.75;
 
-        font-family = "Maple Mono NF";
+        font-family = config.stylix.fonts.monospace.name;
         font-family-bold = "auto";
         font-family-italic = "auto";
         font-family-bold-italic = "auto";

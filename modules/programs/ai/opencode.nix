@@ -10,6 +10,11 @@
       programs.opencode = {
         enable = true;
         enableMcpIntegration = true;
+
+        cli.theme = {
+          name = "matugen";
+          mode = "system";
+        };
       };
     };
   };

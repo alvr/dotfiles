@@ -22,7 +22,7 @@ flake.nix (inputs + flake-parts)
   └── import-tree ./modules
         ├── modules/hosts/options.nix   ──► defines options.dot.host.{name,system,network,state,user}
         ├── modules/base/               ──► flake.modules.{nixos,darwin,homeManager}.base
-        ├── modules/features/           ──► opt-in capabilities (audio, bootvine, oo7, sops, stylix, wifi, …)
+        ├── modules/features/           ──► opt-in capabilities (audio, bootvine, oo7, sops, theming, wifi, …)
         ├── modules/programs/<category> ──► co-located NixOS + Darwin + Home Manager program modules
         ├── modules/services/<category> ──► self-hosted server workloads (nginx, cloudflared, jellyfin, …)
         ├── modules/roles/{desktop,server}
@@ -43,7 +43,7 @@ The flake exposes per-system tooling for `aarch64-darwin`, `aarch64-linux`, and 
 | **Entrypoint** | `flake.nix`, `modules/flake-parts.nix`, `modules/flake-options.nix` | Declares flake inputs and invokes `flake-parts.lib.mkFlake` with `inputs.import-tree ./modules` so every module file is discovered automatically without manual import lists. |
 | **Host Schema (`dot.host`)** | `modules/hosts/options.nix` | Exposes `options.dot.host` (`name`, `system`, `network`, `state`, `user`) across `nixos.base`, `darwin.base`, and `homeManager.base`. Populated once per host and referenced as `config.dot.host.*` everywhere else. |
 | **Base (`base`)** | `modules/base/` | Shared system and user foundation (`boot`, `determinate`, `home-manager`, `i18n`, `networking`, `nix`, `nixpkgs`, `security`, `state-version`, `vm`). Imported by every role. |
-| **Features (`features`)** | `modules/features/` | Opt-in system/user capabilities (`audio`, `bluetooth`, `bootvine`, `deployable`, `fail2ban`, `fonts`, `impermanence`, `nextdns`, `oo7`, `openssh`, `podman`, `printing`, `sops`, `stylix`, `wifi`). |
+| **Features (`features`)** | `modules/features/` | Opt-in system/user capabilities (`audio`, `bluetooth`, `bootvine`, `deployable`, `fail2ban`, `impermanence`, `nextdns`, `oo7`, `openssh`, `podman`, `printing`, `sops`, `theming`, `wifi`). |
 | **Programs (`programs`)** | `modules/programs/<category>/` | One file per application (co-locating `nixos`, `darwin`, and `homeManager` blocks) plus a `<category>/default.nix` aggregator so hosts and roles can import either a full category or a single program. |
 | **Services (`services`)** | `modules/services/<category>/` | Self-hosted NixOS modules grouped by domain; wired into server hosts and parameterized via `config.dot.host.network.domain` and `sops-nix` secrets. |
 | **Roles (`roles`)** | `modules/roles/{desktop,server}/` | Composes `base`, archetype features, and default program sets for both `flake.modules.nixos.<role>` and `flake.modules.homeManager.<role>`, plus server assertions and auto-upgrade policies. |
@@ -92,12 +92,12 @@ Defined in `modules/hosts/nixos/apeiron/` (`default.nix`, `configuration.nix`, `
 Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`, `disko-config.nix`, `filesystem.nix`, `boot.nix`, `hardware.nix`, `vm.nix`).
 
 - **Inherited from `desktop` role (`modules/roles/desktop/`)**:
-  - **NixOS baseline & features**: `base`, `audio`, `bluetooth`, `bootvine`, `fonts`, `nextdns`, `oo7`, `printing`, `sops`, `stylix` (`autoEnable = false`)
+  - **NixOS baseline & features**: `base`, `audio`, `bluetooth`, `bootvine`, `nextdns`, `oo7`, `printing`, `sops`, `theming` (Stylix `autoEnable = false`)
   - **Shared program categories (NixOS + Home Manager)**: `ai`, `cli`, `development`, `messaging`, `productivity`, `window-manager`
   - **System-only program categories**: `gaming`, `hardware`, `vpn`
-  - **Home Manager baseline & features**: `base`, `sops`
+  - **Home Manager baseline & features**: `base`, `sops`, `theming`
 - **Host-specific features**: `wifi`; program categories are inherited from the role, not added by this host.
-- **Theming**: Noctalia drives desktop theming by default, while `stylix` (`autoEnable = false`) styles targets without Noctalia templates or with Home Manager-managed configs (`limine`, `starship`, `lazygit`, `jjui`, `mpv`, `ncspot`).
+- **Theming**: Noctalia drives desktop theming by default, while `theming` wires Stylix (`autoEnable = false`) to style targets without Noctalia templates or with Home Manager-managed configs (`limine`, `starship`, `lazygit`, `jjui`, `mpv`, `ncspot`), and pushes the Stylix fonts into fontconfig, GTK and `kdeglobals`.
 - **Credentials**: `oo7` provides a PAM-unlocked `org.freedesktop.secrets` keyring (`login` and `greetd`) for `bitwarden-desktop`, Noctalia, and `gitFull` (`libsecret`), while `rbw` (using `pinentry-qt`) and `bitwarden-desktop` authenticate to `https://vault.alvr.dev` over OIDC SSO (`SSO_ONLY = true`).
 - **Storage & deployment**: single-NVMe Btrfs subvolumes, root/home Snapper snapshots, monthly Btrfs scrubbing, and additional ext4/XFS data mounts. Rebuilt locally with `just apply`; no deploy-rs node is configured.
 - **Hardware**: AMD CPU and NVIDIA open driver (`nvidia_cachyos`); the VM variant removes the NVIDIA driver.
