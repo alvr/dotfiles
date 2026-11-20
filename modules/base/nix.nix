@@ -4,7 +4,10 @@ let
     { config, ... }:
     {
       nix = {
-        registry.dotfiles.flake = self;
+        registry = {
+          dotfiles.flake = self;
+          nixpkgs.flake = inputs.nixpkgs;
+        };
 
         extraOptions = ''
           !include ${config.sops.templates."nix-access-tokens".path}
@@ -39,6 +42,8 @@ let
         content = "access-tokens = github.com=${config.sops.placeholder."nix-access-tokens/github.com"}";
         mode = "0400";
       };
+
+      environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
       programs.nh = {
         enable = true;
