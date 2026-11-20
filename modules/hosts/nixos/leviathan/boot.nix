@@ -25,13 +25,13 @@
           resolution = "2560x1440x32";
 
           additionalFiles = {
-            "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.EFI";
+            "efi/memtest86/memtest86.efi" = "${pkgs.memtest86plus}/mt86plus.efi";
           };
 
           extraEntries = ''
-            /MemTest86
-              protocol: chainload
-              path: boot():///efi/memtest86/memtest86.efi
+            /MemTest86+
+              protocol: efi
+              path: boot():/efi/memtest86/memtest86.efi
           '';
         };
       };

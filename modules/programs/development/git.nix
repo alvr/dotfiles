@@ -50,7 +50,9 @@
         programs.lazygit = {
           enable = true;
           enableFishIntegration = true;
-          settings.git.paging.pager = "${lib.getExe pkgs.delta} --paging=never";
+          settings.git.diffRenderers = [
+            { command = "${lib.getExe pkgs.delta} --paging=never"; }
+          ];
         };
 
         dot = self.lib.mkIfHmPersistence config {

@@ -7,6 +7,7 @@
           {
             users = [ config.dot.host.user.alias ];
             keepEnv = true;
+            persist = true;
           }
         ];
       };
