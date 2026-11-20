@@ -63,6 +63,12 @@ in
         lazygit.enable = true;
         starship.enable = true;
       };
+
+      xdg.userDirs = {
+        enable = true;
+        createDirectories = true;
+        setSessionVariables = true;
+      };
     };
   };
 }

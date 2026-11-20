@@ -10,14 +10,23 @@
     };
 
     homeManager.obsidian =
-      { pkgs, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
+      let
+        documents = lib.removePrefix "${config.home.homeDirectory}/" (
+          config.xdg.userDirs.documents or "${config.home.homeDirectory}/Documents"
+        );
+      in
       {
         programs.obsidian = {
           enable = true;
 
           vaults.personal = {
-            # Relative to $HOME → ~/Documentos/Obsidian/Personal
-            target = "Documentos/Obsidian/Personal";
+            target = "${documents}/Obsidian/Personal";
 
             settings = {
               app = {

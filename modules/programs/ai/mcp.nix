@@ -26,7 +26,7 @@
           # Local files
           filesystem = {
             command = lib.getExe pkgs.mcp-server-filesystem;
-            args = [ "${config.home.homeDirectory}/Proyectos" ];
+            args = [ config.xdg.userDirs.projects ];
           };
 
           # Web
