@@ -35,14 +35,8 @@ jobs:
       - name: Update flake.lock
         run: nix flake update
 
-      - name: Resolve evaluation-time dependencies
-        run: |
-          for host in $(nix eval --raw .#nixosConfigurations --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)'); do
-            nix eval --option allow-import-from-derivation true --raw ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" > /dev/null
-          done
-
       - name: Run flake check
-        run: nix develop .#dev-nix -c nix flake check --no-build
+        run: nix flake check --no-build
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
