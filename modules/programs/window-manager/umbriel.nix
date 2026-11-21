@@ -21,6 +21,7 @@
       let
         fileManager = lib.getExe pkgs.kdePackages.dolphin;
         terminal = lib.getExe pkgs.ghostty;
+        audioSinkCycle = lib.getExe pkgs.audio-sink-cycle;
       in
       {
         imports = [ inputs.umbriel.homeModules.default ];
@@ -188,7 +189,6 @@
               # Hardware and media keys
               "XF86MonBrightnessDown" = "spawn noctalia msg brightness-down";
               "XF86MonBrightnessUp" = "spawn noctalia msg brightness-up";
-              # "XF86Calculator" = "spawn kcalc";
               "XF86LaunchA" = "overview-toggle";
               "XF86AudioPrev" = "spawn noctalia msg media previous";
               "XF86AudioPlay" = "spawn noctalia msg media toggle";
@@ -199,6 +199,14 @@
               "XF86AudioMute" = "spawn noctalia msg volume-mute";
               "XF86AudioLowerVolume" = "spawn noctalia msg volume-down";
               "XF86AudioRaiseVolume" = "spawn noctalia msg volume-up";
+              "Mod+XF86AudioRaiseVolume" = {
+                action = "spawn ${audioSinkCycle} next";
+                cooldown_ms = 400;
+              };
+              "Mod+XF86AudioLowerVolume" = {
+                action = "spawn ${audioSinkCycle} prev";
+                cooldown_ms = 400;
+              };
 
               # Window actions
               "Mod+Return" = {

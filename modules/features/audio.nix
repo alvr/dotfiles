@@ -5,6 +5,7 @@
       audioSplit = pkgs.writeShellScriptBin "audio-split-front-rear" ''
         set -e
 
+        export LC_ALL=C
         VIRTUAL=headset_front
 
         for _ in $(seq 1 30); do
@@ -25,15 +26,35 @@
             channel_map=front-left,front-right \
             remix=no
 
+        CARD=$(pactl list sinks | awk -v s="$PHYSICAL" '
+          $1 == "Name:" && $2 == s { found = 1; next }
+          found && $1 == "alsa.card" { gsub(/[^0-9]/, "", $3); print $3; exit }
+        ')
+        [ -n "$CARD" ] && amixer -c "$CARD" sset "Auto-Mute Mode" Disabled >/dev/null || true
+
+        active_port() {
+          pactl list sinks | awk -v s="$PHYSICAL" '
+            $1 == "Name:" && $2 == s { found = 1; next }
+            found && $1 == "Active" && $2 == "Port:" { print $3; exit }
+          '
+        }
+
         sync() {
           case "$(pactl get-default-sink)" in
-            "$VIRTUAL") pactl set-sink-port "$PHYSICAL" analog-output-headphones ;;
-            "$PHYSICAL") pactl set-sink-port "$PHYSICAL" analog-output-lineout ;;
+            "$VIRTUAL") PORT=analog-output-headphones ;;
+            "$PHYSICAL") PORT=analog-output-lineout ;;
+            *) return ;;
           esac
+
+          [ "$(active_port)" = "$PORT" ] || pactl set-sink-port "$PHYSICAL" "$PORT"
         }
 
         sync
-        pactl subscribe | grep --line-buffered "on sink" | while read -r _; do sync; done
+        pactl subscribe | while read -r event; do
+          case "$event" in
+            *"on server"*|*"on sink "*) sync ;;
+          esac
+        done
       '';
     in
     {
@@ -61,15 +82,16 @@
         wantedBy = [ "default.target" ];
 
         path = with pkgs; [
+          alsa-utils
           coreutils
           gawk
-          gnugrep
           pulseaudio
         ];
 
         serviceConfig = {
           ExecStart = "${audioSplit}/bin/audio-split-front-rear";
-          Restart = "on-failure";
+          Restart = "always";
+          RestartSec = 2;
         };
       };
     };
