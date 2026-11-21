@@ -17,6 +17,7 @@
         fish
         fzf
         ripgrep
+        ssh
         starship
         yazi
         zoxide

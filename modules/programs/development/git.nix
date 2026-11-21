@@ -1,4 +1,4 @@
-{ self, ... }:
+{ inputs, self, ... }:
 {
   flake.modules = {
     nixos.git = { pkgs, ... }: {
@@ -20,19 +20,24 @@
         mkSign = value: lib.mkIf (signingKey != null) value;
       in
       {
+        sops.secrets."git-tokens/git-alvr-dev" = {
+          sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/git.yaml";
+          mode = "0400";
+        };
+
         programs.git = {
           enable = true;
           package = pkgs.gitFull;
           settings = {
             color.ui = "auto";
             credential.helper = "cache --timeout=3600";
-            credential."https://git.alvr.dev".helper = "libsecret";
             help.autocorrect = 1;
             init.defaultBranch = "main";
             push.default = "simple";
             commit.gpgsign = mkSign true;
             tag.gpgsign = mkSign true;
             gpg.format = mkSign "ssh";
+
             alias = {
               co = "checkout";
               ci = "commit";
@@ -40,10 +45,17 @@
               br = "branch";
               lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
             };
+
             user = {
               inherit (config.dot.host.user) email name;
               signingkey = mkSign signingKey;
             };
+
+            credential."https://git.alvr.dev".helper = "${self.lib.mkGitCredential {
+              inherit pkgs;
+              user = config.dot.host.user.alias;
+              secret = config.sops.secrets."git-tokens/git-alvr-dev".path;
+            }}";
           };
         };
 
