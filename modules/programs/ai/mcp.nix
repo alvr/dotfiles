@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   flake.modules.homeManager.ai-mcp =
     {
@@ -7,6 +8,11 @@
       ...
     }:
     {
+      sops.secrets."mcp-token/github" = {
+        sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/mcps.yaml";
+        mode = "0400";
+      };
+
       programs.mcp = {
         enable = true;
 
@@ -21,6 +27,7 @@
           github = {
             command = lib.getExe pkgs.github-mcp-server;
             args = [ "stdio" ];
+            env.GITHUB_PERSONAL_ACCESS_TOKEN.file = config.sops.secrets."mcp-token/github".path;
           };
 
           # Local files
