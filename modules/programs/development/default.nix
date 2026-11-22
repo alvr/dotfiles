@@ -7,6 +7,7 @@
         jadx
         jetbrains-toolbox
         jujutsu
+        wakatime
       ];
     };
 
@@ -18,6 +19,7 @@
         jujutsu
         nvchad
         vscodium
+        wakatime
         zed
       ];
     };

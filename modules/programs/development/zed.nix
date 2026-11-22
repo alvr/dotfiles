@@ -1,7 +1,12 @@
 {
-  flake.modules.homeManager.zed = {
+  flake.modules.homeManager.zed = { lib, pkgs, ... }: {
     programs.zed-editor = {
       enable = true;
+
+      extraPackages = with pkgs; [
+        nil
+        wakatime-cli
+      ];
 
       extensions = [
         "just"
@@ -13,6 +18,18 @@
       ];
 
       userSettings = {
+        lsp = {
+          nil.binary.path = lib.getExe pkgs.nil;
+
+          wakatime.binary = {
+            path = lib.getExe pkgs.zed-wakatime-ls;
+            arguments = [
+              "--wakatime-cli"
+              (lib.getExe pkgs.wakatime-cli)
+            ];
+          };
+        };
+
         diff_view_style = "split";
         cli_default_open_behavior = "existing_window";
         disable_ai = false;

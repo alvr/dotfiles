@@ -8,6 +8,7 @@
         flake-edit
         git
         just
+        nil
         nixd
         prek
         sops
