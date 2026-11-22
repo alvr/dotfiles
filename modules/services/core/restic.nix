@@ -6,7 +6,7 @@
       cfg = config.dot.services.restic;
 
       destinations = [
-        "onedrive"
+        "mega"
         "r2"
       ];
 
