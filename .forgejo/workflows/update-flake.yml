@@ -49,6 +49,7 @@ jobs:
           commit_author: "Álvaro Salcedo García <alvaro@alvr.dev>"
           branch: ${{ github.ref_name }}
           file_pattern: flake.lock
+          commit_options: --no-verify
           skip_fetch: true
           before_push_hook: |
             export GIT_CONFIG_COUNT=1

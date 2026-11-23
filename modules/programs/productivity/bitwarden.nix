@@ -8,7 +8,6 @@
     };
 
     homeManager.bitwarden = { config, pkgs, ... }: {
-      sshAuthSock.initialization.fish = "${config.home.homeDirectory}/.bitwarden-ssh-agent.sock";
       home.sessionVariables.SSH_AUTH_SOCK = "${config.home.homeDirectory}/.bitwarden-ssh-agent.sock";
 
       programs.rbw = {

@@ -13,14 +13,16 @@ runs:
     - name: Install sudo
       run: |
         apt-get update -y
-        apt-get install -y --no-install-recommends sudo
+        apt-get install -y --no-install-recommends sudo jq
 
     - name: Install Determinate Nix
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-access-token }}
       run: |
-        curl --proto '=https' --tlsv1.2 -sSfL https://install.determinate.systems/nix -o /tmp/nix-install
+        nix_version=$(jq -r '.nodes.nix.locked.url' flake.lock | grep -o 'nix-src/[^/]*' | cut -d/ -f2)
+        curl --proto '=https' --tlsv1.2 -sSfL "https://install.determinate.systems/nix/tag/v${nix_version}" -o /tmp/nix-install
+
         sh /tmp/nix-install install linux --determinate --init none --no-confirm \
           --extra-conf "trusted-users = root ${USER:-runner}" \
           --extra-conf "access-tokens = github.com=${GH_TOKEN}" \

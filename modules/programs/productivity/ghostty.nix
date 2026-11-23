@@ -23,6 +23,9 @@
         window-padding-y = 0;
         window-width = 166;
         window-height = 69;
+
+        quick-terminal-position = "center";
+        quick-terminal-screen = "mouse";
       };
     };
   };

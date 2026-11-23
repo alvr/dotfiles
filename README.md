@@ -106,7 +106,7 @@ Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`,
   - **CLI (`cli`)**: `fish`, `starship`, `yazi`, `zoxide`, `fzf`, `ripgrep`, `fd`, `eza`, `bat`, `delta`, `btop`
   - **Development (`development`)**: `git`, `jujutsu`, `gh`, `direnv`, `nvchad`, `zed`, `vscodium`, `jetbrains-toolbox`, `jadx`
   - **AI (`ai`)**: `opencode` (system + HM), `pi` and `herdr`, plus the shared `ai-mcp`/`ai-skills` Home Manager modules
-  - **Productivity (`productivity`)**: `ghostty`, `zen-browser`, `helium-browser`, `obsidian`, `bitwarden`, `betterbird`, `mpv`, `music`, `transmission`, `nextcloud-client`, `obs-studio`, `x-craft`. `autofirma` exists but is excluded from the category imports because of a stale dependency hash.
+  - **Productivity (`productivity`)**: `ghostty`, `zen-browser`, `brave-browser`, `obsidian`, `bitwarden`, `betterbird`, `mpv`, `music`, `transmission`, `nextcloud-client`, `obs-studio`, `x-craft`. `autofirma` exists but is excluded from the category imports because of a stale dependency hash.
   - **Gaming (`gaming`)**: `steam`, `gaming-clients`, `amethyst`, `azahar`, `ryubing`, `hytale`, `coolercontrol`, `goverlay`, `openrgb`
   - **Messaging (`messaging`)**: `equibop` (Discord client), `telegram`, `whatsapp`
   - **Hardware (`hardware`)**: `fwupd`, `openlogi`

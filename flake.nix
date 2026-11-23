@@ -47,9 +47,6 @@
 
     flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/0";
 
-    helium-browser.url = "github:oxcl/nix-flake-helium-browser";
-    helium-browser.inputs.nixpkgs.follows = "nixpkgs";
-
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 

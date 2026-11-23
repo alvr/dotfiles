@@ -6,7 +6,7 @@
         autofirma
         betterbird
         bitwarden
-        helium-browser
+        brave-browser
         music
         obsidian
         transmission
@@ -20,7 +20,7 @@
         betterbird
         bitwarden
         ghostty
-        helium-browser
+        brave-browser
         mpv
         music
         nextcloud-client

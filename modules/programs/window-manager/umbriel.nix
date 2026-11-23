@@ -97,7 +97,7 @@
                 match = {
                   app_id = [
                     "^zen"
-                    "^helium"
+                    "^brave"
                   ];
                   title = "^Picture[ -]in[ -][Pp]icture$";
                 };
@@ -115,7 +115,7 @@
               {
                 match.app_id = [
                   "^zen"
-                  "^helium"
+                  "^brave"
                 ];
                 default_output = "HDMI-A-1";
                 default_workspace = "Browsing";
