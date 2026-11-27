@@ -1,13 +1,11 @@
 { inputs, ... }:
 {
-  flake.modules = {
-    nixos.betterbird = { pkgs, ... }: {
-      environment.systemPackages = [
-        inputs.betterbird.packages.${pkgs.stdenv.hostPlatform.system}.betterbird
-      ];
-    };
+  flake.modules.homeManager.betterbird = { pkgs, ... }: {
+    home.packages = [
+      inputs.betterbird.packages.${pkgs.stdenv.hostPlatform.system}.betterbird
+    ];
 
-    homeManager.betterbird.xdg.mimeApps.defaultApplications = {
+    xdg.mimeApps.defaultApplications = {
       "message/rfc822" = "betterbird.desktop";
       "text/calendar" = "betterbird.desktop";
       "x-scheme-handler/mailto" = "betterbird.desktop";

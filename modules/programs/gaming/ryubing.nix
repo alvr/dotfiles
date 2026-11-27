@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.ryubing = { pkgs, ... }: {
-    environment.systemPackages = [
-      pkgs.ryubing
-    ];
+  flake.modules.homeManager.ryubing = { pkgs, ... }: {
+    home.packages = [ pkgs.ryubing ];
   };
 }

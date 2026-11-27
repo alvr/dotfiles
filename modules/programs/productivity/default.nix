@@ -4,12 +4,8 @@
     nixos.productivity = {
       imports = with self.modules.nixos; [
         autofirma
-        betterbird
-        bitwarden
         brave-browser
-        music
         obsidian
-        transmission
         x-craft
       ];
     };

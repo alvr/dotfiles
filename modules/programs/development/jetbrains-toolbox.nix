@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.jetbrains-toolbox = { pkgs, ... }: {
-    environment.systemPackages = [ pkgs.jetbrains-toolbox ];
+  flake.modules.homeManager.jetbrains-toolbox = { pkgs, ... }: {
+    home.packages = [ pkgs.jetbrains-toolbox ];
   };
 }

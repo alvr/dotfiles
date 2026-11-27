@@ -1,20 +1,14 @@
 {
-  flake.modules = {
-    nixos.opencode = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [
-        opencode-desktop
-      ];
-    };
+  flake.modules.homeManager.opencode = { pkgs, ... }: {
+    home.packages = [ pkgs.opencode-desktop ];
 
-    homeManager.opencode = {
-      programs.opencode = {
-        enable = true;
-        enableMcpIntegration = true;
+    programs.opencode = {
+      enable = true;
+      enableMcpIntegration = true;
 
-        cli.theme = {
-          name = "matugen";
-          mode = "system";
-        };
+      cli.theme = {
+        name = "matugen";
+        mode = "system";
       };
     };
   };

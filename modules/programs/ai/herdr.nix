@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.herdr = { pkgs, ... }: {
-    environment.systemPackages = [
-      pkgs.herdr-desktop
-    ];
+  flake.modules.homeManager.herdr = { pkgs, ... }: {
+    home.packages = [ pkgs.herdr-desktop ];
   };
 }

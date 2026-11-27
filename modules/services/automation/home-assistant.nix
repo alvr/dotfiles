@@ -39,6 +39,7 @@
 
         customComponents = with pkgs.home-assistant-custom-components; [
           auth_oidc
+          tuya_local
           uix
         ];
 

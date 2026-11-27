@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.whatsapp = { pkgs, ... }: {
-    environment.systemPackages = with pkgs; [
-      zapfast
-    ];
+  flake.modules.homeManager.whatsapp = { pkgs, ... }: {
+    home.packages = [ pkgs.zapfast ];
   };
 }

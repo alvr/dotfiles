@@ -1,12 +1,8 @@
 {
-  flake.modules = {
-    nixos.telegram = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [
-        telegram-desktop
-      ];
-    };
+  flake.modules.homeManager.telegram = { pkgs, ... }: {
+    home.packages = [ pkgs.telegram-desktop ];
 
-    homeManager.telegram.xdg.mimeApps.defaultApplications = {
+    xdg.mimeApps.defaultApplications = {
       "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
     };
   };

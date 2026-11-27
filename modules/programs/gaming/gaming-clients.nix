@@ -1,6 +1,6 @@
 {
-  flake.modules.nixos.gaming-clients = { pkgs, ... }: {
-    environment.systemPackages = with pkgs; [
+  flake.modules.homeManager.gaming-clients = { pkgs, ... }: {
+    home.packages = with pkgs; [
       archisteamfarm
       heroic
       lutris

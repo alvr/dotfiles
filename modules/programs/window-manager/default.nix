@@ -3,7 +3,6 @@
   flake.modules = {
     nixos.window-manager = {
       imports = with self.modules.nixos; [
-        file-manager
         noctalia
         noctalia-greeter
         umbriel

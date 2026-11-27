@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.amethyst = { pkgs, ... }: {
-    environment.systemPackages = [
-      pkgs.amethyst-mod-manager
-    ];
+  flake.modules.homeManager.amethyst = { pkgs, ... }: {
+    home.packages = [ pkgs.amethyst-mod-manager ];
   };
 }

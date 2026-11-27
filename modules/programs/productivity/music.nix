@@ -1,19 +1,15 @@
 {
-  flake.modules = {
-    nixos.music = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [
-        spotifast
-        spotify
-      ];
-    };
+  flake.modules.homeManager.music = { pkgs, ... }: {
+    home.packages = with pkgs; [
+      spotifast
+      spotify
+    ];
 
-    homeManager.music = {
-      stylix.targets.ncspot.enable = true;
+    stylix.targets.ncspot.enable = true;
 
-      programs.ncspot = {
-        enable = true;
-        settings.use_nerdfont = true;
-      };
+    programs.ncspot = {
+      enable = true;
+      settings.use_nerdfont = true;
     };
   };
 }

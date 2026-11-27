@@ -1,75 +1,71 @@
 { inputs, self, ... }:
 {
-  flake.modules = {
-    nixos.git = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [
+  flake.modules.homeManager.git =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      signingKey = config.dot.host.user.gitSigningKey;
+      mkSign = value: lib.mkIf (signingKey != null) value;
+    in
+    {
+      home.packages = with pkgs; [
         gitbutler
         sourcegit
       ];
-    };
 
-    homeManager.git =
-      {
-        config,
-        lib,
-        pkgs,
-        ...
-      }:
-      let
-        signingKey = config.dot.host.user.gitSigningKey;
-        mkSign = value: lib.mkIf (signingKey != null) value;
-      in
-      {
-        sops.secrets."git-tokens/git-alvr-dev" = {
-          sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/git.yaml";
-          mode = "0400";
-        };
+      sops.secrets."git-tokens/git-alvr-dev" = {
+        sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/git.yaml";
+        mode = "0400";
+      };
 
-        programs.git = {
-          enable = true;
-          package = pkgs.gitFull;
-          settings = {
-            color.ui = "auto";
-            credential.helper = "cache --timeout=3600";
-            help.autocorrect = 1;
-            init.defaultBranch = "main";
-            push.default = "simple";
-            commit.gpgsign = mkSign true;
-            tag.gpgsign = mkSign true;
-            gpg.format = mkSign "ssh";
+      programs.git = {
+        enable = true;
+        package = pkgs.gitFull;
+        settings = {
+          color.ui = "auto";
+          credential.helper = "cache --timeout=3600";
+          help.autocorrect = 1;
+          init.defaultBranch = "main";
+          push.default = "simple";
+          commit.gpgsign = mkSign true;
+          tag.gpgsign = mkSign true;
+          gpg.format = mkSign "ssh";
 
-            alias = {
-              co = "checkout";
-              ci = "commit";
-              st = "status";
-              br = "branch";
-              lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
-            };
-
-            user = {
-              inherit (config.dot.host.user) email name;
-              signingkey = mkSign signingKey;
-            };
-
-            credential."https://git.alvr.dev".helper = "${self.lib.mkGitCredential {
-              inherit pkgs;
-              user = config.dot.host.user.alias;
-              secret = config.sops.secrets."git-tokens/git-alvr-dev".path;
-            }}";
+          alias = {
+            co = "checkout";
+            ci = "commit";
+            st = "status";
+            br = "branch";
+            lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
           };
-        };
 
-        programs.lazygit = {
-          enable = true;
-          enableFishIntegration = true;
-          settings.git.diffRenderers = [
-            { command = "${lib.getExe pkgs.delta} --paging=never"; }
-          ];
-        };
+          user = {
+            inherit (config.dot.host.user) email name;
+            signingkey = mkSign signingKey;
+          };
 
-        dot = self.lib.mkIfHmPersistence config {
-          hm.system.persistence.files = [ ".config/git/ignore" ];
+          credential."https://git.alvr.dev".helper = "${self.lib.mkGitCredential {
+            inherit pkgs;
+            user = config.dot.host.user.alias;
+            secret = config.sops.secrets."git-tokens/git-alvr-dev".path;
+          }}";
         };
       };
-  };
+
+      programs.lazygit = {
+        enable = true;
+        enableFishIntegration = true;
+        settings.git.diffRenderers = [
+          { command = "${lib.getExe pkgs.delta} --paging=never"; }
+        ];
+      };
+
+      dot = self.lib.mkIfHmPersistence config {
+        hm.system.persistence.files = [ ".config/git/ignore" ];
+      };
+    };
 }

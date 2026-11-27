@@ -3,16 +3,13 @@ let
   inherit (self.modules) nixos homeManager;
 
   shared = [
-    "ai"
     "cli"
-    "development"
-    "messaging"
+    "gaming"
     "productivity"
     "window-manager"
   ];
 
   systemOnly = [
-    "gaming"
     "hardware"
     "vpn"
   ];
@@ -52,7 +49,10 @@ in
     homeManager.desktop = {
       imports = pick homeManager (
         [
+          "ai"
           "base"
+          "development"
+          "messaging"
           "sops"
           "theming"
         ]

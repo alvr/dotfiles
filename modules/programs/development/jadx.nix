@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.jadx = { pkgs, ... }: {
-    environment.systemPackages = [ pkgs.jadx ];
+  flake.modules.homeManager.jadx = { pkgs, ... }: {
+    home.packages = [ pkgs.jadx ];
   };
 }

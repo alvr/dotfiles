@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.goverlay = { pkgs, ... }: {
-    environment.systemPackages = with pkgs; [
-      goverlay
-    ];
+  flake.modules.homeManager.goverlay = { pkgs, ... }: {
+    home.packages = [ pkgs.goverlay ];
   };
 }

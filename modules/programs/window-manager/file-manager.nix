@@ -1,36 +1,32 @@
 {
-  flake.modules = {
-    nixos.file-manager = { pkgs, ... }: {
-      environment.systemPackages = with pkgs.kdePackages; [
-        ark
-        breeze-icons
-        dolphin
-        kio
-        kio-extras
-        kio-fuse
+  flake.modules.homeManager.file-manager = { lib, pkgs, ... }: {
+    home.packages = with pkgs.kdePackages; [
+      ark
+      breeze-icons
+      dolphin
+      kio
+      kio-extras
+      kio-fuse
 
-        pkgs.photoqt
-      ];
-    };
+      pkgs.photoqt
+    ];
 
-    homeManager.file-manager = { lib, ... }: {
-      xdg.mimeApps.defaultApplications = {
-        "image/*" = "org.photoqt.PhotoQt.desktop";
-        "inode/directory" = "org.kde.dolphin.desktop";
-      }
-      // lib.genAttrs [
-        "application/gzip"
-        "application/vnd.rar"
-        "application/x-7z-compressed"
-        "application/x-bzip2"
-        "application/x-bzip-compressed-tar"
-        "application/x-compressed-tar"
-        "application/x-rar"
-        "application/x-tar"
-        "application/x-xz"
-        "application/zip"
-        "application/zstd"
-      ] (_: "org.kde.ark.desktop");
-    };
+    xdg.mimeApps.defaultApplications = {
+      "image/*" = "org.photoqt.PhotoQt.desktop";
+      "inode/directory" = "org.kde.dolphin.desktop";
+    }
+    // lib.genAttrs [
+      "application/gzip"
+      "application/vnd.rar"
+      "application/x-7z-compressed"
+      "application/x-bzip2"
+      "application/x-bzip-compressed-tar"
+      "application/x-compressed-tar"
+      "application/x-rar"
+      "application/x-tar"
+      "application/x-xz"
+      "application/zip"
+      "application/zstd"
+    ] (_: "org.kde.ark.desktop");
   };
 }

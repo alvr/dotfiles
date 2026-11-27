@@ -1,7 +1,5 @@
 {
-  flake.modules.nixos.azahar = { pkgs, ... }: {
-    environment.systemPackages = [
-      pkgs.azahar
-    ];
+  flake.modules.homeManager.azahar = { pkgs, ... }: {
+    home.packages = [ pkgs.azahar ];
   };
 }
