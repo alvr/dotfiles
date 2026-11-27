@@ -8,9 +8,16 @@
       ...
     }:
     {
-      sops.secrets."mcp-token/github" = {
-        sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/mcps.yaml";
-        mode = "0400";
+      sops.secrets = {
+        "mcp-token/context7" = {
+          sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/mcps.yaml";
+          mode = "0400";
+        };
+
+        "mcp-token/github" = {
+          sopsFile = "${inputs.secrets}/users/${config.dot.host.user.alias}/mcps.yaml";
+          mode = "0400";
+        };
       };
 
       programs.mcp = {
@@ -19,8 +26,13 @@
         servers = {
           # Documentation
           astro.url = "https://mcp.docs.astro.build/mcp";
-          context7.url = "https://mcp.context7.com/mcp/oauth";
+          deepwiki.url = "https://mcp.deepwiki.com/mcp";
           nixos.command = lib.getExe pkgs.mcp-nixos;
+          context7 = {
+            command = lib.getExe pkgs.context7-mcp;
+            args = [ "stdio" ];
+            env.CONTEXT7_API_KEY.file = config.sops.secrets."mcp-token/context7".path;
+          };
 
           # Repositories
           git.command = lib.getExe pkgs.mcp-server-git;
