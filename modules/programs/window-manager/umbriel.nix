@@ -14,13 +14,14 @@
 
     homeManager.umbriel =
       {
+        config,
         lib,
         pkgs,
         osConfig,
         ...
       }:
       let
-        fileManager = lib.getExe pkgs.kdePackages.dolphin;
+        fileManager = lib.getExe config.programs.luciole.package;
         terminal = lib.getExe pkgs.ghostty;
         audioSinkCycle = lib.getExe pkgs.audio-sink-cycle;
       in

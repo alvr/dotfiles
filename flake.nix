@@ -61,6 +61,8 @@
 
     import-tree.url = "github:denful/import-tree";
 
+    luciole.url = "github:noctalia-dev/luciole/cachix";
+
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -76,6 +78,9 @@
 
     secrets.url = "path:./secrets";
     secrets.flake = false;
+
+    skills-caveman.url = "github:JuliusBrussee/caveman";
+    skills-caveman.flake = false;
 
     skills-android.url = "github:android/skills";
     skills-android.flake = false;

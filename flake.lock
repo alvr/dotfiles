@@ -684,6 +684,25 @@
         "type": "github"
       }
     },
+    "luciole": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_4"
+      },
+      "locked": {
+        "lastModified": 1795849470,
+        "narHash": "sha256-4bY5a3LxD1Vn54Bcdon6CQKN37qjbKx823iIHfPykJA=",
+        "owner": "noctalia-dev",
+        "repo": "luciole",
+        "rev": "ca7b7b540a53e2ddc768cae20f4c59efd133d43e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "ref": "cachix",
+        "repo": "luciole",
+        "type": "github"
+      }
+    },
     "nix": {
       "inputs": {
         "bdwgc": "bdwgc",
@@ -871,6 +890,19 @@
     "nixpkgs_4": {
       "locked": {
         "lastModified": 1795234589,
+        "narHash": "sha256-pAEASBc6wof0S58XcSEdZoQ2iFQDkCnZwH+wFLrkd1Q=",
+        "rev": "2786a2a72088ecf32aea5b3ec52099e6a7cff78f",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1125864.2786a2a72088/nixexprs.tar.zst"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst"
+      }
+    },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1795234589,
         "narHash": "sha256-f/VVvxf5RsQgWVhUtefoca5ktVg0DA2bnkMOcmSnozo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
@@ -884,7 +916,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_5": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1795234589,
         "narHash": "sha256-pAEASBc6wof0S58XcSEdZoQ2iFQDkCnZwH+wFLrkd1Q=",
@@ -897,7 +929,7 @@
         "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst"
       }
     },
-    "nixpkgs_6": {
+    "nixpkgs_7": {
       "locked": {
         "lastModified": 1795234589,
         "narHash": "sha256-pAEASBc6wof0S58XcSEdZoQ2iFQDkCnZwH+wFLrkd1Q=",
@@ -912,7 +944,7 @@
     },
     "noctalia": {
       "inputs": {
-        "nixpkgs": "nixpkgs_5"
+        "nixpkgs": "nixpkgs_6"
       },
       "locked": {
         "lastModified": 1795797641,
@@ -1039,15 +1071,17 @@
         "hytale-launcher": "hytale-launcher",
         "impermanence": "impermanence",
         "import-tree": "import-tree_2",
+        "luciole": "luciole",
         "nix-darwin": "nix-darwin",
         "nix4nvchad": "nix4nvchad",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": "nixpkgs_5",
         "noctalia": "noctalia",
         "obsidian-extensions": "obsidian-extensions",
         "packages": "packages",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "secrets": "secrets",
         "skills-android": "skills-android",
+        "skills-caveman": "skills-caveman",
         "skills-mattpocock": "skills-mattpocock",
         "skills-ponytail": "skills-ponytail",
         "sops-nix": "sops-nix",
@@ -1104,6 +1138,22 @@
       "original": {
         "owner": "android",
         "repo": "skills",
+        "type": "github"
+      }
+    },
+    "skills-caveman": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795667356,
+        "narHash": "sha256-CsrSd7i/6+wkGAIDa29KpkYaaJgzhRhAGNnbEFgJ9Fk=",
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "rev": "e74a11ccdb38b98d15c9f9545787c907dd15f0ab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
         "type": "github"
       }
     },
@@ -1333,7 +1383,7 @@
     },
     "umbriel": {
       "inputs": {
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": "nixpkgs_7",
         "xdg-desktop-portal-umbriel": "xdg-desktop-portal-umbriel"
       },
       "locked": {

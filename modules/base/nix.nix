@@ -45,10 +45,14 @@ let
 
       environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
-      programs.nh = {
-        enable = true;
-        clean.enable = true;
-        clean.extraArgs = "--delete-older-than 14d";
+      programs = {
+        nh = {
+          enable = true;
+          clean.enable = true;
+          clean.extraArgs = "--delete-older-than 14d";
+        };
+
+        nix-ld.enable = true;
       };
     };
 in

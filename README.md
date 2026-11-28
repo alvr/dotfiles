@@ -102,7 +102,7 @@ Defined in `modules/hosts/nixos/leviathan/` (`default.nix`, `configuration.nix`,
 - **Storage & deployment**: single-NVMe Btrfs subvolumes, root/home Snapper snapshots, monthly Btrfs scrubbing, and additional ext4/XFS data mounts. Rebuilt locally with `just apply`; no deploy-rs node is configured.
 - **Hardware**: AMD CPU and NVIDIA open driver (`nvidia_cachyos`); the VM variant removes the NVIDIA driver.
 - **Enabled program categories (`modules/programs/`, combined system/user inventory)**:
-  - **Window Manager (`window-manager`)**: `umbriel`, `noctalia`, `noctalia-greeter`, `vicinae`, and `file-manager` (Dolphin, Ark, PhotoQt)
+  - **Window Manager (`window-manager`)**: `umbriel`, `noctalia`, `noctalia-greeter`, `vicinae`, and `file-manager` (Luciole, PhotoQt)
   - **CLI (`cli`)**: `fish`, `starship`, `yazi`, `zoxide`, `fzf`, `ripgrep`, `fd`, `eza`, `bat`, `delta`, `btop`
   - **Development (`development`)**: `git`, `jujutsu`, `gh`, `direnv`, `nvchad`, `zed`, `vscodium`, `jetbrains-toolbox`, `jadx`
   - **AI (`ai`)**: `opencode` (system + HM), `pi` and `herdr`, plus the shared `ai-mcp`/`ai-skills` Home Manager modules

@@ -1,32 +1,43 @@
+{ inputs, ... }:
 {
-  flake.modules.homeManager.file-manager = { lib, pkgs, ... }: {
-    home.packages = with pkgs.kdePackages; [
-      ark
-      breeze-icons
-      dolphin
-      kio
-      kio-extras
-      kio-fuse
+  flake.modules = {
+    nixos.file-manager = { lib, pkgs, ... }: {
+      imports = [ inputs.luciole.nixosModules.default ];
 
-      pkgs.photoqt
-    ];
+      nix.settings = {
+        extra-substituters = [ "https://noctalia.cachix.org" ];
+        extra-trusted-public-keys = [
+          "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+        ];
+      };
 
-    xdg.mimeApps.defaultApplications = {
-      "image/*" = "org.photoqt.PhotoQt.desktop";
-      "inode/directory" = "org.kde.dolphin.desktop";
-    }
-    // lib.genAttrs [
-      "application/gzip"
-      "application/vnd.rar"
-      "application/x-7z-compressed"
-      "application/x-bzip2"
-      "application/x-bzip-compressed-tar"
-      "application/x-compressed-tar"
-      "application/x-rar"
-      "application/x-tar"
-      "application/x-xz"
-      "application/zip"
-      "application/zstd"
-    ] (_: "org.kde.ark.desktop");
+      programs.luciole.enable = true;
+      services.gvfs.enable = true;
+
+      xdg.portal = {
+        enable = lib.mkDefault true;
+        extraPortals = [ inputs.luciole.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+      };
+    };
+
+    homeManager.file-manager = { lib, pkgs, ... }: {
+      imports = [ inputs.luciole.homeModules.default ];
+
+      home.packages = [ pkgs.photoqt ];
+
+      programs.luciole = {
+        enable = true;
+
+        settings.browser = {
+          view_mode = "grid";
+          terminal_command = lib.getExe pkgs.ghostty;
+        };
+      };
+
+      xdg.mimeApps.defaultApplications = {
+        "image/*" = "org.photoqt.PhotoQt.desktop";
+        "inode/directory" = "dev.noctalia.luciole.desktop";
+      };
+    };
   };
 }
